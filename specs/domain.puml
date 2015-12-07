@@ -1,0 +1,112 @@
+@startuml
+
+package user {
+    class User << AGGR ROOT >> {
+        watchedComponents: ComponentId
+    }
+
+    class UserId << VO >> {
+        id: String
+    }
+
+    User *-- UserId
+}
+
+package source {
+    class SourceFactory {
+        +Source create(URL)
+    }
+
+    class Source << AGGR ROOT >> {
+        url: String
+    }
+
+    class SvnSource extends Source {
+    }
+
+    class GitSource extends Source {
+    }
+}
+
+package document {
+    class DocumentRepository {
+        +Document store(Document doc, byte[] content)
+        +Document store(Document doc, File source)
+    }
+
+    abstract class Document << AGGR ROOT >> {
+        relativePath: String
+        lastUpdated: Date
+    }
+
+    class BinaryDocument extends Document {
+        +byte[] getContent();
+    }
+
+    abstract class TextDocument extends Document {
+        +String toHtml()
+    }
+
+    class Markdown extends TextDocument {
+    }
+
+    class HTML extends TextDocument {
+    }
+}
+
+package component {
+    class Component << AGGR ROOT >> {
+        owners[]: UserId
+
+        +void addOwner(Owner)
+        +void removeOwner(Owner)
+
+        +void publishComponent()
+        +void archiveComponent()
+    }
+
+    class ComponentId << VO >> {
+        name: String
+    }
+
+    class Version << VO >> {
+        id: VersionId
+        publicationDate: Date
+        source: Source
+    }
+
+    class VersionId << VO >> {
+         majorNumber: int
+         minorNumber: int
+         microNumber: int
+         qualifier: String
+     }
+
+    class Description << VO >> {
+        summary: String
+        images[]: BinaryDocument
+        icon: BinaryDocument
+        readme: TextDocument
+    }
+
+    class Comment << VO >> {
+        publicationDate: Date
+        author: String
+    }
+
+    enum State {
+        PENDING,
+        PUBLISHED,
+        ARCHIVED
+    }
+
+    Component *-- ComponentId
+    Component *-- State
+    Component *-- "*"Comment
+    Component *-- Description
+    Component *-r- Version : stableVersion
+    Component *-r- "*"Version : allVersions
+    Version *-- VersionId
+}
+
+@enduml
