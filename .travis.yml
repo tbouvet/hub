@@ -1,0 +1,19 @@
+sudo: false
+
+language: java
+
+jdk: oraclejdk8
+
+notifications:
+  irc: chat.freenode.net#seedstack-dev
+
+cache:
+  directories: $HOME/.m2/repository
+
+install:
+  - rm ~/.m2/settings.xml
+  - if [ $TRAVIS_PULL_REQUEST = false ] && [ $TRAVIS_BRANCH = master ]; then GOAL=deploy; else GOAL=install; fi
+
+script: mvn -q -Pbuild-number $GOAL jacoco:report
+
+after_success: mvn -q coveralls:report -DrepoToken=$COVERALLS_TOKEN
