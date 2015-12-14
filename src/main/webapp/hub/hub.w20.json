@@ -1,0 +1,23 @@
+{
+  "id": "hub",
+  "name": "Hub fragment",
+
+  "modules": {
+    "home": {
+      "path": "{hub}/modules/home",
+      "autoload": true
+    }
+  },
+
+  "i18n": {
+    "en": ["{hub}/i18n/messages-en.json"],
+    "fr": ["{hub}/i18n/messages-fr.json"]
+  },
+
+  "routes": {
+    "home": {
+      "templateUrl":"{hub}/views/home.html",
+      "controller":"HomeController as hc"
+    }
+  }
+}
