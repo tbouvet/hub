@@ -13,10 +13,14 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0" charset="utf-8"/>
         <meta http-equiv="X-UA-Compatible" content="IE=Edge"/>
         <title>SeedStack Hub</title>
+        <link href='https://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css'>
+        <style>[ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak { display: none !important; }</style>
         <script type="text/javascript" data-main="bower_components/w20/modules/w20" src="bower_components/requirejs/require.js"></script>
     </head>
-    <body>
-        <div id="w20-view" class="w20-content" data-ng-view></div>
-        <div data-w20-error-report ></div>
+    <body layout="row" ng-cloak>
+        <div flex layout="column" tabIndex="-1" role="main" class="md-whiteframe-z2">
+            <md-toolbar hub-toolbar layout="row" class="md-whiteframe-z1"></md-toolbar>
+            <md-content flex layout="column" id="content" ng-view></md-content>
+        </div>
     </body>
 </html>
