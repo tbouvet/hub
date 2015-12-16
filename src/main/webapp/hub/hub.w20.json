@@ -11,6 +11,10 @@
       "path": "{hub}/modules/config",
       "autoload": true
     },
+    "toolbar": {
+      "path": "{hub}/modules/directives/toolbar/toolbar",
+      "autoload": true
+    },
     "home": {
       "path": "{hub}/modules/home",
       "autoload": true
