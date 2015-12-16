@@ -3,6 +3,14 @@
   "name": "Hub fragment",
 
   "modules": {
+    "style": {
+      "path": "[css]!{hub}/style/style.css",
+      "autoload": true
+    },
+    "config": {
+      "path": "{hub}/modules/config",
+      "autoload": true
+    },
     "home": {
       "path": "{hub}/modules/home",
       "autoload": true
