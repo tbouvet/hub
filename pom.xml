@@ -43,6 +43,11 @@
             <type>pom</type>
         </dependency>
         <dependency>
+            <groupId>org.seedstack</groupId>
+            <artifactId>domain-composite</artifactId>
+            <type>pom</type>
+        </dependency>        
+        <dependency>
             <groupId>org.seedstack.seed</groupId>
             <artifactId>seed-web-undertow</artifactId>
         </dependency>
