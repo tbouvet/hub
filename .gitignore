@@ -17,3 +17,7 @@ release.properties
 
 #Vim
 *~
+
+# Web
+bower_components/
+node_modules/

@@ -8,7 +8,8 @@
 
 
 html, body  {
+    font-size: 14px;
     font-family: 'Roboto', sans-serif;
     letter-spacing: 0.010em;
-    line-height: 1.6em;
+    line-height: 1.2em;
 }
