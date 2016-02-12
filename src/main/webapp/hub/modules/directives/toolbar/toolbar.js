@@ -14,11 +14,13 @@ define([
 
     var module = angular.module('hubToolbar', []);
 
-    module.directive('hubToolbar', [function () {
+    module.directive('hubToolbar', ['$mdSidenav', function ($mdSidenav) {
         return {
             template: toolbarTemplate,
             link: function (scope, element, attrs) {
-
+                scope.toggleSidebar = function () {
+                    $mdSidenav('sidebar').toggle();
+                }
             }
         };
     }]);

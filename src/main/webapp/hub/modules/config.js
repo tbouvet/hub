@@ -25,9 +25,15 @@ define([
             .icon('twitter', './assets/svg/twitter.svg', 512)
             .icon('phone', './assets/svg/phone.svg', 512);
 
+        var lightGreenLightText = $mdThemingProvider.extendPalette('light-green', {
+            'contrastDefaultColor': 'light'
+        });
+
+        $mdThemingProvider.definePalette('light-green-white-text', lightGreenLightText);
+
         $mdThemingProvider.theme('default')
-            .primaryPalette('blue')
-            .accentPalette('red');
+            .primaryPalette('light-green-white-text')
+            .accentPalette('red')
 
     }]);
 

@@ -15,6 +15,18 @@
       "path": "{hub}/modules/directives/toolbar/toolbar",
       "autoload": true
     },
+    "sidebar": {
+      "path": "{hub}/modules/directives/sidebar/sidebar",
+      "autoload": true
+    },
+    "speed-dial": {
+      "path": "{hub}/modules/directives/speed-dial/speed-dial",
+      "autoload": true
+    },
+    "bottom-sheet": {
+      "path": "{hub}/modules/directives/bottom-sheet/bottom-sheet",
+      "autoload": true
+    },
     "home": {
       "path": "{hub}/modules/home",
       "autoload": true
