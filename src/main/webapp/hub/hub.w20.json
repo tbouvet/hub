@@ -15,8 +15,28 @@
       "path": "{hub}/modules/directives/toolbar/toolbar",
       "autoload": true
     },
+    "sidebar": {
+      "path": "{hub}/modules/directives/sidebar/sidebar",
+      "autoload": true
+    },
+    "speed-dial": {
+      "path": "{hub}/modules/directives/speed-dial/speed-dial",
+      "autoload": true
+    },
+    "add-component": {
+      "path": "{hub}/modules/directives/speed-dial/actions/add-component",
+      "autoload": true
+    },
+    "bottom-sheet": {
+      "path": "{hub}/modules/directives/bottom-sheet/bottom-sheet",
+      "autoload": true
+    },
     "home": {
       "path": "{hub}/modules/home",
+      "autoload": true
+    },
+    "component-details": {
+      "path": "{hub}/modules/component-details",
       "autoload": true
     }
   },
@@ -27,9 +47,14 @@
   },
 
   "routes": {
-    "home": {
+    "/home": {
       "templateUrl":"{hub}/views/home.html",
-      "controller":"HomeController as hc"
+      "controller":"HomeController as home"
+    },
+    "/component/:name": {
+      "templateUrl":"{hub}/views/component-details.html",
+      "controller":"ComponentDetailsController as details"
     }
   }
+
 }

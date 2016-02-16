@@ -20,7 +20,7 @@ module.exports = function(config) {
             { pattern: 'bower_components/**/*', included: false }
         ],
         preprocessors: {
-            'w20Form/modules/*.js': 'coverage'
+            'hub/modules/*.js': 'coverage'
         },
         reporters: ['dots' ],
         port: 9876,

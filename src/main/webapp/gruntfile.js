@@ -6,15 +6,9 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 /* global module: false, grunt: false, process: false */
-var requirejs = require('requirejs');
-
 module.exports = function (grunt) {
     'use strict';
 
-    /*
-    * Individual grunt tasks.
-    *
-    **/
     grunt.initConfig({
         pkg: grunt.file.readJSON('package.json'),
         clean: [

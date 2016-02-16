@@ -6,6 +6,9 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
+[ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
+    display: none !important;
+}
 
 html, body  {
     font-size: 14px;
@@ -13,3 +16,64 @@ html, body  {
     letter-spacing: 0.010em;
     line-height: 1.2em;
 }
+
+.subheader {
+    display: block;
+    margin: 20px 0 20px 10px;
+    color: rgba(0,0,0,0.54);
+}
+
+.muted {
+    color: #808080;
+}
+
+.spacer {
+    margin: 10px;
+}
+
+md-card[md-ink-ripple] {
+    cursor: pointer;
+    position: relative;
+}
+
+#view {
+    height: 100%;
+    background-color: #fafafa;
+    padding-left: 13%;
+    padding-right: 13%;
+}
+
+#home {
+    background-color: inherit;
+}
+
+#home md-card-content {
+    height: 52px;
+    max-height: 52px;
+    overflow: hidden;
+}
+
+#sidebar {
+    width: 200px !important;
+    max-width: 250px;
+}
+
+#sidebar a {
+    text-align: left !important;
+}
+
+#main-speed-dial {
+    position: fixed;
+    bottom: 20px;
+    right: 60px;
+}
+
+@media screen and (max-width: 900px) {
+    #view {
+        padding: 0;
+    }
+}
+
+
+
+

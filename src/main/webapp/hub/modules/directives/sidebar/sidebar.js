@@ -7,26 +7,23 @@
  */
 define([
     '{angular}/angular',
-    '[text]!{hub}/modules/directives/toolbar/toolbar.html'
+    '[text]!{hub}/modules/directives/sidebar/sidebar.html'
 
-], function (angular, toolbarTemplate) {
+], function (angular, sidebarTemplate) {
     'use strict';
 
-    var module = angular.module('hubToolbar', []);
+    var module = angular.module('hubSidebar', []);
 
-    module.directive('hubToolbar', ['$mdSidenav', function ($mdSidenav) {
+    module.directive('hubSidebar', [function () {
         return {
-            template: toolbarTemplate,
+            template: sidebarTemplate,
             link: function (scope, element, attrs) {
-                scope.toggleSidebar = function () {
-                    $mdSidenav('sidebar').toggle();
-                }
             }
         };
     }]);
 
     return {
-        angularModules: ['hubToolbar']
+        angularModules: ['hubSidebar']
     };
 
 });

@@ -15,7 +15,7 @@ for (var file in window.__karma__.files) {
 
 window.w20 = {
     configuration: {
-        '/base/bower_components/w20/core/w20-core.w20.json': {
+        '/base/bower_components/w20/w20-core.w20.json': {
             modules: {
                 application: {
                     id: 'w20-test',
@@ -41,7 +41,7 @@ requirejs.config({
     }
 });
 
-requirejs([ '/base/bower_components/w20/core/modules/w20.js' ]);
+requirejs([ '/base/bower_components/w20/modules/w20.js' ]);
 
 
 
