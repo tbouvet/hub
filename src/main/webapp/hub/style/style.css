@@ -23,15 +23,24 @@ html, body  {
     color: rgba(0,0,0,0.54);
 }
 
+.muted {
+    color: #808080;
+}
+
+.spacer {
+    margin: 10px;
+}
+
 md-card[md-ink-ripple] {
     cursor: pointer;
     position: relative;
 }
 
 #view {
+    height: 100%;
     background-color: #fafafa;
-    padding-left: 15%;
-    padding-right: 15%;
+    padding-left: 13%;
+    padding-right: 13%;
 }
 
 #home {

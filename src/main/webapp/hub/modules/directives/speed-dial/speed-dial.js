@@ -6,18 +6,30 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 define([
+    'require',
     '{angular}/angular',
     '[text]!{hub}/modules/directives/speed-dial/speed-dial.html'
 
-], function (angular, speedDialTemplate) {
+], function (require, angular, speedDialTemplate) {
     'use strict';
 
     var module = angular.module('hubSpeedDial', []);
 
-    module.directive('hubSpeedDial', [function () {
+    module.directive('hubSpeedDial', ['$mdMedia', '$mdDialog', function ($mdMedia, $mdDialog) {
         return {
             template: speedDialTemplate,
-            link: function (scope, element, attrs) {
+            link: function (scope) {
+                scope.showAddComponent = function (event) {
+                    var useFullScreen = ($mdMedia('sm') || $mdMedia('xs'));
+                    $mdDialog.show({
+                        controller: 'AddComponentController',
+                        templateUrl: require.toUrl('{hub}/modules/directives/speed-dial/actions/templates/component.tmpl.html'),
+                        parent: angular.element(document.body),
+                        targetEvent: event,
+                        clickOutsideToClose: false,
+                        fullscreen: useFullScreen
+                    })
+                }
             }
         };
     }]);

@@ -5,7 +5,7 @@
         "modules": {
             "application": {
                 "id": "seedstack-hub",
-                "home": "/",
+                "home": "/hub/home",
                 "blank": "/blank",
                 "notFound": "/not-found",
                 "redirectAfterRouteError": "/error"

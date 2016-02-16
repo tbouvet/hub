@@ -33,7 +33,7 @@ define([
 
         $mdThemingProvider.theme('default')
             .primaryPalette('light-green-white-text')
-            .accentPalette('red')
+            .accentPalette('brown')
 
     }]);
 

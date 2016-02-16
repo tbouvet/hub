@@ -1,0 +1,67 @@
+<md-dialog flex="70" aria-label="Add a component" ng-cloak>
+    <form>
+        <md-toolbar>
+            <div class="md-toolbar-tools">
+                <h2>Add a component</h2>
+                <span flex></span>
+                <md-button class="md-icon-button" ng-click="cancel()">
+                    <md-icon md-font-set="material-icons">close</md-icon>
+                </md-button>
+            </div>
+        </md-toolbar>
+        <md-dialog-content>
+            <md-tabs md-selected="0" md-dynamic-height>
+                <md-tab label="Import">
+                    <md-content class="md-padding">
+                        <div layout-gt-sm="row">
+                            <md-input-container class="md-block" flex="20" >
+                                <label>Repository type</label>
+                                <md-select ng-model="type">
+                                    <md-optgroup label="Repository type">
+                                        <md-option>Git</md-option>
+                                        <md-option>SVN</md-option>
+                                    </md-optgroup>
+                                </md-select>
+                            </md-input-container>
+                            <md-input-container class="md-block" flex-gt-sm>
+                                <label>URL</label>
+                                <input type="URL">
+                            </md-input-container>
+                        </div>
+                    </md-content>
+                </md-tab>
+                <md-tab label="How to">
+                    <md-content class="md-padding">
+                        <h2 class="md-headline">Importing a component</h2>
+                        <p>
+                            To import a component you need to provide the URL to either a Git or SVN repository.
+                            The repository must contain a component descriptor <code>seedstack-component.json</code>.
+                        </p>
+                        <p>
+                            Example:
+                        </p>
+                        <code>
+                            { <br>
+                                 &nbsp; "name": "Component name", <br>
+                                 &nbsp; "author": "Author of the component", <br>
+                                 &nbsp; "logo": "path/to/component/logo.(png|svg|jpg)", <br>
+                                 &nbsp; "docs": "path/to/docs/folder", <br>
+                                 &nbsp; "readme": "path/to/README.md", <br>
+                                 &nbsp; "source": "path/to/sources" <br>
+                            } <br>
+                        </code>
+                    </md-content>
+                </md-tab>
+            </md-tabs>
+        </md-dialog-content>
+        <md-dialog-actions layout="row">
+            <span flex></span>
+            <md-button ng-click="answer('not useful')">
+                Cancel
+            </md-button>
+            <md-button class="md-primary" ng-click="answer('useful')" style="margin-right:20px;">
+                Add component
+            </md-button>
+        </md-dialog-actions>
+    </form>
+</md-dialog>

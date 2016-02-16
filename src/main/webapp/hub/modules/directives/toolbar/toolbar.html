@@ -8,8 +8,10 @@
 
 -->
 <div class="md-toolbar-tools">
-    <md-button class="md-icon-button" ng-click="toggleSidebar()"><md-icon aria-label="Menu" md-font-set="material-icons">reorder</md-icon></md-button>
-    <h1 flex="25">Hub</h1>
+    <md-button class="md-icon-button" ng-click="toggleSidebar()">
+        <md-icon aria-label="Menu" md-font-set="material-icons">reorder</md-icon>
+    </md-button>
+    <h1 flex="25"><a ng-href="/#!/">Hub</a></h1></a>
     <md-autocomplete flex="40"
                      ng-disabled="ctrl.isDisabled"
                      md-no-cache="ctrl.noCache"
