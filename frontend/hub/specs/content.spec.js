@@ -7,7 +7,8 @@
  */
 define([
     '{angular}/angular',
-    '{angular-mocks}/angular-mocks'
+    '{angular-mocks}/angular-mocks',
+    '{hub}/modules/home'
 ], function (angular) {
     'use strict';
 
@@ -16,7 +17,7 @@ define([
 
         beforeEach(function () {
 
-            angular.mock.module('content');
+            angular.mock.module('home');
 
             angular.mock.inject(function (_$rootScope_, $injector) {
                 $rootScope = _$rootScope_.$new();
@@ -25,7 +26,7 @@ define([
         });
 
         it('should ...', function () {
-
+            expect(true).toBe(true);
         });
     });
 });

@@ -1,7 +1,7 @@
 #!/bin/sh
 
 echo "Building frontend..."
-(cd frontend && npm install && grunt $TASK) || exit 1
+(cd frontend && npm install && gulp $TASK) || exit 1
 
 echo "Copying frontend resources..."
 mkdir -p backend/src/main/resources/META-INF/resources || exit 1

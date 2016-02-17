@@ -5,11 +5,12 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
-var express = require('express');
-var cards = require('./components-card');
-var app = express();
 
-app.use(express.static(__dirname + '/../webapp'));
+const express = require('express');
+const app = express();
+var cards = require('./components-card');
+
+app.use(express.static(__dirname + '/../dist'));
 
 app.get('/components', function (req, res) {
     res.json(cards);

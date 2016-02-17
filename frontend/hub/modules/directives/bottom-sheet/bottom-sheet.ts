@@ -8,30 +8,34 @@
 define([
     '{angular}/angular',
     '[text]!{hub}/modules/directives/bottom-sheet/bottom-sheet.html'
+
 ], function (angular, bottomSheetTemplate) {
     'use strict';
+
     var module = angular.module('hubBottomSheet', []);
+
     /*
     Usage:
      <md-button hub-bottom-sheet ng-click="showBottomSheet()">
         Open a Bottom Sheet!
      </md-button>
      */
+
     module.directive('hubBottomSheet', ['$mdBottomSheet', function ($mdBottomSheet) {
-            return {
-                link: function (scope, element, attrs) {
-                    scope.showBottomSheet = function () {
-                        $mdBottomSheet.show({
-                            template: bottomSheetTemplate,
-                            clickOutsideToClose: true
-                        });
-                    };
-                }
-            };
-        }]);
+        return {
+            link: function (scope, element, attrs) {
+                scope.showBottomSheet = function() {
+                    $mdBottomSheet.show({
+                        template: bottomSheetTemplate,
+                        clickOutsideToClose: true
+                    });
+                };
+            }
+        };
+    }]);
+
     return {
         angularModules: ['hubBottomSheet']
     };
-});
 
-//# sourceMappingURL=bottom-sheet.js.map
+});

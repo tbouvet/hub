@@ -15,7 +15,7 @@ for (var file in window.__karma__.files) {
 
 window.w20 = {
     configuration: {
-        '/base/bower_components/w20/w20-core.w20.json': {
+        '/base/dist/bower_components/w20/w20-core.w20.json': {
             modules: {
                 application: {
                     id: 'w20-test',
@@ -23,7 +23,7 @@ window.w20 = {
                 }
             },
             vars: {
-                'components-path': '/base/bower_components'
+                'components-path': '/base/dist/bower_components'
             }
         }
     },
@@ -33,15 +33,15 @@ window.w20 = {
 
 requirejs.config({
     paths: {
-        '{angular-mocks}': '/base/bower_components/angular-mocks',
-        '{hub}': '/base/hub'
+        '{angular-mocks}': '/base/dist/bower_components/angular-mocks',
+        '{hub}': '/base/dist/hub'
     },
     shim: {
         '{angular-mocks}/angular-mocks': [ '{angular}/angular' ]
     }
 });
 
-requirejs([ '/base/bower_components/w20/modules/w20.js' ]);
+requirejs([ '/base/dist/bower_components/w20/modules/w20.js' ]);
 
 
 

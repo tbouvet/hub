@@ -153,6 +153,11 @@
                         <props>SCRIPT_STYLE</props>
                     </mapping>
                     <useDefaultExcludes>true</useDefaultExcludes>
+                    <excludes>
+                        <exclude>
+                            src/main/resources/META-INF/resources/**
+                        </exclude>
+                    </excludes>
                 </configuration>
                 <executions>
                     <execution>

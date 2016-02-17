@@ -21,5 +21,6 @@ backend/src/main/resources/META-INF/resources/
 
 # Frontend
 frontend/bower_components/
+frontend/mock/node_modules/
 frontend/node_modules/
 frontend/dist/
