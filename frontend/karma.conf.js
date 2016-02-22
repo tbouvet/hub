@@ -10,7 +10,7 @@ module.exports = function(config) {
     'use strict';
 
     config.set({
-        frameworks: [ 'jasmine', 'requirejs' ],
+        frameworks: [ 'jasmine', 'requirejs', 'phantomjs-shim' ],
         files: [
             'test-main.js',
 
