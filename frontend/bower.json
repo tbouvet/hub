@@ -2,11 +2,9 @@
   "name": "Hub",
   "version": "0.1.0",
   "dependencies": {
-    "angular-mocks": "~1.4.0",
-    "w20": "latest",
-    "w20-material": "latest"
+    "w20-material": "https://github.com/kavi87/w20-material.git#update-w20-angular-1.5"
   },
-  "resolutions": {
-    "angular": ">=1.4.0"
+  "devDependencies": {
+    "angular-mocks": "^1.5.0"
   }
 }

@@ -8,7 +8,7 @@
 define([
     '{angular}/angular',
     '{angular-mocks}/angular-mocks',
-    '{hub}/modules/home'
+    '{hub}/modules/controllers/home'
 ], function (angular) {
     'use strict';
 
@@ -17,7 +17,7 @@ define([
 
         beforeEach(function () {
 
-            angular.mock.module('home');
+            angular.mock.module('Hub.controllers');
 
             angular.mock.inject(function (_$rootScope_, $injector) {
                 $rootScope = _$rootScope_.$new();

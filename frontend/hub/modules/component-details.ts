@@ -14,12 +14,11 @@ define([
 
     var module = angular.module('componentDetails', ['ngResource']);
 
-    module.controller('ComponentDetailsController', ['$scope', '$mdDialog', function ($scope, $mdDialog) {
+    module.controller('ComponentDetailsController', ['$mdDialog', function ($mdDialog) {
 
     }]);
 
     return {
         angularModules: ['componentDetails']
     };
-})
-;
+});

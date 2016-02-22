@@ -1,5 +1,8 @@
 {
-  "files": "hub/**/*.ts",
+  "files": [
+    "hub/**/*.ts",
+    "typings/browser.d.ts"
+  ],
   "compilerOptions": {
     "target": "es5",
     "module": "amd",

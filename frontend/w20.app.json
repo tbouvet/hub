@@ -26,7 +26,12 @@
                 "redirectAfterLogin": "/",
                 "persistentRestrictions": false
             },
-            "utils": {}
+            "utils": {},
+            "hypermedia": {
+                "api": {
+                    "home": "/"
+                }
+            }
         }
     },
 

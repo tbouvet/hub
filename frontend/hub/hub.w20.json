@@ -3,6 +3,10 @@
   "name": "Hub fragment",
 
   "modules": {
+    "home": {
+      "path": "{hub}/modules/controllers/home",
+      "autoload": true
+    },
     "style": {
       "path": "[css]!{hub}/style/style.css",
       "autoload": true
@@ -29,10 +33,6 @@
     },
     "bottom-sheet": {
       "path": "{hub}/modules/directives/bottom-sheet/bottom-sheet",
-      "autoload": true
-    },
-    "home": {
-      "path": "{hub}/modules/home",
       "autoload": true
     },
     "component-details": {
