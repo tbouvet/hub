@@ -5,28 +5,28 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
-define([
-    '{angular}/angular',
-    '[text]!{hub}/modules/directives/toolbar/toolbar.html'
 
-], function (angular, toolbarTemplate) {
-    'use strict';
+import module =  require('../module');
+import angular = require('{angular}/angular');
+import toolbarTemplate = require('[text]!{hub}/modules/directives/toolbar/toolbar.html');
 
-    var module = angular.module('hubToolbar', []);
+interface ISidebarScope  extends ng.IScope {
+    toggleSidebar(): void
+}
 
-    module.directive('hubToolbar', ['$mdSidenav', function ($mdSidenav) {
-        return {
-            template: toolbarTemplate,
-            link: function (scope, element, attrs) {
-                scope.toggleSidebar = function () {
-                    $mdSidenav('sidebar').toggle();
-                };
-            }
+class HubToolbar implements ng.IDirective {
+    template: string = toolbarTemplate;
+
+    link: ng.IDirectiveLinkFn = (scope: ISidebarScope) => {
+        scope.toggleSidebar = () => {
+            this.$mdSidenav('sidebar').toggle();
         };
-    }]);
-
-    return {
-        angularModules: ['hubToolbar']
     };
 
-});
+    static $inject = ["$mdSidenav"];
+    constructor(private $mdSidenav) {};
+}
+
+angular
+    .module(module.angularModules)
+    .directive('hubToolbar', DirectiveFactory.getFactoryFor<HubToolbar>(HubToolbar));

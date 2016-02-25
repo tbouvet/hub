@@ -7,6 +7,10 @@
       "path": "{hub}/modules/controllers/home",
       "autoload": true
     },
+    "card": {
+      "path": "{hub}/modules/directives/components/card",
+      "autoload": true
+    },
     "style": {
       "path": "[css]!{hub}/style/style.css",
       "autoload": true
@@ -38,6 +42,10 @@
     "component-details": {
       "path": "{hub}/modules/component-details",
       "autoload": true
+    },
+    "smooth-scroll": {
+      "path": "{smooth-scroll}/SmoothScroll",
+      "autoload": true
     }
   },
 
@@ -55,6 +63,17 @@
       "templateUrl":"{hub}/views/component-details.html",
       "controller":"ComponentDetailsController as details"
     }
+  },
+
+  "requireConfig": {
+    "paths": {
+      "{smooth-scroll}": "${components-path:bower_components}/smoothscroll-for-websites",
+      "{angular-messages}": "${components-path:bower_components}/angular-messages"
+    },
+    "shim": {
+      "{angular-messages}/angular-messages": ["{angular}/angular"]
+    }
   }
+
 
 }

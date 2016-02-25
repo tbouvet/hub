@@ -1,28 +1,14 @@
-<div layout-padding layout="column" id="home">
-    <div layout="column">
+<main layout-padding layout="column" id="home">
+    <header layout="column">
         <h3 class="md-title muted">Popular</h3>
-    </div>
-    <div layout="row" layout-wrap layout-xs="column">
-        <md-card data-ng-click="home.seeDetails(card)" ng-repeat="card in home.popularComponents" flex="30" flex-xs="100" md-ink-ripple>
-            <md-card-header>
-                <md-card-avatar>
-                    <img ng-src="{{ card.logo }}">
-                </md-card-avatar>
-                <md-card-header-text>
-                    <span class="md-title">{{ card.name }}</span>
-                    <span class="md-subhead">{{ card.owner }}</span>
-                </md-card-header-text>
-            </md-card-header>
-            <md-card-content>
-                <p>
-                    {{ card.summary }}
-                </p>
-            </md-card-content>
-            <md-card-actions layout="row" layout-align="end center">
-                <div>
-                    {{ card.stars }} <md-icon class="material-icons md-18">star</md-icon>
-                </div>
-            </md-card-actions>
-        </md-card>
-    </div>
-</div>
+    </header>
+    <section layout="row" layout-wrap layout-xs="column">
+        <hub-card ng-repeat="card in home.popularComponents" card="card" on-click="home.view(card)"></hub-card>
+    </section>
+    <header layout="column">
+        <h3 class="md-title muted">Recent</h3>
+    </header>
+    <section layout="row" layout-wrap layout-xs="column">
+        <hub-card ng-repeat="card in home.recentComponents" card="card" on-click="home.view(card)"></hub-card>
+    </section>
+</main>
