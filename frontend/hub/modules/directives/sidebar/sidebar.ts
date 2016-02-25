@@ -5,25 +5,15 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
-define([
-    '{angular}/angular',
-    '[text]!{hub}/modules/directives/sidebar/sidebar.html'
 
-], function (angular, sidebarTemplate) {
-    'use strict';
+import module = require('../module');
+import angular = require('{angular}/angular');
+import sidebarTemplate = require('[text]!{hub}/modules/directives/sidebar/sidebar.html')
 
-    var module = angular.module('hubSidebar', []);
+class HubSidebar implements ng.IDirective {
+    template = sidebarTemplate;
+}
 
-    module.directive('hubSidebar', [function () {
-        return {
-            template: sidebarTemplate,
-            link: function (scope, element, attrs) {
-            }
-        };
-    }]);
-
-    return {
-        angularModules: ['hubSidebar']
-    };
-
-});
+angular
+    .module(module.angularModules)
+    .directive('hubSidebar', DirectiveFactory.getFactoryFor<HubSidebar>(HubSidebar));

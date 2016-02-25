@@ -1,31 +1,35 @@
 <md-dialog flex="70" aria-label="Add a component" ng-cloak>
-    <form>
+    <form name="form" ng-submit="$ctrl.confirm($ctrl.repository)">
         <md-toolbar>
             <div class="md-toolbar-tools">
                 <h2>Add a component</h2>
                 <span flex></span>
-                <md-button class="md-icon-button" ng-click="cancel()">
+                <md-button class="md-icon-button" ng-click="$ctrl.cancel()">
                     <md-icon md-font-set="material-icons">close</md-icon>
                 </md-button>
             </div>
         </md-toolbar>
-        <md-dialog-content>
+        <md-dialog-content ng-hide="form.$submitted">
             <md-tabs md-selected="0" md-dynamic-height>
                 <md-tab label="Import">
                     <md-content class="md-padding">
                         <div layout-gt-sm="row">
                             <md-input-container class="md-block" flex="20" >
                                 <label>Repository type</label>
-                                <md-select ng-model="type">
+                                <md-select ng-model="$ctrl.repository.type">
                                     <md-optgroup label="Repository type">
-                                        <md-option>Git</md-option>
-                                        <md-option>SVN</md-option>
+                                        <md-option ng-repeat="option in $ctrl.repositoryTypes">{{ option }}</md-option>
                                     </md-optgroup>
                                 </md-select>
                             </md-input-container>
                             <md-input-container class="md-block" flex-gt-sm>
-                                <label>URL</label>
-                                <input type="URL">
+                                <label for="url">URL</label>
+                                <input id="url" name="url" ng-model="$ctrl.repository.url" type="url" required vcs-url-validator repository="$ctrl.repository" />
+                                <div ng-messages="form.url.$error">
+                                    <div ng-message="url">The URL does not appear to be valid.</div>
+                                    <div ng-message="required">You did not enter a URL.</div>
+                                    <div ng-message="vcs-url-validation">The URL does not appear to be a valid .git URL.</div>
+                                </div>
                             </md-input-container>
                         </div>
                     </md-content>
@@ -54,14 +58,18 @@
                 </md-tab>
             </md-tabs>
         </md-dialog-content>
-        <md-dialog-actions layout="row">
+        <md-dialog-actions ng-hide="form.$submitted" layout="row" >
             <span flex></span>
-            <md-button ng-click="answer('not useful')">
+            <md-button ng-click="$ctrl.cancel()">
                 Cancel
             </md-button>
-            <md-button class="md-primary" ng-click="answer('useful')" style="margin-right:20px;">
+            <md-button type="submit" class="md-primary" ng-disabled="form.$invalid" style="margin-right:20px;">
                 Add component
             </md-button>
         </md-dialog-actions>
+        <md-dialog-content ng-show="form.$submitted && $ctrl.waiting" flex layout="row" layout-align="center center">
+                <md-progress-circular md-diameter="150px" class="md-hue-1t" md-mode="indeterminate"></md-progress-circular>
+                Hold tight ! Your component is being added.
+        </md-dialog-content>
     </form>
 </md-dialog>

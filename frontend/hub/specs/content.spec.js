@@ -8,7 +8,7 @@
 define([
     '{angular}/angular',
     '{angular-mocks}/angular-mocks',
-    '{hub}/modules/controllers/home'
+    '{hub}/modules/controllers/module'
 ], function (angular) {
     'use strict';
 

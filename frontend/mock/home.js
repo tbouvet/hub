@@ -3,6 +3,9 @@ var home = {
         "components": {
             "href": "/components{?search,sort,page,show}"
         },
+        "create": {
+            "href": "/user/components"
+        },
         "popular": {
             "href": "/popular"
         },

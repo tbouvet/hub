@@ -25,6 +25,11 @@ window.w20 = {
             vars: {
                 'components-path': '/base/dist/bower_components'
             }
+        },
+        '/base/dist/bower_components/w20-material/w20-material.w20.json': {
+            vars: {
+                'components-path': '/base/dist/bower_components'
+            }
         }
     },
     deps: tests,
@@ -34,10 +39,12 @@ window.w20 = {
 requirejs.config({
     paths: {
         '{angular-mocks}': '/base/dist/bower_components/angular-mocks',
-        '{hub}': '/base/dist/hub'
+        '{hub}': '/base/dist/hub',
+        '{angular-messages}': '/base/dist/bower_components/angular-messages'
     },
     shim: {
-        '{angular-mocks}/angular-mocks': [ '{angular}/angular' ]
+        '{angular-mocks}/angular-mocks': [ '{angular}/angular' ],
+        '{angular-messages}/angular-messages': ['{angular}/angular']
     }
 });
 

@@ -5,37 +5,40 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
-define([
-    'require',
-    '{angular}/angular',
-    '[text]!{hub}/modules/directives/speed-dial/speed-dial.html'
 
-], function (require, angular, speedDialTemplate) {
-    'use strict';
+import module = require('../module');
+import angular = require('{angular}/angular');
+import speedDialTemplate = require('[text]!{hub}/modules/directives/speed-dial/speed-dial.html');
+import IAngularEvent = angular.IAngularEvent;
 
-    var module = angular.module('hubSpeedDial', []);
+interface ISpeedDialScope extends ng.IScope {
+    showAddComponent(event: IAngularEvent);
+}
 
-    module.directive('hubSpeedDial', ['$mdMedia', '$mdDialog', function ($mdMedia, $mdDialog) {
-        return {
-            template: speedDialTemplate,
-            link: function (scope) {
-                scope.showAddComponent = function (event) {
-                    var useFullScreen = ($mdMedia('sm') || $mdMedia('xs'));
-                    $mdDialog.show({
-                        controller: 'AddComponentController',
-                        templateUrl: require.toUrl('{hub}/modules/directives/speed-dial/actions/templates/component.tmpl.html'),
-                        parent: angular.element(document.body),
-                        targetEvent: event,
-                        clickOutsideToClose: false,
-                        fullscreen: useFullScreen
-                    });
-                };
-            }
+class HubSpeedDial implements ng.IDirective {
+
+    template: string = speedDialTemplate;
+
+    link: ng.IDirectiveLinkFn = (scope: ISpeedDialScope) => {
+        scope.showAddComponent = event => {
+            var useFullScreen = (this.$mdMedia('sm') || this.$mdMedia('xs'));
+            this.$mdDialog.show({
+                controller: 'AddComponentController',
+                controllerAs: '$ctrl',
+                templateUrl: require.toUrl('{hub}/modules/directives/speed-dial/actions/templates/component.tmpl.html'),
+                parent: angular.element(document.body),
+                targetEvent: event,
+                clickOutsideToClose: false,
+                fullscreen: useFullScreen
+            });
         };
-    }]);
-
-    return {
-        angularModules: ['hubSpeedDial']
     };
 
-});
+    static $inject = ['$mdMedia', '$mdDialog'];
+    constructor(private $mdMedia, private $mdDialog) {};
+}
+
+angular
+    .module(module.angularModules)
+    .directive('hubSpeedDial', DirectiveFactory.getFactoryFor<HubSpeedDial>(HubSpeedDial));
+
