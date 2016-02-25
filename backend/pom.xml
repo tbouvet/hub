@@ -106,8 +106,10 @@
             <version>${logback.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.seedstack.seed</groupId>
-            <artifactId>seed-el</artifactId>
+            <groupId>javax.el</groupId>
+            <artifactId>javax.el-api</artifactId>
+            <version>3.0.0</version>
+            <scope>provided</scope>
         </dependency>
 
         <!-- Test -->
