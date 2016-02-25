@@ -8,35 +8,23 @@
 package org.seedstack.hub.domain.services.importer;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.seedstack.business.domain.Factory;
 import org.seedstack.hub.domain.model.component.Component;
 import org.seedstack.hub.domain.model.component.ComponentId;
-import org.seedstack.hub.domain.model.component.Description;
-import org.seedstack.hub.domain.model.document.Document;
 
 import javax.inject.Inject;
 import javax.validation.Validator;
 import java.io.File;
-import java.util.ArrayList;
 
 public class ImportServiceImpl implements ImportService {
     public static final String MANIFEST_JSON = "manifest.json";
 
     @Inject
-    Factory<Component> componentFactory;
-    @Inject
-    Factory<Document> documentFactory;
-    @Inject
-    Validator validator;
+    private Validator validator;
 
     @Override
     public Component importComponent(File directory) throws ImportException {
         Manifest manifest = parseManifest(directory);
-        Component component = componentFactory.create(new ComponentId(manifest.name));
-
-
-
-        return component;
+        return new Component(new ComponentId(manifest.name));
     }
 
     private Manifest parseManifest(File location) throws ImportException {

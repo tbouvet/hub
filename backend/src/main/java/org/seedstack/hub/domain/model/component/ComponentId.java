@@ -10,7 +10,10 @@ package org.seedstack.hub.domain.model.component;
 import org.seedstack.business.domain.BaseValueObject;
 
 public class ComponentId extends BaseValueObject {
-    private final String name;
+    private String name;
+
+    ComponentId() {
+    }
 
     public ComponentId(String name) {
         this.name = name;

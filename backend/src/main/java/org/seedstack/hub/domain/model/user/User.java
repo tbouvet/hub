@@ -10,9 +10,10 @@ package org.seedstack.hub.domain.model.user;
 import org.seedstack.business.domain.BaseAggregateRoot;
 
 public class User extends BaseAggregateRoot<UserId> {
+
     private final UserId UserId;
 
-    public User(org.seedstack.hub.domain.model.user.UserId userId) {
+    public User(UserId userId) {
         UserId = userId;
     }
 
