@@ -14,7 +14,7 @@ import javax.inject.Inject;
 
 public class TextServiceImpl implements TextService {
     @Inject
-    DomainRegistry domainRegistry;
+    private DomainRegistry domainRegistry;
 
     @Override
     public String renderToHtml(TextDocument textDocument) {

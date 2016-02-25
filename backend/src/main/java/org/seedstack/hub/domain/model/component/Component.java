@@ -7,12 +7,16 @@
  */
 package org.seedstack.hub.domain.model.component;
 
+import org.mongodb.morphia.annotations.Entity;
+import org.mongodb.morphia.annotations.Id;
 import org.seedstack.business.domain.BaseAggregateRoot;
 import org.seedstack.hub.domain.model.user.UserId;
 
 import java.util.List;
 
+@Entity(value = "components")
 public class Component extends BaseAggregateRoot<ComponentId> {
+    @Id
     private final ComponentId componentId;
     private State state = State.PENDING;
     private Description description;

@@ -10,3 +10,15 @@
 application-id = seedstack-hub
 application-name = SeedStack.hub
 version = 1.0.0
+
+[org.seedstack.mongodb]
+clients = client
+
+[org.seedstack.mongodb.client.client]
+hosts = localhost:27017
+databases = hub
+
+[org.seedstack.hub.domain.model.component.*]
+morphia.clientName = client
+morphia.dbName = hub
+
