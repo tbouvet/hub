@@ -15,7 +15,7 @@ for (var file in window.__karma__.files) {
 
 window.w20 = {
     configuration: {
-        '/base/dist/bower_components/w20/w20-core.w20.json': {
+        '/base/bower_components/w20/w20-core.w20.json': {
             modules: {
                 application: {
                     id: 'w20-test',
@@ -23,12 +23,12 @@ window.w20 = {
                 }
             },
             vars: {
-                'components-path': '/base/dist/bower_components'
+                'components-path': '/base/bower_components'
             }
         },
-        '/base/dist/bower_components/w20-material/w20-material.w20.json': {
+        '/base/bower_components/w20-material/w20-material.w20.json': {
             vars: {
-                'components-path': '/base/dist/bower_components'
+                'components-path': '/base/bower_components'
             }
         }
     },
@@ -38,9 +38,9 @@ window.w20 = {
 
 requirejs.config({
     paths: {
-        '{angular-mocks}': '/base/dist/bower_components/angular-mocks',
-        '{hub}': '/base/dist/hub',
-        '{angular-messages}': '/base/dist/bower_components/angular-messages'
+        '{angular-mocks}': '/base/bower_components/angular-mocks',
+        '{hub}': '/base/hub',
+        '{angular-messages}': '/base/bower_components/angular-messages'
     },
     shim: {
         '{angular-mocks}/angular-mocks': [ '{angular}/angular' ],
@@ -48,7 +48,7 @@ requirejs.config({
     }
 });
 
-requirejs([ '/base/dist/bower_components/w20/modules/w20.js' ]);
+requirejs([ '/base/bower_components/w20/modules/w20.js' ]);
 
 
 

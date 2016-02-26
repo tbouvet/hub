@@ -5,8 +5,11 @@
   "author": "SeedStack",
   "devDependencies": {
     "del": "^2.1.0",
+    "grunt-w20": "^0.1.0",
     "gulp": "^3.9.0",
     "gulp-bower": "~0.0.13",
+    "gulp-grunt": "^0.5.3",
+    "gulp-html-replace": "^1.5.5",
     "gulp-jshint": "^2.0.0",
     "gulp-sourcemaps": "^1.6.0",
     "gulp-typescript": "^2.11.0",
@@ -17,9 +20,9 @@
     "karma-jasmine": "~0.3.1",
     "karma-phantomjs-launcher": "~0.1",
     "karma-phantomjs-shim": "~1.2.0",
-    "phantomjs-polyfill": "0.0.1",
     "karma-requirejs": "~0.2",
     "lodash": "^3.10.0",
+    "phantomjs-polyfill": "0.0.1",
     "requirejs": "~2.1",
     "typescript": "^1.7.5"
   }

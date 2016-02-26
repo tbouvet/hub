@@ -6,57 +6,28 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 /* global module: false, grunt: false, process: false */
+
+/*
+ * Grunt tasks are run with gulp-grunt in the gulpfile.js
+ *
+ */
 module.exports = function (grunt) {
     'use strict';
 
     grunt.initConfig({
-        pkg: grunt.file.readJSON('package.json'),
-        clean: [
-            'bower_components/**',
-            'dist/**',
-            'coverage/**'
-        ],
-        jshint: {
-            all: {
-                src: ['hub/modules/**/*.js']
-            }
-        },
-        bower: {
-            install: {
+        w20: {
+            optimize: {
                 options: {
-                    copy: false
+                    buildConfig: {
+                        out: 'dist/hub.min.js'
+                    }
                 }
-            }
-        },
-        karma: {
-            test: {
-                configFile: 'karma.conf.js',
-                singleRun: true
-            },
-            watch: {
-                configFile: 'karma.conf.js',
-                autoWatch: true
-            }
-        },
-        connect: {
-            server: {
-                options: {
-                    port:  grunt.option('port') || 8888,
-                    base: '.',
-                    keepalive: true
-                }
+
             }
         }
     });
 
-    grunt.loadNpmTasks('grunt-contrib-jshint');
-    grunt.loadNpmTasks('grunt-contrib-clean');
-    grunt.loadNpmTasks('grunt-contrib-concat');
-    grunt.loadNpmTasks('grunt-contrib-uglify');
-    grunt.loadNpmTasks('grunt-karma');
-    grunt.loadNpmTasks('grunt-coveralls');
-    grunt.loadNpmTasks('grunt-bower-task');
-    grunt.loadNpmTasks('grunt-contrib-connect');
+    grunt.loadNpmTasks('grunt-w20');
 
-    grunt.registerTask('default', ['jshint', 'bower', 'karma:test'], null);
+    grunt.registerTask('default', ['w20:optimize'], null);
 };

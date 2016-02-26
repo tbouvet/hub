@@ -14,10 +14,10 @@ module.exports = function(config) {
         files: [
             'test-main.js',
 
-            { pattern: 'dist/w20.app.json', served: true, included: false },
+            { pattern: 'w20.app.json', served: true, included: false },
 
-            { pattern: 'dist/hub/**/*.js', included: false },
-            { pattern: 'dist/bower_components/**/*', included: false }
+            { pattern: 'hub/**/*.js', included: false },
+            { pattern: 'bower_components/**/*', included: false }
         ],
         preprocessors: {
             'hub/modules/*.js': 'coverage'
