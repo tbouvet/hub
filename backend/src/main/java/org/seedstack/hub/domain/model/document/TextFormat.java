@@ -9,6 +9,8 @@ package org.seedstack.hub.domain.model.document;
 
 public interface TextFormat {
 
+    String[] getValidExtensions();
+
     String getContentType();
 
     String getTextRenderingServiceQualifier();

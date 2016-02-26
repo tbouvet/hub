@@ -8,14 +8,22 @@
 package org.seedstack.hub.domain.model.document;
 
 public enum InternallySupportedTextFormat implements TextFormat {
-    MARKDOWN("text/markdown"),
-    ASCIIDOC("text/asciidoc"),
-    HTML("text/html");
+    MARKDOWN("text/markdown", "md"),
+    ASCIIDOC("text/asciidoc", "adoc", "asciidoc"),
+    HTML("text/html", "htm", "html");
 
     private final String contentType;
+    private final String[] validExtensions;
 
-    InternallySupportedTextFormat(String contentType) {
+    InternallySupportedTextFormat(String contentType, String... validExtensions) {
         this.contentType = contentType;
+        this.validExtensions = validExtensions;
+    }
+
+
+    @Override
+    public String[] getValidExtensions() {
+        return validExtensions;
     }
 
     public String getContentType() {

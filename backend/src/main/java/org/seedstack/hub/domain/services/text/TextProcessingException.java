@@ -5,14 +5,10 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
-package org.seedstack.hub.domain.services.importer;
+package org.seedstack.hub.domain.services.text;
 
-public class ImportException extends Exception {
-    public ImportException(String message, Throwable cause) {
-        super(message, cause);
-    }
-
-    public ImportException(String s) {
-        super(s);
+public class TextProcessingException extends Exception {
+    public TextProcessingException(String message) {
+        super(message);
     }
 }

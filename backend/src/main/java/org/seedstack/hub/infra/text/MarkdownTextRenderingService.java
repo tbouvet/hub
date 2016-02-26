@@ -7,6 +7,8 @@
  */
 package org.seedstack.hub.infra.text;
 
+import org.jsoup.Jsoup;
+import org.jsoup.safety.Whitelist;
 import org.pegdown.Extensions;
 import org.pegdown.PegDownProcessor;
 import org.seedstack.hub.domain.services.text.TextRenderingService;
@@ -14,9 +16,9 @@ import org.seedstack.hub.domain.services.text.TextRenderingService;
 import javax.inject.Named;
 
 @Named("markdown")
-public class PegdownTextRenderingService implements TextRenderingService {
+public class MarkdownTextRenderingService implements TextRenderingService {
     @Override
-    public String renderToHtml(String rawText) {
+    public String renderHtml(String rawText) {
         PegDownProcessor pegDownProcessor = new PegDownProcessor(Extensions.AUTOLINKS |
                 Extensions.TABLES |
                 Extensions.SMARTS |
@@ -27,6 +29,6 @@ public class PegdownTextRenderingService implements TextRenderingService {
                 Extensions.EXTANCHORLINKS
         );
 
-        return pegDownProcessor.markdownToHtml(rawText);
+        return Jsoup.clean(pegDownProcessor.markdownToHtml(rawText), Whitelist.basic());
     }
 }

@@ -11,7 +11,7 @@ import org.seedstack.business.domain.BaseEntity;
 
 import java.util.Date;
 
-public class Version extends BaseEntity<VersionId> {
+public class Version extends BaseEntity<VersionId> implements Comparable<Version> {
     private final VersionId versionId;
     private Date publicationDate;
     private String url;
@@ -33,8 +33,20 @@ public class Version extends BaseEntity<VersionId> {
         return publicationDate;
     }
 
+    public void setPublicationDate(Date publicationDate) {
+        this.publicationDate = publicationDate;
+    }
+
     public String getUrl() {
         return url;
     }
 
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
+    @Override
+    public int compareTo(Version o) {
+        return versionId.compareTo(o.versionId);
+    }
 }

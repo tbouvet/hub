@@ -10,12 +10,15 @@ package org.seedstack.hub.domain.model.component;
 import org.seedstack.business.domain.BaseValueObject;
 
 public class Comment extends BaseValueObject {
-    private final String author;
-    private final String text;
+    private String author;
+    private String text;
 
     public Comment(String author, String text) {
         this.author = author;
         this.text = text;
+    }
+
+    private Comment() {
     }
 
     public String getAuthor() {

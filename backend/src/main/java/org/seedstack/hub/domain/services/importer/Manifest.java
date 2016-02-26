@@ -13,10 +13,17 @@ import java.util.List;
 
 class Manifest {
     @NotBlank
+    String id;
+    @NotBlank
     String name;
+    @NotBlank
+    String version;
+    @NotBlank
+    String owner;
+    String publicationDate;
     String summary;
-    List<String> maintainers;
     String icon;
-    String images;
-    String docs;
+    List<String> images;
+    List<String> maintainers;
+    List<String> docs;
 }

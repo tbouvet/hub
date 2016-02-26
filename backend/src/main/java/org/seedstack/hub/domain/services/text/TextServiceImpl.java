@@ -8,19 +8,42 @@
 package org.seedstack.hub.domain.services.text;
 
 import org.seedstack.business.domain.DomainRegistry;
+import org.seedstack.hub.domain.model.document.InternallySupportedTextFormat;
 import org.seedstack.hub.domain.model.document.TextDocument;
+import org.seedstack.hub.domain.model.document.TextFormat;
 
 import javax.inject.Inject;
+import java.io.File;
 
 public class TextServiceImpl implements TextService {
     @Inject
     private DomainRegistry domainRegistry;
 
     @Override
-    public String renderToHtml(TextDocument textDocument) {
+    public String renderHtml(TextDocument textDocument) throws TextProcessingException {
         return domainRegistry.getService(
                 TextRenderingService.class,
                 textDocument.getFormat().getTextRenderingServiceQualifier()
-        ).renderToHtml(textDocument.getText());
+        ).renderHtml(textDocument.getText());
+    }
+
+    @Override
+    public File findTextDocument(File directory, String name) throws TextProcessingException {
+        File[] files = directory.listFiles();
+        if (files != null) {
+            for (File file : files) {
+                for (TextFormat textFormat : InternallySupportedTextFormat.values()) {
+                    for (String validExtension : textFormat.getValidExtensions()) {
+                        if (String.format("%s.%s", name, validExtension).equalsIgnoreCase(file.getName())) {
+                            return file;
+                        }
+                    }
+                }
+            }
+        } else {
+            throw new TextProcessingException("Unable to list files in directory " + directory.getAbsolutePath());
+        }
+
+        return null;
     }
 }

@@ -7,11 +7,14 @@
  */
 package org.seedstack.hub.domain.model.document;
 
+import javax.validation.constraints.NotNull;
 import java.nio.charset.Charset;
 
 public class TextDocument extends Document {
-    private final TextFormat format;
-    private final Charset charset;
+    @NotNull
+    private TextFormat format;
+    @NotNull
+    private Charset charset;
     private String text;
 
     public TextDocument(DocumentId documentId, TextFormat format) {
@@ -22,6 +25,10 @@ public class TextDocument extends Document {
         super(documentId, String.format("%s; charset=%s", format.getContentType(), charset.name()));
         this.format = format;
         this.charset = charset;
+    }
+
+    private TextDocument() {
+        // required by morphia
     }
 
     public TextFormat getFormat() {

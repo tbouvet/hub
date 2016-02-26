@@ -14,9 +14,9 @@ import org.seedstack.hub.domain.services.text.TextRenderingService;
 import javax.inject.Named;
 
 @Named("html")
-public class JsoupTextRenderingService implements TextRenderingService {
+public class HtmlTextRenderingService implements TextRenderingService {
     @Override
-    public String renderToHtml(String rawText) {
+    public String renderHtml(String rawText) {
         return Jsoup.clean(rawText, Whitelist.basic());
     }
 }

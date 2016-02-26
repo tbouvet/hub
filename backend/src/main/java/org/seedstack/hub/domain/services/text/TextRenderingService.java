@@ -11,5 +11,5 @@ import org.seedstack.business.Service;
 
 @Service
 public interface TextRenderingService {
-    String renderToHtml(String rawText);
+    String renderHtml(String rawText);
 }

@@ -14,6 +14,10 @@ public class BinaryDocument extends Document {
         super(documentId, contentType);
     }
 
+    private BinaryDocument() {
+        // required by morphia
+    }
+
     public byte[] getData() {
         return data;
     }
