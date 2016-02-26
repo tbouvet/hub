@@ -12,13 +12,12 @@ application-name = SeedStack.hub
 version = 1.0.0
 
 [org.seedstack.mongodb]
-clients = client
+clients = main
 
-[org.seedstack.mongodb.client.client]
-hosts = localhost:27017
+[org.seedstack.mongodb.client.main]
+hosts = docker
 databases = hub
 
-[org.seedstack.hub.domain.model.component.*]
-morphia.clientName = client
+[org.seedstack.hub.domain.model.*]
+morphia.clientName = main
 morphia.dbName = hub
-

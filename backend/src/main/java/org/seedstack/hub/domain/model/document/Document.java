@@ -10,22 +10,33 @@
  */
 package org.seedstack.hub.domain.model.document;
 
+import org.mongodb.morphia.annotations.Entity;
+import org.mongodb.morphia.annotations.Id;
 import org.seedstack.business.domain.BaseAggregateRoot;
 
 import javax.activation.MimeType;
 import javax.activation.MimeTypeParseException;
+import javax.validation.constraints.NotNull;
 
+@Entity("documents")
 public abstract class Document extends BaseAggregateRoot<DocumentId> {
-    private final DocumentId documentId;
-    private final MimeType mimeType;
+    @Id
+    @NotNull
+    private DocumentId documentId;
+    @NotNull
+    private String contentType;
 
-    public Document(DocumentId documentId, String contentType) {
+    Document(DocumentId documentId, String contentType) {
         this.documentId = documentId;
         try {
-            this.mimeType = new MimeType(contentType);
+            this.contentType = new MimeType(contentType).toString();
         } catch (MimeTypeParseException e) {
             throw new IllegalArgumentException("Provided content type is invalid: " + contentType, e);
         }
+    }
+
+    protected Document() {
+        // required by morphia
     }
 
     @Override
@@ -38,6 +49,6 @@ public abstract class Document extends BaseAggregateRoot<DocumentId> {
     }
 
     public String getContentType() {
-        return mimeType.toString();
+        return contentType;
     }
 }

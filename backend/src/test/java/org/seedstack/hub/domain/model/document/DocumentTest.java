@@ -8,6 +8,7 @@
 package org.seedstack.hub.domain.model.document;
 
 import org.junit.Test;
+import org.seedstack.hub.domain.model.component.ComponentId;
 
 import java.nio.charset.Charset;
 
@@ -20,24 +21,28 @@ public class DocumentTest {
 
     @Test
     public void simple_content_type_is_accepted() {
-        BinaryDocument binaryDocument = new BinaryDocument(new DocumentId("1"), IMAGE_PNG);
+        BinaryDocument binaryDocument = new BinaryDocument(createDocumentId(), IMAGE_PNG);
         assertThat(binaryDocument.getContentType()).isEqualTo(IMAGE_PNG);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void invalid_content_type_is_rejected() {
-        new BinaryDocument(new DocumentId("1"), INVALID_CONTENT_TYPE);
+        new BinaryDocument(createDocumentId(), INVALID_CONTENT_TYPE);
     }
 
     @Test
     public void parametered_content_type_is_accepted() {
-        TextDocument textDocument = new TextDocument(new DocumentId("1"), InternallySupportedTextFormat.MARKDOWN, Charset.forName("iso-8859-1"));
+        TextDocument textDocument = new TextDocument(createDocumentId(), InternallySupportedTextFormat.MARKDOWN, Charset.forName("iso-8859-1"));
         assertThat(textDocument.getContentType()).isEqualTo(String.format("%s; charset=ISO-8859-1", TEXT_MARKDOWN));
     }
 
     @Test
     public void default_charset_is_utf8() {
-        TextDocument textDocument = new TextDocument(new DocumentId("1"), InternallySupportedTextFormat.MARKDOWN);
+        TextDocument textDocument = new TextDocument(createDocumentId(), InternallySupportedTextFormat.MARKDOWN);
         assertThat(textDocument.getContentType()).isEqualTo(String.format("%s; charset=UTF-8", TEXT_MARKDOWN));
+    }
+
+    private DocumentId createDocumentId() {
+        return new DocumentId(new ComponentId("c1"), "/path");
     }
 }

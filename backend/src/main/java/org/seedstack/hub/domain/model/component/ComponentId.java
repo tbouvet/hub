@@ -10,6 +10,8 @@ package org.seedstack.hub.domain.model.component;
 import org.seedstack.business.domain.BaseValueObject;
 
 public class ComponentId extends BaseValueObject {
+    public static final ComponentId DEFAULT_COMPONENT = new ComponentId("default");
+
     private String name;
 
     ComponentId() {

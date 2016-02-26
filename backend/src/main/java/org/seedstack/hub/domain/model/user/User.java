@@ -7,23 +7,33 @@
  */
 package org.seedstack.hub.domain.model.user;
 
+import org.mongodb.morphia.annotations.Entity;
+import org.mongodb.morphia.annotations.Id;
 import org.seedstack.business.domain.BaseAggregateRoot;
 
-public class User extends BaseAggregateRoot<UserId> {
+import javax.validation.constraints.NotNull;
 
-    private final UserId UserId;
+@Entity("users")
+public class User extends BaseAggregateRoot<UserId> {
+    @NotNull
+    @Id
+    private UserId userId;
 
     public User(UserId userId) {
-        UserId = userId;
+        this.userId = userId;
+    }
+
+    private User() {
+        // required by morphia
     }
 
     @Override
     public UserId getEntityId() {
-        return UserId;
+        return userId;
     }
 
     public UserId getUserId() {
-        return UserId;
+        return userId;
     }
 
 }

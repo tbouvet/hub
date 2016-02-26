@@ -7,17 +7,29 @@
  */
 package org.seedstack.hub.domain.model.document;
 
+import org.mongodb.morphia.annotations.Embedded;
 import org.seedstack.business.domain.BaseValueObject;
+import org.seedstack.hub.domain.model.component.ComponentId;
 
+@Embedded
 public class DocumentId extends BaseValueObject {
-    private final String id;
+    private ComponentId componentId;
+    private String path;
 
-    public DocumentId(String id) {
-        this.id = id;
+    public DocumentId(ComponentId componentId, String path) {
+        this.componentId = componentId;
+        this.path = path;
     }
 
-    public String getId() {
-        return id;
+    private DocumentId() {
+        // required by morphia
     }
 
+    public ComponentId getComponentId() {
+        return componentId;
+    }
+
+    public String getPath() {
+        return path;
+    }
 }

@@ -9,16 +9,22 @@ package org.seedstack.hub.domain.model.user;
 
 import org.seedstack.business.domain.BaseValueObject;
 
+import javax.validation.constraints.NotNull;
+
 public class UserId extends BaseValueObject {
+    @NotNull
+    private String id;
 
-	private final String id;
+    public UserId(String id) {
+        this.id = id;
+    }
 
-	public UserId(String id) {
-		this.id = id;
-	}
+    private UserId() {
+        // required by morphia
+    }
 
-	public String getId() {
-		return id;
-	}
+    public String getId() {
+        return id;
+    }
 
 }
