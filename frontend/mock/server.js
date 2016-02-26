@@ -6,6 +6,8 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
+const dist = process.argv.slice(2)[0];
+
 const express = require('express');
 const bodyParser = require("body-parser");
 const app = express();
@@ -63,7 +65,12 @@ app.post('/user/components', (req, res, next) => {
     }, 5000);
 });
 
-app.use(express.static(__dirname + '/../.'));
+if (dist === 'dist') {
+    app.use(express.static(__dirname + '/../dist'));
+} else {
+    app.use(express.static(__dirname + '/../.'));
+}
+
 
 
 app.listen(3000, () => {
