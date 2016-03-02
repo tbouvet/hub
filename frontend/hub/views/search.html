@@ -1,0 +1,8 @@
+<main layout-padding layout="column" id="search">
+    <header layout="column">
+        <h3 class="md-title muted">Components</h3>
+    </header>
+    <section layout="row" layout-wrap layout-xs="column">
+        <hub-card ng-repeat="card in $ctrl.components" card="card" on-click="$ctrl.view(card)"></hub-card>
+    </section>
+</main>

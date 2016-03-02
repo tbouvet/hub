@@ -43,6 +43,10 @@
       "path": "{hub}/modules/component-details",
       "autoload": true
     },
+    "search": {
+      "path": "{hub}/modules/controllers/search",
+      "autoload": true
+    },
     "smooth-scroll": {
       "path": "{smooth-scroll}/SmoothScroll",
       "autoload": true
@@ -57,7 +61,11 @@
   "routes": {
     "/home": {
       "templateUrl":"{hub}/views/home.html",
-      "controller":"HomeController as home"
+      "controller":"HomeController as $ctrl"
+    },
+    "/components": {
+      "templateUrl": "{hub}/views/search.html",
+      "controller":"SearchController as $ctrl"
     },
     "/component/:name": {
       "templateUrl":"{hub}/views/component-details.html",

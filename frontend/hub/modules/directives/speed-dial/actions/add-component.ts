@@ -41,9 +41,11 @@ class VcsUrlValidator implements ng.IDirective {
 class AddComponentController {
     public repositoryTypes:RepositoryType[] = [RepositoryType.GIT, RepositoryType.SVN];
     public repository:IRepository = <any>{};
-    public waiting: boolean = false;
+    public promise:ng.resource.IResource;
+    public failure:boolean = false;
 
     static $inject = ['HomeService', '$mdDialog'];
+
     constructor(private api, private $mdDialog) {
         this.repository.type = this.repositoryTypes[0];
         this.repository.url = '';
@@ -54,13 +56,15 @@ class AddComponentController {
     };
 
     public confirm(repository:IRepository):void {
-        this.waiting = true;
-        this.api('home').enter('create').save({}, repository).$promise.then(newComponent => {
-            this.waiting = false;
-            this.$mdDialog.hide();
-        }, reason => {
-            throw new Error(reason);
-        });
+        this.promise = this.api('home').enter('create').save({}, repository);
+        this.promise.$promise
+            .then(newComponent => {
+                this.$mdDialog.hide(newComponent);
+            })
+            .catch(reason => {
+                this.failure = true;
+                throw new Error(reason);
+            });
     };
 }
 
