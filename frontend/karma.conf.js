@@ -17,6 +17,7 @@ module.exports = function(config) {
             { pattern: 'w20.app.json', served: true, included: false },
 
             { pattern: 'hub/**/*.js', included: false },
+            { pattern: 'hub/**/*.html', included: false },
             { pattern: 'bower_components/**/*', included: false }
         ],
         preprocessors: {
