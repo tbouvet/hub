@@ -17,8 +17,8 @@ interface ISidebarScope extends ng.IScope {
 }
 
 class HubToolbar implements ng.IDirective {
-    static $inject = ['$mdSidenav', 'HomeService', '$location'];
-    constructor(private $mdSidenav, private api, private $location) {
+    static $inject = ['$mdSidenav', '$location'];
+    constructor(private $mdSidenav, private $location) {
     };
 
     template:string = toolbarTemplate;

@@ -24,6 +24,7 @@
     "lodash": "^3.10.0",
     "phantomjs-polyfill": "0.0.1",
     "requirejs": "~2.1",
-    "typescript": "^1.7.5"
+    "typescript": "^1.7.5",
+    "gulp-less": "^3.0.5"
   }
 }

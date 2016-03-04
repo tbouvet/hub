@@ -35,10 +35,6 @@
       "path": "{hub}/modules/directives/speed-dial/actions/add-component",
       "autoload": true
     },
-    "bottom-sheet": {
-      "path": "{hub}/modules/directives/bottom-sheet/bottom-sheet",
-      "autoload": true
-    },
     "component-details": {
       "path": "{hub}/modules/component-details",
       "autoload": true
