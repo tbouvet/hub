@@ -8,7 +8,6 @@
 
 import module = require('../../module');
 import angular = require('{angular}/angular');
-//import {GithubService} from "../../../services/github-service";
 
 enum RepositoryType {
     GIT = <any> 'GIT',
@@ -44,9 +43,9 @@ class AddComponentController {
     public promise:ng.resource.IResource<any>;
     public failure:boolean = false;
 
-    static $inject = ['HomeService', '$mdDialog', 'GithubService'];
+    static $inject = ['HomeService', '$mdDialog'];
 
-    constructor(private api, private $mdDialog, private githubService) {
+    constructor(private api, private $mdDialog) {
         this.repository.type = this.repositoryTypes[0];
         this.repository.url = '';
     };

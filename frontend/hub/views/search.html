@@ -1,9 +1,17 @@
 <main layout-padding layout="column" id="search">
     <section ng-show="$ctrl.components.length >= 1">
         <header layout="column">
-            <h3 class="md-title muted">Components <span class="md-subhead">{{ $ctrl.components.length }}/100</span></h3>
+            <div layout="row">
+                <h3 class="md-title muted">Components <span class="md-subhead">{{ $ctrl.components.length }}/100</span></h3>
+                <span flex></span>
+                <a ng-href="#!/">
+                    <md-button class="md-accent">
+                        <md-icon aria-label="Menu" md-font-set="material-icons">home</md-icon> Home
+                    </md-button>
+                </a>
+            </div>
         </header>
-        <section layout="row" layout-wrap layout-xs="column">
+        <section layout="row" layout-wrap layout-xs="column" layout-align="center center">
             <hub-card ng-repeat="card in $ctrl.components" card="card" on-click="$ctrl.view(card)"></hub-card>
         </section>
     </section>

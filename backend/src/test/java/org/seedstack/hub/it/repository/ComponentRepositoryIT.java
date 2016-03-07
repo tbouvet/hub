@@ -34,6 +34,8 @@ public class ComponentRepositoryIT {
         Component component = new Component(componentId, new UserId("me"), buildDescription(componentId));
         componentRepository.persist(component);
         Assertions.assertThat(componentRepository.load(componentId)).isNotNull();
+        componentRepository.delete(component);
+        Assertions.assertThat(componentRepository.load(componentId)).isNull();
     }
 
     private Description buildDescription(ComponentId componentId) {

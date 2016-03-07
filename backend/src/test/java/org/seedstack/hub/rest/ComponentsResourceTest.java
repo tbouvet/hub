@@ -7,19 +7,57 @@
  */
 package org.seedstack.hub.rest;
 
+import mockit.Expectations;
+import mockit.Injectable;
+import mockit.Tested;
+import mockit.integration.junit4.JMockit;
+import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.seedstack.business.view.PaginatedView;
+import org.seedstack.seed.rest.RelRegistry;
+import org.seedstack.seed.rest.hal.HalRepresentation;
 
+import java.util.List;
+import java.util.stream.IntStream;
+
+import static java.util.stream.Collectors.toList;
+import static org.assertj.core.api.Assertions.assertThat;
+
+@RunWith(JMockit.class)
 public class ComponentsResourceTest {
 
+    @Tested
     private ComponentResource undertest;
 
-    @Test
-    public void testGet() {
-        String searchName = "foo";
-        String sort = "asc";
-        int pageIndex = 1;
-        int pageSize =  10;
+    @Injectable
+    private ComponentFinder componentFinder;
 
-        // TODO ... test the get method
+    @Injectable
+    private RelRegistry relRegistry;
+
+    private String searchName = "foo";
+    private String sort = "publishedData";
+    private int pageIndex = 0;
+    private int pageSize = 10;
+    private PageInfo pageInfo = new PageInfo(pageIndex, pageSize);
+    private List<ComponentCard> componentCards = IntStream.range(0, 10)
+            .mapToObj(i -> new ComponentCard("Component" + i))
+            .collect(toList());
+
+    @Before
+    public void setUp() throws Exception {
+        new Expectations() {{
+            componentFinder.findCards(withAny(pageInfo.page()), searchName, sort);
+            result = new PaginatedView<>(componentCards, pageSize, pageIndex);
+        }};
+    }
+
+    @Test
+    public void testGetHasEmbeddedComponents() {
+        HalRepresentation halRepresentation = undertest.getList(searchName, new PageInfo(pageIndex, pageSize), sort);
+
+        assertThat(halRepresentation).isNotNull();
+        assertThat(halRepresentation.getEmbedded().get(ComponentResource.COMPONENTS)).isEqualTo(componentCards);
     }
 }
