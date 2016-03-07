@@ -33,11 +33,18 @@ function setHalResponse(res) {
 function sendCards(cards, i, j, res) {
     setHalResponse(res);
     var list = cards.slice(i || 0, j);
-    res.send(200, new Buffer(JSON.stringify({
+    res.status(200).send(new Buffer(JSON.stringify({
         _embedded: {
             components: list
         }
     })));
+}
+
+function search (array, query) {
+    return array.filter(card => {
+        query = query.toLowerCase();
+        return card.name.toLowerCase().search(query) !== -1 || card.summary.toLowerCase().search(query) !== -1;
+    })
 }
 
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -56,10 +63,12 @@ app.get('/recent', (req, res, next) => {
 });
 
 app.get('/components', (req, res) => {
-    res.json(cards);
+    var filteredCards = search(cards, req.query.search);
+    sendCards(filteredCards, undefined, undefined, res);
 });
 
 app.post('/user/components', (req, res, next) => {
+    //res.status(404).send();
     setTimeout(() => {
         res.json(req.body);
     }, 5000);
@@ -70,8 +79,6 @@ if (dist === 'dist') {
 } else {
     app.use(express.static(__dirname + '/../.'));
 }
-
-
 
 app.listen(3000, () => {
     console.log('Hub app listening on port 3000!');

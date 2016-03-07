@@ -13,22 +13,11 @@
     </md-button>
     <h1 flex="25"><a ng-href="/#!/">Hub</a></h1></a>
     <md-autocomplete flex="40"
-                     ng-disabled="ctrl.isDisabled"
-                     md-no-cache="ctrl.noCache"
-                     md-selected-item="ctrl.selectedItem"
-                     md-search-text-change="ctrl.searchTextChange(ctrl.searchText)"
-                     md-search-text="ctrl.searchText"
-                     md-selected-item-change="ctrl.selectedItemChange(item)"
-                     md-items="item in ctrl.querySearch(ctrl.searchText)"
-                     md-item-text="item.display"
+                     ng-model-options="{ debounce: 500 }"
+                     md-items="item in []"
+                     md-search-text-change="routeToSearchView(query)"
+                     md-search-text="query"
                      md-min-length="2"
                      placeholder="Search components">
-        <md-item-template>
-            <span md-highlight-text="ctrl.searchText" md-highlight-flags="^i">{{item.display}}</span>
-        </md-item-template>
-        <md-not-found>
-            No components matching "{{ctrl.searchText}}" were found.
-            <a ng-click="ctrl.newState(ctrl.searchText)">Create a new one!</a>
-        </md-not-found>
     </md-autocomplete>
 </div>

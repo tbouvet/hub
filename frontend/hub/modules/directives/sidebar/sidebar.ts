@@ -10,8 +10,21 @@ import module = require('../module');
 import angular = require('{angular}/angular');
 import sidebarTemplate = require('[text]!{hub}/modules/directives/sidebar/sidebar.html')
 
+interface IHubSidebarScope extends ng.IScope {
+    route(path: string): void;
+}
 class HubSidebar implements ng.IDirective {
+    static $inject = ['$mdSidenav', '$location'];
+    constructor(private $mdSidenav, private $location: ng.ILocationService) {}
+
     template = sidebarTemplate;
+    link: ng.IDirectiveLinkFn = (scope: IHubSidebarScope) => {
+        scope.route = (path: string) => {
+            this.$mdSidenav('sidebar').close().then(() => {
+                this.$location.path(path);
+            });
+        }
+    }
 }
 
 angular

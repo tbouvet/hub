@@ -1,7 +1,13 @@
 var home = {
     "resources": {
         "components": {
-            "href": "/components{?search,sort,page,show}"
+            "href-template": "/components{?search,sort,pageIndex,pageSize}",
+            "href-vars": {
+                "search": "/doc/components/param/search",
+                "sort": "/doc/components/param/sort",
+                "page": "/doc/components/param/page",
+                "show": "/doc/components/param/show"
+            }
         },
         "create": {
             "href": "/user/components"

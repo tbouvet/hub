@@ -5,82 +5,67 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
-
-[ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
-    display: none !important;
+[ng\:cloak],
+[ng-cloak],
+[data-ng-cloak],
+[x-ng-cloak],
+.ng-cloak,
+.x-ng-cloak {
+  display: none !important;
 }
-
-html, body  {
-    font-size: 14px;
-    font-family: 'Roboto', sans-serif;
-    letter-spacing: 0.010em;
-    line-height: 1.2em;
+html,
+body {
+  font-size: 14px;
+  font-family: 'Roboto', sans-serif;
+  letter-spacing: 0.010em;
+  line-height: 1.2em;
 }
-
-.subheader {
-    display: block;
-    margin: 20px 0 20px 10px;
-    color: rgba(0,0,0,0.54);
-}
-
-.muted {
-    color: #808080;
-}
-
-.spacer {
-    margin: 10px;
-}
-
-md-card[md-ink-ripple] {
-    cursor: pointer;
-    position: relative;
-}
-
-#view {
-    height: 100%;
-    background-color: #fafafa;
-    padding-left: 13%;
-    padding-right: 13%;
-}
-
-#home {
-    background-color: inherit;
-}
-
-#home md-card-content {
-    height: 52px;
-    max-height: 52px;
-    overflow: hidden;
-}
-
 #sidebar {
-    width: 200px !important;
-    max-width: 250px;
+  width: 200px !important;
+  max-width: 250px;
 }
-
-#sidebar a {
-    text-align: left !important;
+#sidebar button {
+  text-align: left !important;
 }
-
+#view {
+  height: 100%;
+  background-color: #fafafa;
+  padding-left: 13%;
+  padding-right: 13%;
+}
+#home {
+  background-color: inherit;
+}
+#home md-card-content {
+  height: 52px;
+  max-height: 52px;
+  overflow: hidden;
+}
 #main-speed-dial {
-    position: fixed;
-    bottom: 20px;
-    right: 60px;
+  position: fixed;
+  bottom: 20px;
+  right: 60px;
 }
-
-.hub-card {
-    border-radius:8px;
+md-card[md-ink-ripple] {
+  cursor: pointer;
+  position: relative;
+}
+.subheader {
+  display: block;
+  margin: 20px 0 20px 10px;
+  color: rgba(0, 0, 0, 0.54);
+}
+.muted {
+  color: #808080;
+}
+.spacer {
+  margin: 10px;
 }
 .hub-card:hover {
-    box-shadow:0 1px 4px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.1) inset;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.1) inset;
 }
-
 @media screen and (max-width: 900px) {
-    #view {
-        padding: 0;
-    }
+  #view {
+    padding: 0;
+  }
 }
-
-
-
-

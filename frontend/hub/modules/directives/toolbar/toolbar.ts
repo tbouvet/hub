@@ -10,21 +10,31 @@ import module =  require('../module');
 import angular = require('{angular}/angular');
 import toolbarTemplate = require('[text]!{hub}/modules/directives/toolbar/toolbar.html');
 
-interface ISidebarScope  extends ng.IScope {
-    toggleSidebar(): void
+interface ISidebarScope extends ng.IScope {
+    toggleSidebar(): void,
+    routeToSearchView (query: string): void,
+    query: string
 }
 
 class HubToolbar implements ng.IDirective {
-    template: string = toolbarTemplate;
+    static $inject = ['$mdSidenav', '$location'];
+    constructor(private $mdSidenav, private $location) {
+    };
 
-    link: ng.IDirectiveLinkFn = (scope: ISidebarScope) => {
+    template:string = toolbarTemplate;
+
+    link:ng.IDirectiveLinkFn = (scope:ISidebarScope) => {
+
+        scope.query = this.$location.search().search || '';
+
         scope.toggleSidebar = () => {
             this.$mdSidenav('sidebar').toggle();
         };
-    };
 
-    static $inject = ["$mdSidenav"];
-    constructor(private $mdSidenav) {};
+        scope.routeToSearchView = (query: string) => {
+            return query ? this.$location.url('hub/components?search=' + query) : this.$location.url('/hub/components');
+        }
+    };
 }
 
 angular

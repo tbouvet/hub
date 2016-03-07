@@ -1,0 +1,15 @@
+<main layout-padding layout="column" id="search">
+    <section ng-show="$ctrl.components.length >= 1">
+        <header layout="column">
+            <h3 class="md-title muted">Components <span class="md-subhead">{{ $ctrl.components.length }}/100</span></h3>
+        </header>
+        <section layout="row" layout-wrap layout-xs="column">
+            <hub-card ng-repeat="card in $ctrl.components" card="card" on-click="$ctrl.view(card)"></hub-card>
+        </section>
+    </section>
+    <section ng-show="$ctrl.components.length < 1">
+        <header layout="column">
+            <h3 class="md-title muted">No results found</h3>
+        </header>
+    </section>
+</main>

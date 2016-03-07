@@ -3,12 +3,12 @@
         <h3 class="md-title muted">Popular</h3>
     </header>
     <section layout="row" layout-wrap layout-xs="column">
-        <hub-card ng-repeat="card in home.popularComponents" card="card" on-click="home.view(card)"></hub-card>
+        <hub-card ng-repeat="card in $ctrl.popularComponents" card="card" on-click="$ctrl.view(card)"></hub-card>
     </section>
     <header layout="column">
         <h3 class="md-title muted">Recent</h3>
     </header>
     <section layout="row" layout-wrap layout-xs="column">
-        <hub-card ng-repeat="card in home.recentComponents" card="card" on-click="home.view(card)"></hub-card>
+        <hub-card ng-repeat="card in $ctrl.recentComponents" card="card" on-click="$ctrl.view(card)"></hub-card>
     </section>
 </main>
