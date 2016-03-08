@@ -35,10 +35,10 @@ public class VersionId extends BaseValueObject implements Comparable<VersionId> 
     public VersionId(String value) {
         Matcher matcher = VERSION_PATTERN.matcher(value);
         if (matcher.matches()) {
-            this.majorNumber = Integer.parseInt(matcher.group(0));
-            this.minorNumber = matcher.group(2) != null ? Integer.parseInt(matcher.group(2)) : 0;
-            this.microNumber = matcher.group(4) != null ? Integer.parseInt(matcher.group(4)) : 0;
-            this.qualifier = matcher.group(6);
+            this.majorNumber = Integer.parseInt(matcher.group(1));
+            this.minorNumber = matcher.group(3) != null ? Integer.parseInt(matcher.group(3)) : 0;
+            this.microNumber = matcher.group(5) != null ? Integer.parseInt(matcher.group(5)) : 0;
+            this.qualifier = matcher.group(7);
         } else {
             throw new IllegalArgumentException("Invalid version number " + value);
         }

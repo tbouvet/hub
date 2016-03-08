@@ -8,6 +8,7 @@
 package org.seedstack.hub.domain.services.importer;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import org.seedstack.hub.domain.model.component.Component;
 import org.seedstack.hub.domain.model.component.ComponentId;
 import org.seedstack.hub.domain.model.component.Description;
@@ -23,6 +24,9 @@ import javax.validation.Validator;
 import java.io.File;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.Date;
 import java.util.stream.Collectors;
 
@@ -39,22 +43,23 @@ public class ImportServiceImpl implements ImportService {
     public Component importComponent(File directory) throws ImportException {
         Manifest manifest = parseManifest(findManifestFile(directory));
 
-        ComponentId componentId = new ComponentId(manifest.id);
+        ComponentId componentId = new ComponentId(manifest.getId());
         Component component = new Component(
                 componentId,
-                new UserId(manifest.owner),
+                new UserId(manifest.getOwner()),
                 buildDescription(directory, manifest, componentId)
         );
 
-        Version version = new Version(new VersionId(manifest.version));
-        if (manifest.publicationDate != null) {
+        Version version = new Version(new VersionId(manifest.getVersion()));
+        version.setUrl(manifest.getUrl());
+        if (manifest.getPublicationDate ()!= null) {
             try {
-                version.setPublicationDate(new SimpleDateFormat("yyyy-MM-dd").parse(manifest.publicationDate));
-            } catch (ParseException e) {
-                throw new ImportException("Invalid publication date " + manifest.publicationDate, e);
+                version.setPublicationDate(LocalDate.parse(manifest.getPublicationDate(), DateTimeFormatter.ISO_LOCAL_DATE));
+            } catch (DateTimeParseException e) {
+                throw new ImportException("Invalid publication date " + manifest.getPublicationDate(), e);
             }
         } else {
-            version.setPublicationDate(new Date());
+            version.setPublicationDate(LocalDate.now());
         }
         component.addVersion(version);
 
@@ -94,7 +99,7 @@ public class ImportServiceImpl implements ImportService {
     private Manifest parseManifest(File manifestFile) throws ImportException {
         Manifest manifest;
 
-        ObjectMapper objectMapper = new ObjectMapper();
+        ObjectMapper objectMapper = new ObjectMapper(new YAMLFactory());
         try {
             manifest = objectMapper.readValue(manifestFile, Manifest.class);
         } catch (Exception e) {
@@ -115,24 +120,24 @@ public class ImportServiceImpl implements ImportService {
         }
 
         Description description = new Description(
-                manifest.name,
-                manifest.summary,
-                manifest.icon != null ? buildDocumentId(componentId, directory, new File(manifest.icon)) : null,
-                readme != null ? buildDocumentId(componentId, directory, readme) : null
+                componentId.getName(),
+                manifest.getSummary(),
+                manifest.getIcon() != null ? buildDocumentId(componentId, directory, manifest.getIcon()) : null,
+                readme != null ? buildDocumentId(componentId, directory, readme.getPath()) : null
         );
 
-        if (manifest.images != null && !manifest.images.isEmpty()) {
-            description.setImages(manifest.images.stream().map(s -> buildDocumentId(componentId, directory, new File(s))).collect(Collectors.toList()));
+        if (manifest.getImages ()!= null && !manifest.getImages().isEmpty()) {
+            description.setImages(manifest.getImages().stream().map(s -> buildDocumentId(componentId, directory, s)).collect(Collectors.toList()));
         }
 
-        if (manifest.maintainers != null && !manifest.maintainers.isEmpty()) {
-            description.setMaintainers(manifest.maintainers.stream().map(UserId::new).collect(Collectors.toList()));
+        if (manifest.getMaintainers ()!= null && !manifest.getMaintainers().isEmpty()) {
+            description.setMaintainers(manifest.getMaintainers().stream().map(UserId::new).collect(Collectors.toList()));
         }
 
         return description;
     }
 
-    private DocumentId buildDocumentId(ComponentId componentId, File root, File document) {
-        return new DocumentId(componentId, document.toPath().relativize(root.toPath()).toString());
+    private DocumentId buildDocumentId(ComponentId componentId, File root, String documentPath) {
+        return new DocumentId(componentId, new File(root, documentPath).getPath());
     }
 }

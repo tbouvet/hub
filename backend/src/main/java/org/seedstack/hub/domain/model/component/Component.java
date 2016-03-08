@@ -13,6 +13,7 @@ import org.seedstack.business.domain.BaseAggregateRoot;
 import org.seedstack.hub.domain.model.document.DocumentId;
 import org.seedstack.hub.domain.model.user.UserId;
 
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -37,6 +38,8 @@ public class Component extends BaseAggregateRoot<ComponentId> {
     private List<Version> versions = new ArrayList<>();
     @NotNull
     private Set<DocumentId> docs = new HashSet<>();
+    @Min(0)
+    private int stars = 0;
 
     public Component(ComponentId componentId, UserId owner, Description description) {
         this.componentId = componentId;
@@ -104,5 +107,15 @@ public class Component extends BaseAggregateRoot<ComponentId> {
 
     public UserId getOwner() {
         return owner;
+    }
+
+    public void star() {
+        stars++;
+    }
+
+    public void unstar() {
+        if (stars > 0) {
+            stars--;
+        }
     }
 }

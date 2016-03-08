@@ -13,17 +13,96 @@ import java.util.List;
 
 class Manifest {
     @NotBlank
-    String id;
+    private String id;
     @NotBlank
-    String name;
+    private String version;
     @NotBlank
-    String version;
-    @NotBlank
-    String owner;
-    String publicationDate;
-    String summary;
-    String icon;
-    List<String> images;
-    List<String> maintainers;
-    List<String> docs;
+    private String owner;
+    private String publicationDate;
+    private String url;
+    private String summary;
+    private String icon;
+    private List<String> images;
+    private List<String> maintainers;
+    private List<String> docs;
+
+    String getId() {
+        return id;
+    }
+
+    void setId(String id) {
+        this.id = id;
+    }
+
+    String getVersion() {
+        return version;
+    }
+
+    void setVersion(String version) {
+        this.version = version;
+    }
+
+    String getOwner() {
+        return owner;
+    }
+
+    void setOwner(String owner) {
+        this.owner = owner;
+    }
+
+    String getPublicationDate() {
+        return publicationDate;
+    }
+
+    void setPublicationDate(String publicationDate) {
+        this.publicationDate = publicationDate;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
+    String getSummary() {
+        return summary;
+    }
+
+    void setSummary(String summary) {
+        this.summary = summary;
+    }
+
+    String getIcon() {
+        return icon;
+    }
+
+    void setIcon(String icon) {
+        this.icon = icon;
+    }
+
+    List<String> getImages() {
+        return images;
+    }
+
+    void setImages(List<String> images) {
+        this.images = images;
+    }
+
+    List<String> getMaintainers() {
+        return maintainers;
+    }
+
+    void setMaintainers(List<String> maintainers) {
+        this.maintainers = maintainers;
+    }
+
+    List<String> getDocs() {
+        return docs;
+    }
+
+    void setDocs(List<String> docs) {
+        this.docs = docs;
+    }
 }

@@ -14,6 +14,7 @@ import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.json.JSONException;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.mongodb.morphia.Datastore;
 import org.seedstack.hub.domain.model.component.Component;
@@ -29,6 +30,7 @@ import java.util.stream.IntStream;
 import static com.jayway.restassured.RestAssured.expect;
 import static java.util.stream.Collectors.toList;
 
+@Ignore
 public class ComponentsResourceIT extends AbstractSeedWebIT {
 
     private final List<Component> mockedComponents = IntStream.range(0, 23)

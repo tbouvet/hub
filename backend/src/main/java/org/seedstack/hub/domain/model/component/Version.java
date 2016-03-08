@@ -9,11 +9,11 @@ package org.seedstack.hub.domain.model.component;
 
 import org.seedstack.business.domain.BaseEntity;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 public class Version extends BaseEntity<VersionId> implements Comparable<Version> {
     private final VersionId versionId;
-    private Date publicationDate;
+    private LocalDate publicationDate;
     private String url;
 
     public Version(VersionId versionId) {
@@ -29,11 +29,11 @@ public class Version extends BaseEntity<VersionId> implements Comparable<Version
         return versionId;
     }
 
-    public Date getPublicationDate() {
+    public LocalDate getPublicationDate() {
         return publicationDate;
     }
 
-    public void setPublicationDate(Date publicationDate) {
+    public void setPublicationDate(LocalDate publicationDate) {
         this.publicationDate = publicationDate;
     }
 

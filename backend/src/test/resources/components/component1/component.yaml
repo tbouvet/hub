@@ -1,0 +1,19 @@
+id: component1
+version: 1.0.0
+owner: adrien.lauer@mpsa.com
+publicationDate: 2016-03-08
+url: http://fake.url.org/component-1
+summary: This is the awesome component 1.
+icon: icon.png
+images:
+  - screenshots/1.png
+  - screenshots/2.png
+  - screenshots/3.png
+maintainers:
+  - pierre.thirouin@ext.mpsa.com
+  - kavi.ramyead@ext.mpsa.com
+docs:
+  - docs/intro.md
+  - docs/integration.md
+  - docs/usage.md
+
