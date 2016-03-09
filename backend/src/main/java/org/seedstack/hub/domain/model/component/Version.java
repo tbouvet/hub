@@ -8,8 +8,11 @@
 package org.seedstack.hub.domain.model.component;
 
 import org.seedstack.business.domain.BaseEntity;
+import org.seedstack.hub.application.importer.ImportException;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 
 public class Version extends BaseEntity<VersionId> implements Comparable<Version> {
     private final VersionId versionId;
@@ -35,6 +38,14 @@ public class Version extends BaseEntity<VersionId> implements Comparable<Version
 
     public void setPublicationDate(LocalDate publicationDate) {
         this.publicationDate = publicationDate;
+    }
+
+    public void setPublicationDate(String publicationDate) {
+        try {
+            this.publicationDate = LocalDate.parse(publicationDate, DateTimeFormatter.ISO_LOCAL_DATE);
+        } catch (DateTimeParseException e) {
+            throw new ImportException("Invalid publication date " + publicationDate, e);
+        }
     }
 
     public String getUrl() {

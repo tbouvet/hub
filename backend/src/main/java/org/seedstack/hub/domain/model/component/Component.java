@@ -17,9 +17,7 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 @Entity(value = "components")
 public class Component extends BaseAggregateRoot<ComponentId> {
@@ -37,7 +35,7 @@ public class Component extends BaseAggregateRoot<ComponentId> {
     @NotNull
     private List<Version> versions = new ArrayList<>();
     @NotNull
-    private Set<DocumentId> docs = new HashSet<>();
+    private List<DocumentId> docs = new ArrayList<>();
     @Min(0)
     private int stars = 0;
 
@@ -105,6 +103,18 @@ public class Component extends BaseAggregateRoot<ComponentId> {
         Collections.sort(versions);
     }
 
+    public void addDoc(DocumentId documentId) {
+        docs.add(documentId);
+    }
+
+    public void replaceDocs(List<DocumentId> documentIds) {
+        docs = new ArrayList<>(documentIds);
+    }
+
+    public List<DocumentId> getDocs() {
+        return Collections.unmodifiableList(docs);
+    }
+
     public UserId getOwner() {
         return owner;
     }
@@ -117,5 +127,9 @@ public class Component extends BaseAggregateRoot<ComponentId> {
         if (stars > 0) {
             stars--;
         }
+    }
+
+    public int getStars() {
+        return stars;
     }
 }

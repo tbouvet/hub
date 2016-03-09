@@ -5,10 +5,11 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
-package org.seedstack.hub.domain.services.importer;
+package org.seedstack.hub.application.importer;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
+import org.seedstack.hub.application.SecurityService;
 import org.seedstack.hub.domain.model.component.Component;
 import org.seedstack.hub.domain.model.component.ComponentId;
 import org.seedstack.hub.domain.model.component.Description;
@@ -16,57 +17,78 @@ import org.seedstack.hub.domain.model.component.Version;
 import org.seedstack.hub.domain.model.component.VersionId;
 import org.seedstack.hub.domain.model.document.DocumentId;
 import org.seedstack.hub.domain.model.user.UserId;
+import org.seedstack.hub.domain.model.user.UserRepository;
 import org.seedstack.hub.domain.services.text.TextProcessingException;
 import org.seedstack.hub.domain.services.text.TextService;
+import org.seedstack.seed.security.AuthenticationException;
 
 import javax.inject.Inject;
 import javax.validation.Validator;
 import java.io.File;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
-import java.util.Date;
+import java.util.List;
 import java.util.stream.Collectors;
 
 public class ImportServiceImpl implements ImportService {
     public static final String FULL_MANIFEST_PATTERN = "seedstack-component.%s";
     public static final String SHORT_MANIFEST_PATTERN = "component.%s";
 
+    private final Validator validator;
+    private final TextService textService;
+    private final UserRepository userRepository;
+    private final SecurityService securityService;
+
     @Inject
-    private Validator validator;
-    @Inject
-    private TextService textService;
+    public ImportServiceImpl(Validator validator, TextService textService, UserRepository userRepository, SecurityService securityService) {
+        this.validator = validator;
+        this.textService = textService;
+        this.userRepository = userRepository;
+        this.securityService = securityService;
+    }
 
     @Override
-    public Component importComponent(File directory) throws ImportException {
+    public Component importComponent(File directory) {
         Manifest manifest = parseManifest(findManifestFile(directory));
-
         ComponentId componentId = new ComponentId(manifest.getId());
+        UserId ownerId = lookupUserId(manifest.getOwner());
+
+        checkCurrentUserIs(ownerId);
+
         Component component = new Component(
                 componentId,
-                new UserId(manifest.getOwner()),
+                ownerId,
                 buildDescription(directory, manifest, componentId)
         );
 
         Version version = new Version(new VersionId(manifest.getVersion()));
         version.setUrl(manifest.getUrl());
-        if (manifest.getPublicationDate ()!= null) {
-            try {
-                version.setPublicationDate(LocalDate.parse(manifest.getPublicationDate(), DateTimeFormatter.ISO_LOCAL_DATE));
-            } catch (DateTimeParseException e) {
-                throw new ImportException("Invalid publication date " + manifest.getPublicationDate(), e);
-            }
+        if (manifest.getPublicationDate() != null) {
+            version.setPublicationDate(manifest.getPublicationDate());
         } else {
             version.setPublicationDate(LocalDate.now());
         }
         component.addVersion(version);
 
+        if (manifest.getDocs() != null) {
+            component.replaceDocs(manifest.getDocs().stream().map(s -> new DocumentId(componentId, s)).collect(Collectors.toList()));
+        }
+
         return component;
     }
 
-    private File findManifestFile(File repositoryDirectory) throws ImportException {
+    private UserId lookupUserId(String email) {
+        return userRepository.findByEmail(email).orElseThrow(() -> new ImportException("Cannot find hub user for email: " + email)).getUserId();
+    }
+
+    private void checkCurrentUserIs(UserId owner) {
+        UserId authenticatedUserId = securityService.getAuthenticatedUser().orElseThrow(() -> new AuthenticationException("No authenticated user available")).getUserId();
+
+        if (!owner.equals(authenticatedUserId)) {
+            throw new ImportException("Authenticated user is not the owner of component");
+        }
+    }
+
+    private File findManifestFile(File repositoryDirectory) {
         File fileToCheck;
 
         // JSON full manifest
@@ -96,7 +118,7 @@ public class ImportServiceImpl implements ImportService {
         throw new ImportException("Missing manifest file for component located in " + repositoryDirectory);
     }
 
-    private Manifest parseManifest(File manifestFile) throws ImportException {
+    private Manifest parseManifest(File manifestFile) {
         Manifest manifest;
 
         ObjectMapper objectMapper = new ObjectMapper(new YAMLFactory());
@@ -111,7 +133,7 @@ public class ImportServiceImpl implements ImportService {
         return manifest;
     }
 
-    private Description buildDescription(File directory, Manifest manifest, ComponentId componentId) throws ImportException {
+    private Description buildDescription(File directory, Manifest manifest, ComponentId componentId) {
         File readme;
         try {
             readme = textService.findTextDocument(directory, "README");
@@ -122,22 +144,19 @@ public class ImportServiceImpl implements ImportService {
         Description description = new Description(
                 componentId.getName(),
                 manifest.getSummary(),
-                manifest.getIcon() != null ? buildDocumentId(componentId, directory, manifest.getIcon()) : null,
-                readme != null ? buildDocumentId(componentId, directory, readme.getPath()) : null
+                manifest.getIcon() != null ? new DocumentId(componentId, manifest.getIcon()) : null,
+                readme != null ? new DocumentId(componentId, readme.getPath()) : null
         );
 
-        if (manifest.getImages ()!= null && !manifest.getImages().isEmpty()) {
-            description.setImages(manifest.getImages().stream().map(s -> buildDocumentId(componentId, directory, s)).collect(Collectors.toList()));
+        List<String> images = manifest.getImages();
+        if (images != null && !images.isEmpty()) {
+            description = description.replaceImages(images.stream().map(s -> new DocumentId(componentId, s)).collect(Collectors.toList()));
         }
 
-        if (manifest.getMaintainers ()!= null && !manifest.getMaintainers().isEmpty()) {
-            description.setMaintainers(manifest.getMaintainers().stream().map(UserId::new).collect(Collectors.toList()));
+        if (manifest.getMaintainers() != null && !manifest.getMaintainers().isEmpty()) {
+            description = description.replaceMaintainers(manifest.getMaintainers().stream().map(this::lookupUserId).collect(Collectors.toList()));
         }
 
         return description;
-    }
-
-    private DocumentId buildDocumentId(ComponentId componentId, File root, String documentPath) {
-        return new DocumentId(componentId, new File(root, documentPath).getPath());
     }
 }

@@ -7,6 +7,7 @@
  */
 package org.seedstack.hub.domain.model.user;
 
+import org.hibernate.validator.constraints.Email;
 import org.mongodb.morphia.annotations.Entity;
 import org.mongodb.morphia.annotations.Id;
 import org.seedstack.business.domain.BaseAggregateRoot;
@@ -18,9 +19,13 @@ public class User extends BaseAggregateRoot<UserId> {
     @NotNull
     @Id
     private UserId userId;
+    @NotNull
+    @Email
+    private String email;
 
-    public User(UserId userId) {
+    public User(UserId userId, String email) {
         this.userId = userId;
+        this.email = email;
     }
 
     private User() {
@@ -36,4 +41,7 @@ public class User extends BaseAggregateRoot<UserId> {
         return userId;
     }
 
+    public String getEmail() {
+        return email;
+    }
 }

@@ -31,6 +31,7 @@ public class Description extends BaseValueObject {
     @NotNull
     private DocumentId readme;
     private List<DocumentId> images = new ArrayList<>();
+    // TODO move to Component
     private List<UserId> maintainers = new ArrayList<>();
 
     public Description(String name, String summary, DocumentId icon, DocumentId readme) {
@@ -95,7 +96,7 @@ public class Description extends BaseValueObject {
         return description;
     }
 
-    public Description setImages(List<DocumentId> images) {
+    public Description replaceImages(List<DocumentId> images) {
         Description description = new Description(this);
         description.images = new ArrayList<>(images);
         return description;
@@ -113,7 +114,7 @@ public class Description extends BaseValueObject {
         return description;
     }
 
-    public Description setMaintainers(List<UserId> maintainers) {
+    public Description replaceMaintainers(List<UserId> maintainers) {
         Description description = new Description(this);
         description.maintainers = new ArrayList<>(maintainers);
         return description;

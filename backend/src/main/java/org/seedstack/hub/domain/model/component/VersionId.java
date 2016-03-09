@@ -57,7 +57,6 @@ public class VersionId extends BaseValueObject implements Comparable<VersionId> 
         return minorNumber;
     }
 
-
     public Integer getMicroNumber() {
         return microNumber;
     }
