@@ -15,8 +15,14 @@ import org.seedstack.seed.LifecycleListener;
 
 import javax.inject.Inject;
 import java.io.IOException;
-import java.net.*;
-import java.util.*;
+import java.net.InetSocketAddress;
+import java.net.Proxy;
+import java.net.ProxySelector;
+import java.net.SocketAddress;
+import java.net.URI;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 public class ProxySelectorService extends ProxySelector implements LifecycleListener {
 
@@ -60,7 +66,7 @@ public class ProxySelectorService extends ProxySelector implements LifecycleList
     }
 
     @Override
-    public void start() {
+    public void started() {
         defaultProxySelector = ProxySelector.getDefault();
         initializeProxiesFromConfiguration();
         ProxySelector.setDefault(this);
@@ -94,7 +100,7 @@ public class ProxySelectorService extends ProxySelector implements LifecycleList
     }
 
     @Override
-    public void stop() {
+    public void stopping() {
         ProxySelector.setDefault(null);
     }
 }
