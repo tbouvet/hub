@@ -15,7 +15,7 @@ version = 1.0.0
 clients = main
 
 [org.seedstack.mongodb.client.main]
-hosts = localhost
+hosts = docker
 databases = hub
 
 [org.seedstack.hub.domain.model.*]

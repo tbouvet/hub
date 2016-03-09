@@ -15,10 +15,12 @@ import org.seedstack.hub.domain.model.component.ComponentId;
 import org.seedstack.hub.domain.model.component.Description;
 import org.seedstack.hub.domain.model.component.Version;
 import org.seedstack.hub.domain.model.component.VersionId;
+import org.seedstack.hub.domain.model.document.Document;
+import org.seedstack.hub.domain.model.document.DocumentFactory;
 import org.seedstack.hub.domain.model.document.DocumentId;
+import org.seedstack.hub.domain.model.document.TextDocument;
 import org.seedstack.hub.domain.model.user.UserId;
 import org.seedstack.hub.domain.model.user.UserRepository;
-import org.seedstack.hub.domain.services.text.TextProcessingException;
 import org.seedstack.hub.domain.services.text.TextService;
 import org.seedstack.seed.security.AuthenticationException;
 
@@ -26,8 +28,12 @@ import javax.inject.Inject;
 import javax.validation.Validator;
 import java.io.File;
 import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class ImportServiceImpl implements ImportService {
     public static final String FULL_MANIFEST_PATTERN = "seedstack-component.%s";
@@ -37,13 +43,15 @@ public class ImportServiceImpl implements ImportService {
     private final TextService textService;
     private final UserRepository userRepository;
     private final SecurityService securityService;
+    private final DocumentFactory documentFactory;
 
     @Inject
-    public ImportServiceImpl(Validator validator, TextService textService, UserRepository userRepository, SecurityService securityService) {
+    public ImportServiceImpl(Validator validator, TextService textService, UserRepository userRepository, SecurityService securityService, DocumentFactory documentFactory) {
         this.validator = validator;
         this.textService = textService;
         this.userRepository = userRepository;
         this.securityService = securityService;
+        this.documentFactory = documentFactory;
     }
 
     @Override
@@ -74,6 +82,32 @@ public class ImportServiceImpl implements ImportService {
         }
 
         return component;
+    }
+
+    @Override
+    public Stream<Document> streamDocuments(Component component, File directory) {
+        Set<DocumentId> documents = new HashSet<>();
+
+        documents.add(component.getDescription().getReadme());
+        documents.add(component.getDescription().getIcon());
+        documents.addAll(component.getDescription().getImages());
+        documents.addAll(component.getDocs());
+
+        return documents.stream()
+                .map(documentId -> buildDocumentStream(documentId, directory))
+                .flatMap(Function.identity());
+    }
+
+    private Stream<Document> buildDocumentStream(DocumentId documentId, File directory) {
+        Document document = documentFactory.createDocument(documentId, directory);
+        if (document instanceof TextDocument) {
+            return Stream.concat(
+                    Stream.of(document),
+                    textService.findReferences((TextDocument) document).stream().map(referenceDocumentId -> documentFactory.createDocument(referenceDocumentId, directory))
+            );
+        } else {
+            return Stream.of(document);
+        }
     }
 
     private UserId lookupUserId(String email) {
@@ -134,18 +168,11 @@ public class ImportServiceImpl implements ImportService {
     }
 
     private Description buildDescription(File directory, Manifest manifest, ComponentId componentId) {
-        File readme;
-        try {
-            readme = textService.findTextDocument(directory, "README");
-        } catch (TextProcessingException e) {
-            throw new ImportException("An error occurred searching for README file", e);
-        }
-
         Description description = new Description(
                 componentId.getName(),
                 manifest.getSummary(),
                 manifest.getIcon() != null ? new DocumentId(componentId, manifest.getIcon()) : null,
-                readme != null ? new DocumentId(componentId, readme.getPath()) : null
+                textService.findTextDocument(componentId, directory, "README")
         );
 
         List<String> images = manifest.getImages();

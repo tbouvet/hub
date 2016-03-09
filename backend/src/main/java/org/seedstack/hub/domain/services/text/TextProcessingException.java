@@ -7,7 +7,7 @@
  */
 package org.seedstack.hub.domain.services.text;
 
-public class TextProcessingException extends Exception {
+public class TextProcessingException extends RuntimeException {
     public TextProcessingException(String message) {
         super(message);
     }

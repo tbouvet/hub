@@ -15,6 +15,7 @@ public class ComponentId extends BaseValueObject {
     private String name;
 
     ComponentId() {
+        // required by morphia
     }
 
     public ComponentId(String name) {
@@ -25,4 +26,8 @@ public class ComponentId extends BaseValueObject {
         return name;
     }
 
+    @Override
+    public String toString() {
+        return String.format("ComponentId{name='%s'}", name);
+    }
 }

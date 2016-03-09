@@ -9,10 +9,15 @@ package org.seedstack.hub.application.importer;
 
 import org.seedstack.business.Service;
 import org.seedstack.hub.domain.model.component.Component;
+import org.seedstack.hub.domain.model.document.Document;
 
 import java.io.File;
+import java.util.Set;
+import java.util.stream.Stream;
 
 @Service
 public interface ImportService {
-    Component importComponent(File directory) throws ImportException;
+    Component importComponent(File directory);
+
+    Stream<Document> streamDocuments(Component component, File directory);
 }

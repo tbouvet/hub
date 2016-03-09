@@ -32,13 +32,13 @@ public class DocumentTest {
 
     @Test
     public void parametered_content_type_is_accepted() {
-        TextDocument textDocument = new TextDocument(createDocumentId(), InternallySupportedTextFormat.MARKDOWN, Charset.forName("iso-8859-1"));
+        TextDocument textDocument = new TextDocument(createDocumentId(), TextFormat.MARKDOWN, Charset.forName("iso-8859-1"));
         assertThat(textDocument.getContentType()).isEqualTo(String.format("%s; charset=ISO-8859-1", TEXT_MARKDOWN));
     }
 
     @Test
     public void default_charset_is_utf8() {
-        TextDocument textDocument = new TextDocument(createDocumentId(), InternallySupportedTextFormat.MARKDOWN);
+        TextDocument textDocument = new TextDocument(createDocumentId(), TextFormat.MARKDOWN);
         assertThat(textDocument.getContentType()).isEqualTo(String.format("%s; charset=UTF-8", TEXT_MARKDOWN));
     }
 

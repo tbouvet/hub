@@ -8,13 +8,18 @@
 package org.seedstack.hub.domain.services.text;
 
 import org.seedstack.business.Service;
+import org.seedstack.hub.domain.model.component.ComponentId;
+import org.seedstack.hub.domain.model.document.DocumentId;
 import org.seedstack.hub.domain.model.document.TextDocument;
 
 import java.io.File;
+import java.util.Set;
 
 @Service
 public interface TextService {
-    String renderHtml(TextDocument textDocument) throws TextProcessingException;
+    String renderHtml(TextDocument textDocument);
 
-    File findTextDocument(File directory, String name) throws TextProcessingException;
+    DocumentId findTextDocument(ComponentId componentId, File componentDirectory, String name);
+
+    Set<DocumentId> findReferences(TextDocument textDocument);
 }
