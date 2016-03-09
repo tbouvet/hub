@@ -35,7 +35,7 @@ public class ProxySelectorServiceTest {
     @After
     public void tearDown() throws Exception {
         if (underTest != null) {
-            underTest.stop();
+            underTest.stopping();
         }
     }
 
@@ -47,9 +47,9 @@ public class ProxySelectorServiceTest {
     @Test
     public void testWithNoProxy() throws Exception {
         givenProxy(null, null, null, null);
-        underTest.start();
+        underTest.started();
         List<Proxy> select = underTest.select(new URI("http://localhost:42"));
-        underTest.stop();
+        underTest.stopping();
         assertNoProxy(select);
     }
 
@@ -63,7 +63,7 @@ public class ProxySelectorServiceTest {
     public void testConfigurationError() throws Exception {
         givenProxy("HTTP", null, 8080, null);
         try {
-            underTest.start();
+            underTest.started();
             Assertions.failBecauseExceptionWasNotThrown(ConfigurationException.class);
         } catch (ConfigurationException e) {
             Assertions.assertThat(e).hasMessage("Missing \"url\" in the proxy configuration.");
@@ -73,27 +73,27 @@ public class ProxySelectorServiceTest {
     @Test
     public void testWithProxy() throws Exception {
         givenProxy("HTTP", "proxy.mycompany.com", 8080, null);
-        underTest.start();
+        underTest.started();
         List<Proxy> select = underTest.select(new URI("http://localhost"));
-        underTest.stop();
+        underTest.stopping();
         assertProxy(select, Proxy.Type.HTTP, "proxy.mycompany.com", 8080);
     }
 
     @Test
     public void testProxyWithExclusion() throws Exception {
         givenProxy("HTTP", "proxy.mycompany.com", 8080, "mycompany.com");
-        underTest.start();
+        underTest.started();
         List<Proxy> select = underTest.select(new URI("http://app.mycompany.com"));
-        underTest.stop();
+        underTest.stopping();
         assertNoProxy(select);
     }
 
     @Test
     public void testProxyWithExclusionNoMatch() throws Exception {
         givenProxy("HTTP", "proxy.mycompany.com", 8080, "mycompany.com");
-        underTest.start();
+        underTest.started();
         List<Proxy> select = underTest.select(new URI("http://localhost"));
-        underTest.stop();
+        underTest.stopping();
         assertProxy(select, Proxy.Type.HTTP, "proxy.mycompany.com", 8080);
     }
 

@@ -7,12 +7,28 @@
  */
 package org.seedstack.hub.domain.model.document;
 
-public interface TextFormat {
+public enum TextFormat {
+    MARKDOWN("text/markdown", "md"),
+    ASCIIDOC("text/asciidoc", "adoc", "asciidoc"),
+    HTML("text/html", "htm", "html");
 
-    String[] getValidExtensions();
+    private final String contentType;
+    private final String[] validExtensions;
 
-    String getContentType();
+    TextFormat(String contentType, String... validExtensions) {
+        this.contentType = contentType;
+        this.validExtensions = validExtensions;
+    }
 
-    String getTextRenderingServiceQualifier();
+    public String[] getValidExtensions() {
+        return validExtensions;
+    }
 
+    public String getContentType() {
+        return contentType;
+    }
+
+    public String getTextRenderingServiceQualifier() {
+        return this.name().toLowerCase();
+    }
 }

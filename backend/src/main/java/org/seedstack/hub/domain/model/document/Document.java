@@ -26,7 +26,7 @@ public abstract class Document extends BaseAggregateRoot<DocumentId> {
     @NotNull
     private String contentType;
 
-    Document(DocumentId documentId, String contentType) {
+    protected Document(DocumentId documentId, String contentType) {
         this.documentId = documentId;
         try {
             this.contentType = new MimeType(contentType).toString();

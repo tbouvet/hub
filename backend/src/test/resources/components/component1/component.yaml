@@ -12,11 +12,11 @@ owner: adrien.lauer@mpsa.com
 publicationDate: 2016-03-08
 url: http://fake.url.org/component-1
 summary: This is the awesome component 1.
-icon: icon.png
+icon: images/icon.png
 images:
-  - screenshots/1.png
-  - screenshots/2.png
-  - screenshots/3.png
+  - images/screenshot-1.png
+  - images/screenshot-2.png
+  - images/screenshot-3.png
 maintainers:
   - pierre.thirouin@ext.mpsa.com
   - kavi.ramyead@ext.mpsa.com

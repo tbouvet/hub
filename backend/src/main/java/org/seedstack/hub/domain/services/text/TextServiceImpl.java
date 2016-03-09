@@ -8,42 +8,60 @@
 package org.seedstack.hub.domain.services.text;
 
 import org.seedstack.business.domain.DomainRegistry;
-import org.seedstack.hub.domain.model.document.InternallySupportedTextFormat;
+import org.seedstack.hub.domain.model.component.ComponentId;
+import org.seedstack.hub.domain.model.document.DocumentId;
 import org.seedstack.hub.domain.model.document.TextDocument;
 import org.seedstack.hub.domain.model.document.TextFormat;
 
 import javax.inject.Inject;
 import java.io.File;
+import java.util.Set;
+
+import static java.util.stream.Collectors.toSet;
 
 public class TextServiceImpl implements TextService {
     @Inject
     private DomainRegistry domainRegistry;
 
     @Override
-    public String renderHtml(TextDocument textDocument) throws TextProcessingException {
-        return domainRegistry.getService(
-                TextRenderingService.class,
-                textDocument.getFormat().getTextRenderingServiceQualifier()
-        ).renderHtml(textDocument.getText());
+    public String renderHtml(TextDocument textDocument) {
+        return getTextFormatService(textDocument).renderHtml(textDocument);
     }
 
     @Override
-    public File findTextDocument(File directory, String name) throws TextProcessingException {
-        File[] files = directory.listFiles();
+    public DocumentId findTextDocument(ComponentId componentId, File componentDirectory, String name) {
+        File[] files = componentDirectory.listFiles();
         if (files != null) {
             for (File file : files) {
-                for (TextFormat textFormat : InternallySupportedTextFormat.values()) {
-                    for (String validExtension : textFormat.getValidExtensions()) {
-                        if (String.format("%s.%s", name, validExtension).equalsIgnoreCase(file.getName())) {
-                            return file;
+                if (file.isFile()) {
+                    for (TextFormat textFormat : TextFormat.values()) {
+                        for (String validExtension : textFormat.getValidExtensions()) {
+                            if (String.format("%s.%s", name, validExtension).equalsIgnoreCase(file.getName())) {
+                                return new DocumentId(componentId, file.getName());
+                            }
                         }
                     }
                 }
             }
         } else {
-            throw new TextProcessingException("Unable to list files in directory " + directory.getAbsolutePath());
+            throw new TextProcessingException("Unable to list files in directory " + componentDirectory.getAbsolutePath());
         }
 
         return null;
+    }
+
+    @Override
+    public Set<DocumentId> findReferences(TextDocument textDocument) {
+        return getTextFormatService(textDocument)
+                .findRelativeReferences(textDocument)
+                .stream()
+                .collect(toSet());
+    }
+
+    private TextFormatService getTextFormatService(TextDocument textDocument) {
+        return domainRegistry.getService(
+                TextFormatService.class,
+                textDocument.getFormat().getTextRenderingServiceQualifier()
+        );
     }
 }
