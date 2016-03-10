@@ -1,4 +1,4 @@
-<main layout-padding layout="column" id="search">
+<main layout-padding layout="column" id="search" hub-infinite-scroll="$ctrl.loadNewCards(criterias)" hub-search-criterias="$ctrl.searchCriterias">
     <section ng-show="$ctrl.components.length >= 1">
         <header layout="column">
             <div layout="row">

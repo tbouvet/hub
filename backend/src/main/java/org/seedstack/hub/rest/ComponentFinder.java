@@ -16,7 +16,7 @@ public interface ComponentFinder {
 
     PaginatedView<ComponentCard> findCards(Page page, String searchName, String sort);
 
-    PaginatedView<ComponentCard> findRecentCards(Page page, String searchName, String sort);
+    PaginatedView<ComponentCard> findRecentCards(int howMany);
 
-    PaginatedView<ComponentCard> findPopularCards(Page page, String searchName, String sort);
+    PaginatedView<ComponentCard> findPopularCards(int howMany);
 }

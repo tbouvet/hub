@@ -73,8 +73,27 @@ public class ComponentMongoFinderIT {
         assertThat(componentCards.getView()).hasSize(11);
     }
 
+    @Test
+    public void testFindRecent() {
+        PaginatedView<ComponentCard> componentCards = componentFinder.findRecentCards(6);
+        List<ComponentCard> recentCards = componentCards.getView();
+        assertThat(recentCards).hasSize(6);
+        assertThat(recentCards.get(0).getName()).isEqualToIgnoringCase("Component0");
+    }
+
+    @Test
+    public void testFindPopular() {
+        PaginatedView<ComponentCard> componentCards = componentFinder.findPopularCards(6);
+        List<ComponentCard> popular = componentCards.getView();
+        assertThat(popular).hasSize(6);
+        assertThat(popular.get(0).getName()).isEqualToIgnoringCase("Component22");
+        assertThat(popular.get(0).getStars()).isEqualTo(23);
+        assertThat(popular.get(1).getName()).isEqualToIgnoringCase("Component21");
+        assertThat(popular.get(1).getStars()).isEqualTo(22);
+    }
+
     @After
     public void tearDown() throws Exception {
-        mockedComponents.forEach(datastore::delete);
+      mockedComponents.forEach(datastore::delete);
     }
 }

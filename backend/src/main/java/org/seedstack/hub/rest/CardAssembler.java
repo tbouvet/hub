@@ -14,6 +14,8 @@ public class CardAssembler extends BaseAssembler<Component, ComponentCard> {
     @Override
     protected void doAssembleDtoFromAggregate(ComponentCard componentCard, Component component) {
         componentCard.setName(component.getEntityId().getName());
+        componentCard.setStars(component.getStars());
+        componentCard.setSummary(component.getDescription().getSummary());
     }
 
     @Override
