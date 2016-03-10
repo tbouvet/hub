@@ -7,11 +7,15 @@
  */
 package org.seedstack.hub.rest;
 
-import org.seedstack.hub.domain.model.component.Component;
-import org.seedstack.hub.domain.model.component.ComponentId;
-import org.seedstack.hub.domain.model.component.Description;
+import org.apache.tomcat.jni.Local;
+import org.seedstack.hub.domain.model.component.*;
 import org.seedstack.hub.domain.model.document.DocumentId;
 import org.seedstack.hub.domain.model.user.UserId;
+
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class MockedComponentBuilder {
 
@@ -21,6 +25,18 @@ public class MockedComponentBuilder {
         DocumentId icon = new DocumentId(componentId, "/icon.png");
         DocumentId readme = new DocumentId(componentId, "/readme.md");
         Description description = new Description(componentId.getName(), "A little summary.", icon, readme);
-        return new Component(componentId, john, description);
+        Component component = new Component(componentId, john, description);
+        component.addVersion(mockVersion(i, 1));
+        component.addVersion(mockVersion(i, 2));
+        for (int j = 0; j <= i; j++) {
+            component.star();
+        }
+        return component;
+    }
+
+    private static Version mockVersion(Integer componentNumber, Integer versionNumber) {
+        Version version = new Version(new VersionId(versionNumber, versionNumber+1, versionNumber+2, "Version ".concat(versionNumber.toString())));
+        version.setPublicationDate(LocalDate.now().minusDays(componentNumber + versionNumber));
+        return version;
     }
 }

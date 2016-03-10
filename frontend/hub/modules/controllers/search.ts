@@ -18,16 +18,8 @@ interface ISearchCriterias {
 class SearchController {
     static $inject = ['HomeService', '$location'];
     constructor(private api:any, private $location:ng.ILocationService) {
-        this.getComponents(
-            this.searchCriterias,
-            results => {
-                if (results.$embedded('components')) {
-                    this.components = results.$embedded('components');
-                }
-            },
-            () => {
-                this.components = [];
-            });
+        this.components = [];
+        this.loadNewCards(this.searchCriterias);
     }
 
     public components:Card[];
@@ -35,11 +27,19 @@ class SearchController {
     public searchCriterias:ISearchCriterias = {
         search: this.$location.search().search || '',
         sort: Sort.DATE,
-        pageIndex: 1,
-        pageSize: 9
+        pageIndex: 0,
+        pageSize: 12
     };
 
-    public getComponents(searchCriterias:ISearchCriterias, successCb:(results:any) => void, errorCb:(rejected?:any) => void):void {
+    public loadNewCards(searchCriterias) {
+        this.getCards(searchCriterias, results => {
+                if (results.$embedded('components') && results.$embedded('components').constructor === Array) {
+                    this.components = this.components.concat(results.$embedded('components'));
+                }
+            }, () => {});
+    }
+
+    private getCards(searchCriterias:ISearchCriterias, successCb:(results:any) => void, errorCb:(rejected?:any) => void):void {
         this.api('home').enter('components', searchCriterias).get().$promise
             .then((results:any) => {
                 successCb(results);

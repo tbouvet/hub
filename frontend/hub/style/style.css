@@ -36,8 +36,14 @@ body {
 #home {
   background-color: inherit;
 }
+
+/*main#search {
+  height: 100%;
+  overflow: auto;
+}*/
+
 #home md-card-content {
-  height: 52px;
+  height: 49px;
   max-height: 52px;
   overflow: hidden;
 }

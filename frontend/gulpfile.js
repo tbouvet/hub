@@ -7,6 +7,7 @@ const del = require('del');
 const tscConfig = require('./tsconfig.json');
 const sourcemaps = require('gulp-sourcemaps');
 const htmlreplace = require('gulp-html-replace');
+const fs = require('fs');
 var Server = require('karma').Server;
 require('gulp-grunt')(gulp);
 
@@ -38,7 +39,7 @@ gulp.task('copy', ['bower', 'clean', 'ts-compile', 'less-compile'], function () 
             'bower_components/**/*',
             'hub/**/*',
             '!hub/**/*.ts',
-            '!hub/**/*.js',
+            //'!hub/**/*.js',
             '!hub/**/*.less',
             'w20.app.json'],
         { base : './' })
@@ -67,7 +68,31 @@ gulp.task('replace-index', ['copy'], function() {
         .pipe(gulp.dest('dist/'));
 });
 
-gulp.task('build', ['clean', 'bower', 'ts-compile', 'less-compile', 'test', 'copy', 'optimize', 'replace-index']);
+gulp.task('replace-manifest', ['copy'], function () {
+    function buildKey (key) {
+        var arr = key.split('/');
+        var s = arr[arr.length - 1].split('.');
+        if (s[s.length - 1] === 'json' && s[s.length - 2] === 'w20') {
+            s.splice(-2, 2);
+            return s.join('.');
+        }
+        return s
+    }
+
+    var originalManifest = require('./w20.app.json'),
+        buildManifest = {};
+
+    for (var key in originalManifest) {
+        if (originalManifest.hasOwnProperty(key)) {
+            buildManifest[buildKey(key)] = originalManifest[key];
+        }
+    }
+
+    fs.writeFileSync('dist/w20.app.json', JSON.stringify(buildManifest));
+});
+
+gulp.task('build', ['clean', 'bower', 'ts-compile', 'less-compile', 'test', 'copy', 'optimize', 'replace-index', 'replace-manifest']);
+gulp.task('build-src', ['clean', 'bower', 'ts-compile', 'less-compile', 'test', 'copy', 'replace-manifest']);
 gulp.task('default', ['build']);
 
 // While in dev

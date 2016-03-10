@@ -21,3 +21,6 @@ databases = hub
 [org.seedstack.hub.domain.model.*]
 morphia.clientName = main
 morphia.dbName = hub
+
+[org.seedstack.w20]
+masterpage-template = META-INF/resources/index.html

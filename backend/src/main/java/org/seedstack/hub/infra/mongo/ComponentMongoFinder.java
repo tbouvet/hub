@@ -1,6 +1,6 @@
 /**
  * Copyright (c) 2015-2016, The SeedStack authors <http://seedstack.org>
- *
+ * <p/>
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
@@ -8,6 +8,8 @@
 package org.seedstack.hub.infra.mongo;
 
 import org.mongodb.morphia.Datastore;
+import org.mongodb.morphia.query.CriteriaContainer;
+import org.mongodb.morphia.query.CriteriaContainerImpl;
 import org.mongodb.morphia.query.Query;
 import org.seedstack.business.assembler.FluentAssembler;
 import org.seedstack.business.finder.Range;
@@ -15,21 +17,28 @@ import org.seedstack.business.finder.Result;
 import org.seedstack.business.view.Page;
 import org.seedstack.business.view.PaginatedView;
 import org.seedstack.hub.domain.model.component.Component;
+import org.seedstack.hub.domain.model.component.Version;
 import org.seedstack.hub.rest.ComponentCard;
 import org.seedstack.hub.rest.ComponentFinder;
 import org.seedstack.mongodb.morphia.MorphiaDatastore;
+import org.seedstack.seed.core.utils.SeedLoggingUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
+import java.time.LocalDate;
 import java.util.List;
 
 public class ComponentMongoFinder implements ComponentFinder {
 
     @Inject
-    @MorphiaDatastore(clientName = "main", dbName="hub")
+    @MorphiaDatastore(clientName = "main", dbName = "hub")
     private Datastore datastore;
 
     @Inject
     private FluentAssembler fluentAssembler;
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(ComponentMongoFinder.class);
 
     @Override
     public PaginatedView<ComponentCard> findCards(Page page, String searchName, String sort) {
@@ -46,15 +55,18 @@ public class ComponentMongoFinder implements ComponentFinder {
     }
 
     @Override
-    public PaginatedView<ComponentCard> findRecentCards(Page page, String searchName, String sort) {
-        Query<Component> query = datastore.find(Component.class).order("-publishDate");
-        return executeQuery(query, page, searchName);
+    public PaginatedView<ComponentCard> findRecentCards(int howMany) {
+        Query<Component> queryComponent = datastore
+                .find(Component.class)
+                .order("-versions.publicationDate")
+                .limit(howMany);
+        return executeQuery(queryComponent, new Page(0, howMany), "");
     }
 
     @Override
-    public PaginatedView<ComponentCard> findPopularCards(Page page, String searchName, String sort) {
+    public PaginatedView<ComponentCard> findPopularCards(int howMany) {
         Query<Component> query = datastore.find(Component.class).order("-stars");
-        return executeQuery(query, page, searchName);
+        return executeQuery(query, new Page(0, howMany), "");
     }
 
     private List<Component> paginateQuery(Query<Component> query, Range range) {
@@ -71,6 +83,6 @@ public class ComponentMongoFinder implements ComponentFinder {
     private PaginatedView<ComponentCard> toPaginatedView(List<ComponentCard> cards, long totalItems, Page page) {
         Range range = Range.rangeFromPageInfo(page.getIndex(), page.getCapacity());
         Result<ComponentCard> result = new Result<>(cards, range.getOffset(), totalItems);
-        return new PaginatedView<>(result,page.getCapacity(), page.getIndex());
+        return new PaginatedView<>(result, page.getCapacity(), page.getIndex());
     }
 }

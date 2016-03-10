@@ -10,14 +10,22 @@ package org.seedstack.hub.domain.model.component;
 import org.seedstack.business.domain.BaseEntity;
 import org.seedstack.hub.application.importer.ImportException;
 
+import java.time.Instant;
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.util.Date;
+
 
 public class Version extends BaseEntity<VersionId> implements Comparable<Version> {
     private final VersionId versionId;
-    private LocalDate publicationDate;
+    private Date publicationDate;
     private String url;
+
+    public Version() {
+        this.versionId = new VersionId("0.0.1");
+    }
 
     public Version(VersionId versionId) {
         this.versionId = versionId;
@@ -33,19 +41,28 @@ public class Version extends BaseEntity<VersionId> implements Comparable<Version
     }
 
     public LocalDate getPublicationDate() {
-        return publicationDate;
+        return asLocalDate(publicationDate);
     }
 
     public void setPublicationDate(LocalDate publicationDate) {
-        this.publicationDate = publicationDate;
+        this.publicationDate = asDate(publicationDate);
     }
 
     public void setPublicationDate(String publicationDate) {
         try {
-            this.publicationDate = LocalDate.parse(publicationDate, DateTimeFormatter.ISO_LOCAL_DATE);
+            this.publicationDate = asDate(LocalDate.parse(publicationDate, DateTimeFormatter.ISO_LOCAL_DATE));
         } catch (DateTimeParseException e) {
             throw new ImportException("Invalid publication date " + publicationDate, e);
         }
+    }
+
+    // Constructor LocalDate() required by Morphia does not exists, we use conversion from/to java.util.Date
+    private LocalDate asLocalDate(Date date) {
+        return Instant.ofEpochMilli(date.getTime()).atZone(ZoneId.systemDefault()).toLocalDate();
+    }
+
+    private Date asDate(LocalDate localDate) {
+        return Date.from(localDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant());
     }
 
     public String getUrl() {
