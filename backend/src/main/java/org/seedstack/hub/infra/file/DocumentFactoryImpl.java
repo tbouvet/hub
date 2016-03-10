@@ -9,13 +9,7 @@ package org.seedstack.hub.infra.file;
 
 import org.seedstack.business.domain.BaseFactory;
 import org.seedstack.hub.domain.model.component.Component;
-import org.seedstack.hub.domain.model.document.BinaryDocument;
-import org.seedstack.hub.domain.model.document.Document;
-import org.seedstack.hub.domain.model.document.DocumentException;
-import org.seedstack.hub.domain.model.document.DocumentFactory;
-import org.seedstack.hub.domain.model.document.DocumentId;
-import org.seedstack.hub.domain.model.document.TextDocument;
-import org.seedstack.hub.domain.model.document.TextFormat;
+import org.seedstack.hub.domain.model.document.*;
 import org.seedstack.hub.domain.services.text.TextService;
 
 import javax.inject.Inject;

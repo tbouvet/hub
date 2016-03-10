@@ -8,8 +8,6 @@
 package org.seedstack.hub.infra.mongo;
 
 import org.mongodb.morphia.Datastore;
-import org.mongodb.morphia.query.CriteriaContainer;
-import org.mongodb.morphia.query.CriteriaContainerImpl;
 import org.mongodb.morphia.query.Query;
 import org.seedstack.business.assembler.AssemblerTypes;
 import org.seedstack.business.assembler.FluentAssembler;
@@ -18,28 +16,20 @@ import org.seedstack.business.finder.Result;
 import org.seedstack.business.view.Page;
 import org.seedstack.business.view.PaginatedView;
 import org.seedstack.hub.domain.model.component.Component;
-import org.seedstack.hub.domain.model.component.Version;
 import org.seedstack.hub.rest.ComponentCard;
 import org.seedstack.hub.rest.ComponentFinder;
 import org.seedstack.mongodb.morphia.MorphiaDatastore;
-import org.seedstack.seed.core.utils.SeedLoggingUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
-import java.time.LocalDate;
 import java.util.List;
 
 public class ComponentMongoFinder implements ComponentFinder {
-
     @Inject
     @MorphiaDatastore(clientName = "main", dbName = "hub")
     private Datastore datastore;
 
     @Inject
     private FluentAssembler fluentAssembler;
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(ComponentMongoFinder.class);
 
     @Override
     public PaginatedView<ComponentCard> findCards(Page page, String searchName, String sort) {

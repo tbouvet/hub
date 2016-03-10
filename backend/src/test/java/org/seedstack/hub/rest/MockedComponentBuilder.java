@@ -7,15 +7,11 @@
  */
 package org.seedstack.hub.rest;
 
-import org.apache.tomcat.jni.Local;
 import org.seedstack.hub.domain.model.component.*;
 import org.seedstack.hub.domain.model.document.DocumentId;
 import org.seedstack.hub.domain.model.user.UserId;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.ThreadLocalRandom;
 
 public class MockedComponentBuilder {
 
@@ -35,7 +31,7 @@ public class MockedComponentBuilder {
     }
 
     private static Version mockVersion(Integer componentNumber, Integer versionNumber) {
-        Version version = new Version(new VersionId(versionNumber, versionNumber+1, versionNumber+2, "Version ".concat(versionNumber.toString())));
+        Version version = new Version(new VersionId(versionNumber, versionNumber + 1, versionNumber + 2, "Version ".concat(versionNumber.toString())));
         version.setPublicationDate(LocalDate.now().minusDays(componentNumber + versionNumber));
         return version;
     }

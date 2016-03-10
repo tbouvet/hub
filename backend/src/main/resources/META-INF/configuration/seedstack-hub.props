@@ -23,7 +23,7 @@ default-repository = org.seedstack.mongodb.morphia.Morphia
 morphia.clientName = main
 morphia.dbName = hub
 
-[org.seedstack.hub.domain.model.user.*]
+[org.seedstack.hub.domain.model.user.User]
 default-repository =
 
 [org.seedstack.w20]

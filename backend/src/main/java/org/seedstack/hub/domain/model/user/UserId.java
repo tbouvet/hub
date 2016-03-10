@@ -11,8 +11,6 @@ import org.hibernate.validator.constraints.NotBlank;
 import org.mongodb.morphia.annotations.Embedded;
 import org.seedstack.business.domain.BaseValueObject;
 
-import javax.validation.constraints.NotNull;
-
 @Embedded
 public class UserId extends BaseValueObject {
     @NotBlank

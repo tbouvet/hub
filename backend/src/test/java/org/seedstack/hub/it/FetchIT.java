@@ -7,7 +7,6 @@
  */
 package org.seedstack.hub.it;
 
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
@@ -19,7 +18,6 @@ import javax.inject.Named;
 import java.io.File;
 import java.net.URL;
 
-@Ignore
 public class FetchIT extends AbstractSeedIT {
     @Inject
     @Named("git")

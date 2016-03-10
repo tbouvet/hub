@@ -32,7 +32,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class ComponentMongoFinderIT {
 
     @Inject
-    @MorphiaDatastore(clientName = "main", dbName="hub")
+    @MorphiaDatastore(clientName = "main", dbName = "hub")
     private Datastore datastore;
 
     @Inject
@@ -78,7 +78,7 @@ public class ComponentMongoFinderIT {
         PaginatedView<ComponentCard> componentCards = componentFinder.findRecentCards(6);
         List<ComponentCard> recentCards = componentCards.getView();
         assertThat(recentCards).hasSize(6);
-        assertThat(recentCards.get(0).getName()).isEqualToIgnoringCase("Component0");
+        assertThat(recentCards.get(0).getId()).isEqualToIgnoringCase("Component0");
     }
 
     @Test
@@ -86,14 +86,14 @@ public class ComponentMongoFinderIT {
         PaginatedView<ComponentCard> componentCards = componentFinder.findPopularCards(6);
         List<ComponentCard> popular = componentCards.getView();
         assertThat(popular).hasSize(6);
-        assertThat(popular.get(0).getName()).isEqualToIgnoringCase("Component22");
+        assertThat(popular.get(0).getId()).isEqualToIgnoringCase("Component22");
         assertThat(popular.get(0).getStars()).isEqualTo(23);
-        assertThat(popular.get(1).getName()).isEqualToIgnoringCase("Component21");
+        assertThat(popular.get(1).getId()).isEqualToIgnoringCase("Component21");
         assertThat(popular.get(1).getStars()).isEqualTo(22);
     }
 
     @After
     public void tearDown() throws Exception {
-      mockedComponents.forEach(datastore::delete);
+        mockedComponents.forEach(datastore::delete);
     }
 }

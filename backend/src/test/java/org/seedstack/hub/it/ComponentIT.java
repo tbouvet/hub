@@ -8,11 +8,7 @@
 package org.seedstack.hub.it;
 
 import org.junit.Test;
-import org.seedstack.hub.domain.model.component.Component;
-import org.seedstack.hub.domain.model.component.ComponentFactory;
-import org.seedstack.hub.domain.model.component.ComponentId;
-import org.seedstack.hub.domain.model.component.Version;
-import org.seedstack.hub.domain.model.component.VersionId;
+import org.seedstack.hub.domain.model.component.*;
 import org.seedstack.hub.domain.model.document.DocumentId;
 import org.seedstack.hub.domain.model.user.UserId;
 import org.seedstack.seed.it.AbstractSeedIT;
