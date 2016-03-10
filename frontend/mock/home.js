@@ -9,9 +9,6 @@ var home = {
                 "show": "/doc/components/param/show"
             }
         },
-        "create": {
-            "href": "/user/components"
-        },
         "popular": {
             "href": "/popular"
         },

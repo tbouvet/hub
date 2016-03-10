@@ -17,11 +17,15 @@ interface ISpeedDialScope extends ng.IScope {
 
 class HubSpeedDial implements ng.IDirective {
 
+    static $inject = ['$mdMedia', '$mdDialog', '$location'];
+    constructor(private $mdMedia, private $mdDialog, private $location: ng.ILocationService) {
+    };
+
     template:string = speedDialTemplate;
 
     link:ng.IDirectiveLinkFn = (scope:ISpeedDialScope) => {
         scope.showAddComponent = event => {
-            var useFullScreen = (this.$mdMedia('sm') || this.$mdMedia('xs'));
+            var useFullScreen = (this.$mdMedia('xs'));
             var promise = this.$mdDialog.show({
                 controller: 'AddComponentController',
                 controllerAs: '$ctrl',
@@ -36,10 +40,6 @@ class HubSpeedDial implements ng.IDirective {
                 this.$location.path('/hub/component/' + resolvedComponent.name);
             });
         };
-    };
-
-    static $inject = ['$mdMedia', '$mdDialog', '$location'];
-    constructor(private $mdMedia, private $mdDialog, private $location: ng.ILocationService) {
     };
 }
 

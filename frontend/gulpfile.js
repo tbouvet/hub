@@ -39,7 +39,7 @@ gulp.task('copy', ['bower', 'clean', 'ts-compile', 'less-compile'], function () 
             'bower_components/**/*',
             'hub/**/*',
             '!hub/**/*.ts',
-            //'!hub/**/*.js',
+/*            '!hub/!**!/!*.js',*/
             '!hub/**/*.less',
             'w20.app.json'],
         { base : './' })
@@ -60,9 +60,22 @@ gulp.task('optimize', ['ts-compile', 'copy'], function () {
 gulp.task('replace-index', ['copy'], function() {
     gulp.src('index.html')
         .pipe(htmlreplace({
-            replace: {
+/*            replaceLoader: {
                 src: 'hub.min.js',
                 tpl: '<script src="%s"></script>'
+            },*/
+            replaceConfig: {
+                src: [[
+                    '${restPath}/seed-w20/application/configuration',
+                    '${applicationVersion}',
+                    '${timeout}',
+                    '${corsWithCredentials}'
+                ]],
+                tpl: '<html data-w20-app="%s" data-w20-app-version="%s" data-w20-timeout="%s" data-w20-cors-with-credentials="%s">'
+            },
+            replaceTitle: {
+                src: ['${applicationTitle}'],
+                tpl: '<title>%s</title>'
             }
         }))
         .pipe(gulp.dest('dist/'));

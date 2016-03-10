@@ -22,7 +22,7 @@
 var cards =[
     {
         "name": "Castillo",
-        "summary": "in quis sit velit id id eiusmod est dolor adipisicing commodo irure officia sunt excepteur",
+        "summary": "in quis sit velit id id eiusmod est dolor adipisicing.",
         "owner": "Snips",
         "stars": 31,
         "logo": "http://placehold.it/32x32"
