@@ -23,7 +23,7 @@ function isHal(req) {
 }
 
 function isJsonHome(req) {
-    return is(req, 'application/json-home');
+    return is(req, 'application/json-home, application/json');
 }
 
 function setHalResponse(res) {
@@ -42,7 +42,7 @@ function sendCards(cards, index, size, res) {
     })));
 }
 
-function search (array, query) {
+function search(array, query) {
     if (query) {
         return array.filter(card => {
             query = query.toLowerCase();
@@ -54,7 +54,7 @@ function search (array, query) {
 
 }
 
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
 
 app.get('/', (req, res, next) => {
@@ -74,11 +74,17 @@ app.get('/components', (req, res) => {
     sendCards(filteredCards, req.query.pageIndex, req.query.pageSize, res);
 });
 
-app.post('/user/components', (req, res, next) => {
+var componentId = 0;
+app.post('/components', (req, res) => {
+    // Mock 404
     //res.status(404).send();
-    setTimeout(() => {
-        res.json(req.body);
-    }, 5000);
+    var newComponent = cards[0];
+    newComponent.name = "Component"  + componentId++;
+    setTimeout(() => { res.json(newComponent); }, 5000);
+});
+
+app.get('/user/components', (req, res, next) => {
+    // Get the current user components
 });
 
 if (dist === 'dist') {

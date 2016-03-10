@@ -55,7 +55,7 @@ class AddComponentController {
     };
 
     public confirm(repository:IRepository):void {
-        this.promise = this.api('home').enter('create').save({}, repository);
+        this.promise = this.api('home').enter('components', {}).save({}, repository);
         this.promise.$promise
             .then(newComponent => {
                 this.$mdDialog.hide(newComponent);
