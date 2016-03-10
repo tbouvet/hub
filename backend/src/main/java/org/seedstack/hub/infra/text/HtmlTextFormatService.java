@@ -33,7 +33,7 @@ public class HtmlTextFormatService implements TextFormatService {
                 .stream()
                 .map(Element::toString)
                 .filter(this::isRelative)
-                .map(path -> new DocumentId(textDocument.getDocumentId(), path))
+                .map(path -> new DocumentId(textDocument.getId(), path))
                 .collect(toSet());
     }
 

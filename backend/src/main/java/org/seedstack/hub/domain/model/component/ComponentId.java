@@ -7,11 +7,15 @@
  */
 package org.seedstack.hub.domain.model.component;
 
+import org.hibernate.validator.constraints.NotBlank;
+import org.mongodb.morphia.annotations.Embedded;
 import org.seedstack.business.domain.BaseValueObject;
 
+@Embedded
 public class ComponentId extends BaseValueObject {
     public static final ComponentId DEFAULT_COMPONENT = new ComponentId("default");
 
+    @NotBlank
     private String name;
 
     ComponentId() {
@@ -28,6 +32,6 @@ public class ComponentId extends BaseValueObject {
 
     @Override
     public String toString() {
-        return String.format("ComponentId{name='%s'}", name);
+        return name;
     }
 }

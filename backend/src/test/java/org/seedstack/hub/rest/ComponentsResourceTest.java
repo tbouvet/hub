@@ -14,7 +14,12 @@ import mockit.integration.junit4.JMockit;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.seedstack.business.assembler.FluentAssembler;
+import org.seedstack.business.domain.Repository;
 import org.seedstack.business.view.PaginatedView;
+import org.seedstack.hub.application.ImportService;
+import org.seedstack.hub.domain.model.component.Component;
+import org.seedstack.hub.domain.model.component.ComponentId;
 import org.seedstack.seed.rest.RelRegistry;
 import org.seedstack.seed.rest.hal.HalRepresentation;
 
@@ -32,9 +37,14 @@ public class ComponentsResourceTest {
 
     @Injectable
     private ComponentFinder componentFinder;
-
+    @Injectable
+    private Repository<Component, ComponentId> componentRepository;
     @Injectable
     private RelRegistry relRegistry;
+    @Injectable
+    private ImportService importService;
+    @Injectable
+    private FluentAssembler fluentAssembler;
 
     private String searchName = "foo";
     private String sort = "publishedData";

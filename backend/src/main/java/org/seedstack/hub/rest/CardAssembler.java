@@ -5,21 +5,3 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
-package org.seedstack.hub.rest;
-
-import org.seedstack.business.assembler.BaseAssembler;
-import org.seedstack.hub.domain.model.component.Component;
-
-public class CardAssembler extends BaseAssembler<Component, ComponentCard> {
-    @Override
-    protected void doAssembleDtoFromAggregate(ComponentCard componentCard, Component component) {
-        componentCard.setName(component.getEntityId().getName());
-        componentCard.setStars(component.getStars());
-        componentCard.setSummary(component.getDescription().getSummary());
-    }
-
-    @Override
-    protected void doMergeAggregateWithDto(Component component, ComponentCard componentCard) {
-
-    }
-}

@@ -8,7 +8,6 @@
 package org.seedstack.hub.domain.model.component;
 
 import org.seedstack.business.domain.BaseEntity;
-import org.seedstack.hub.application.importer.ImportException;
 
 import java.time.Instant;
 import java.time.LocalDate;
@@ -17,18 +16,17 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.Date;
 
-
 public class Version extends BaseEntity<VersionId> implements Comparable<Version> {
-    private final VersionId versionId;
+    private VersionId versionId;
     private Date publicationDate;
     private String url;
 
-    public Version() {
-        this.versionId = new VersionId("0.0.1");
-    }
-
     public Version(VersionId versionId) {
         this.versionId = versionId;
+    }
+
+    private Version() {
+        // required by morphia
     }
 
     @Override
@@ -36,7 +34,7 @@ public class Version extends BaseEntity<VersionId> implements Comparable<Version
         return versionId;
     }
 
-    public VersionId getVersionId() {
+    public VersionId getId() {
         return versionId;
     }
 
@@ -52,11 +50,11 @@ public class Version extends BaseEntity<VersionId> implements Comparable<Version
         try {
             this.publicationDate = asDate(LocalDate.parse(publicationDate, DateTimeFormatter.ISO_LOCAL_DATE));
         } catch (DateTimeParseException e) {
-            throw new ImportException("Invalid publication date " + publicationDate, e);
+            throw new ComponentException("Invalid publication date " + publicationDate, e);
         }
     }
 
-    // Constructor LocalDate() required by Morphia does not exists, we use conversion from/to java.util.Date
+    // Constructor LocalDate() required by Morphia does not exist, we use conversion from/to java.util.Date
     private LocalDate asLocalDate(Date date) {
         return Instant.ofEpochMilli(date.getTime()).atZone(ZoneId.systemDefault()).toLocalDate();
     }

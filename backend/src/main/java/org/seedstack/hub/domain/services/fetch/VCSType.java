@@ -7,8 +7,10 @@
  */
 package org.seedstack.hub.domain.services.fetch;
 
-public class FetchException extends RuntimeException {
-    public FetchException(String s, Exception e) {
-        super(s, e);
+public enum VCSType {
+    GIT;
+
+    public String qualifier() {
+        return this.name().toLowerCase();
     }
 }

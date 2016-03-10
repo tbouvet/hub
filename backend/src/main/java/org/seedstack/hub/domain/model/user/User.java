@@ -37,7 +37,7 @@ public class User extends BaseAggregateRoot<UserId> {
         return userId;
     }
 
-    public UserId getUserId() {
+    public UserId getId() {
         return userId;
     }
 

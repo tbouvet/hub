@@ -11,6 +11,7 @@ import org.mongodb.morphia.Datastore;
 import org.mongodb.morphia.query.CriteriaContainer;
 import org.mongodb.morphia.query.CriteriaContainerImpl;
 import org.mongodb.morphia.query.Query;
+import org.seedstack.business.assembler.AssemblerTypes;
 import org.seedstack.business.assembler.FluentAssembler;
 import org.seedstack.business.finder.Range;
 import org.seedstack.business.finder.Result;
@@ -50,7 +51,7 @@ public class ComponentMongoFinder implements ComponentFinder {
         if (searchName != null && !"".equals(searchName)) {
             query = query.field("_id.name").containsIgnoreCase(searchName);
         }
-        List<ComponentCard> cards = fluentAssembler.assemble(paginateQuery(query, range)).to(ComponentCard.class);
+        List<ComponentCard> cards = fluentAssembler.assemble(paginateQuery(query, range)).with(AssemblerTypes.MODEL_MAPPER).to(ComponentCard.class);
         return toPaginatedView(cards, query.countAll(), page);
     }
 

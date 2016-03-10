@@ -16,7 +16,6 @@ import org.seedstack.hub.domain.model.component.ComponentId;
 import org.seedstack.hub.domain.model.component.Description;
 import org.seedstack.hub.domain.model.document.DocumentId;
 import org.seedstack.hub.domain.model.user.UserId;
-import org.seedstack.mongodb.morphia.Morphia;
 import org.seedstack.seed.it.SeedITRunner;
 
 import javax.inject.Inject;
@@ -25,7 +24,6 @@ import javax.inject.Inject;
 public class ComponentRepositoryIT {
 
     @Inject
-    @Morphia
     private Repository<Component, ComponentId> componentRepository;
 
     @Test

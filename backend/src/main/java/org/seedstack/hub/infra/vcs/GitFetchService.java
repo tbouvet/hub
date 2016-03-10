@@ -7,8 +7,8 @@
  */
 package org.seedstack.hub.infra.vcs;
 
+import org.eclipse.jgit.api.CreateBranchCommand;
 import org.eclipse.jgit.api.Git;
-import org.eclipse.jgit.api.errors.GitAPIException;
 import org.seedstack.hub.domain.services.fetch.FetchException;
 import org.seedstack.seed.Logging;
 import org.slf4j.Logger;
@@ -25,25 +25,31 @@ public class GitFetchService extends AbstractFetchService {
     protected void doFetch(URL remote, File target) throws FetchException {
         logger.debug("Cloning Git remote {} into directory {}", remote.toExternalForm(), target.getAbsolutePath());
 
-        try (Git result = Git.cloneRepository().setURI(remote.toExternalForm()).setDirectory(target).call()) {
+        try (Git result = Git.cloneRepository().setURI(stripBranchName(remote)).setDirectory(target).call()) {
             String branchName = getBranchName(remote);
 
             logger.debug("Checking out {} branch in directory {}", branchName, target.getAbsolutePath());
 
+            if (result.getRepository().getRef(branchName) == null) {
+                result.branchCreate()
+                        .setName(branchName)
+                        .setUpstreamMode(CreateBranchCommand.SetupUpstreamMode.TRACK)
+                        .setStartPoint("origin/" + branchName)
+                        .call();
+            }
+
             result.checkout().setName(branchName).call();
-        } catch (GitAPIException e) {
+        } catch (Exception e) {
             throw new FetchException("Unable to fetch Git remote " + remote.toExternalForm(), e);
         }
     }
 
+    private String stripBranchName(URL remote) {
+        return remote.getProtocol() + "://" + remote.getHost() + (remote.getPort() == -1 ? "" : ":" + remote.getPort()) + remote.getPath();
+    }
+
     private String getBranchName(URL remote) {
-        String path = remote.getPath();
-        if (path != null) {
-            int index = path.lastIndexOf("#");
-            if (index != -1) {
-                return path.substring(index);
-            }
-        }
-        return "master";
+        String ref = remote.getRef();
+        return ref == null || ref.isEmpty() ? "master" : ref;
     }
 }

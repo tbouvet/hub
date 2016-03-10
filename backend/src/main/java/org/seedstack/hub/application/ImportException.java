@@ -5,10 +5,10 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
-package org.seedstack.hub.domain.services.fetch;
+package org.seedstack.hub.application;
 
-public class FetchException extends RuntimeException {
-    public FetchException(String s, Exception e) {
-        super(s, e);
+public class ImportException extends RuntimeException {
+    public ImportException(String message, Throwable throwable) {
+        super(message, throwable);
     }
 }

@@ -44,7 +44,7 @@ public abstract class Document extends BaseAggregateRoot<DocumentId> {
         return documentId;
     }
 
-    public DocumentId getDocumentId() {
+    public DocumentId getId() {
         return documentId;
     }
 
