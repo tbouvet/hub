@@ -22,5 +22,12 @@ databases = hub
 morphia.clientName = main
 morphia.dbName = hub
 
+
 [org.seedstack.w20]
 masterpage-template = META-INF/resources/index.html
+
+# [proxy]
+# type=HTTP
+# host=proxy.mycompany.com
+# port=8080
+# exclude=.mycompany.com

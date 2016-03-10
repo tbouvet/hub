@@ -11,6 +11,9 @@ import org.mongodb.morphia.annotations.Embedded;
 import org.seedstack.business.domain.BaseValueObject;
 import org.seedstack.hub.domain.model.component.ComponentId;
 
+import java.net.MalformedURLException;
+import java.net.URL;
+
 @Embedded
 public class DocumentId extends BaseValueObject {
     private ComponentId componentId;
@@ -19,6 +22,15 @@ public class DocumentId extends BaseValueObject {
     public DocumentId(ComponentId componentId, String path) {
         this.componentId = componentId;
         this.path = path;
+    }
+
+    public DocumentId(DocumentId documentId, String path) {
+        this.componentId = documentId.componentId;
+        try {
+            this.path = new URL(new URL(documentId.path), path).getPath();
+        } catch (MalformedURLException e) {
+            throw new IllegalArgumentException("Unable to build a document id from " + documentId.getPath() + " and " + path);
+        }
     }
 
     private DocumentId() {
@@ -31,5 +43,10 @@ public class DocumentId extends BaseValueObject {
 
     public String getPath() {
         return path;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("DocumentId{componentId=%s, path='%s'}", componentId, path);
     }
 }

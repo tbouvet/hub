@@ -8,20 +8,13 @@
 package org.seedstack.hub.domain.model.document;
 
 import org.seedstack.business.domain.GenericFactory;
-import org.seedstack.hub.domain.model.component.Component;
 
-import java.nio.charset.Charset;
+import java.io.File;
 
 public interface DocumentFactory extends GenericFactory<Document> {
-    BinaryDocument createBinaryDocument(Component component, String path, String contentType);
+    Document createDocument(DocumentId documentId, File directory);
 
-    TextDocument createTextDocument(Component component, String path, TextFormat textFormat, Charset charset);
+    Document createTextDocument(DocumentId documentId, TextFormat textFormat, File file);
 
-    TextDocument createTextDocument(Component component, String path, TextFormat textFormat);
-
-    TextDocument createMarkdownDocument(Component component, String path, Charset charset);
-
-    TextDocument createAsciiDocDocument(Component component, String path, Charset charset);
-
-    TextDocument createHTMLDocDocument(Component component, String path, Charset charset);
+    BinaryDocument createBinaryDocument(DocumentId documentId, File file);
 }
