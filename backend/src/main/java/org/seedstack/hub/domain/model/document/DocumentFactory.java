@@ -8,8 +8,10 @@
 package org.seedstack.hub.domain.model.document;
 
 import org.seedstack.business.domain.GenericFactory;
+import org.seedstack.hub.domain.model.component.Component;
 
 import java.io.File;
+import java.util.stream.Stream;
 
 public interface DocumentFactory extends GenericFactory<Document> {
     Document createDocument(DocumentId documentId, File directory);
@@ -17,4 +19,6 @@ public interface DocumentFactory extends GenericFactory<Document> {
     Document createTextDocument(DocumentId documentId, TextFormat textFormat, File file);
 
     BinaryDocument createBinaryDocument(DocumentId documentId, File file);
+
+    Stream<Document> createDocuments(Component component, File directory);
 }

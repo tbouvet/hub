@@ -11,7 +11,6 @@ import org.hibernate.validator.constraints.NotBlank;
 import org.mongodb.morphia.annotations.Embedded;
 import org.seedstack.business.domain.BaseValueObject;
 import org.seedstack.hub.domain.model.document.DocumentId;
-import org.seedstack.hub.domain.model.user.UserId;
 
 import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
@@ -31,8 +30,6 @@ public class Description extends BaseValueObject {
     @NotNull
     private DocumentId readme;
     private List<DocumentId> images = new ArrayList<>();
-    // TODO move to Component
-    private List<UserId> maintainers = new ArrayList<>();
 
     public Description(String name, String summary, DocumentId icon, DocumentId readme) {
         this.name = name;
@@ -51,7 +48,6 @@ public class Description extends BaseValueObject {
         this.icon = description.icon;
         this.readme = description.readme;
         this.images = new ArrayList<>(description.images);
-        this.maintainers = new ArrayList<>(description.maintainers);
     }
 
     public String getName() {
@@ -72,10 +68,6 @@ public class Description extends BaseValueObject {
 
     public List<DocumentId> getImages() {
         return Collections.unmodifiableList(images);
-    }
-
-    public List<UserId> getMaintainers() {
-        return Collections.unmodifiableList(maintainers);
     }
 
     public Description setReadme(DocumentId documentId) {
@@ -99,24 +91,6 @@ public class Description extends BaseValueObject {
     public Description replaceImages(List<DocumentId> images) {
         Description description = new Description(this);
         description.images = new ArrayList<>(images);
-        return description;
-    }
-
-    public Description addMaintainer(UserId maintainer) {
-        Description description = new Description(this);
-        description.maintainers.add(maintainer);
-        return description;
-    }
-
-    public Description removeMaintainer(UserId maintainer) {
-        Description description = new Description(this);
-        description.maintainers.remove(maintainer);
-        return description;
-    }
-
-    public Description replaceMaintainers(List<UserId> maintainers) {
-        Description description = new Description(this);
-        description.maintainers = new ArrayList<>(maintainers);
         return description;
     }
 }

@@ -10,7 +10,7 @@ package org.seedstack.hub.domain.model.document;
 public class BinaryDocument extends Document {
     private byte[] data;
 
-    BinaryDocument(DocumentId documentId, String contentType) {
+    public BinaryDocument(DocumentId documentId, String contentType) {
         super(documentId, contentType);
     }
 
@@ -28,6 +28,6 @@ public class BinaryDocument extends Document {
 
     @Override
     public String toString() {
-        return String.format("BinaryDocument{id=%s, contentType=%s, size=%d}", getDocumentId(), getContentType(), data.length);
+        return String.format("BinaryDocument{id=%s, contentType=%s, size=%d}", getId(), getContentType(), data.length);
     }
 }

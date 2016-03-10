@@ -14,7 +14,6 @@ import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.json.JSONException;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.mongodb.morphia.Datastore;
 import org.seedstack.hub.domain.model.component.Component;
@@ -30,7 +29,6 @@ import java.util.stream.IntStream;
 import static com.jayway.restassured.RestAssured.expect;
 import static java.util.stream.Collectors.toList;
 
-@Ignore
 public class ComponentsResourceIT extends AbstractSeedWebIT {
 
     private final List<Component> mockedComponents = IntStream.range(0, 23)
@@ -43,7 +41,7 @@ public class ComponentsResourceIT extends AbstractSeedWebIT {
             "\"self\":{\"href\":\"/components?search=ponent1&pageIndex=1&pageSize=5\"}" +
             "},\"_embedded\":{" +
             "\"components\":[" +
-            "{\"name\":\"Component14\"},{\"name\":\"Component15\"},{\"name\":\"Component16\"},{\"name\":\"Component17\"},{\"name\":\"Component18\"}" +
+            "{\"id\":\"Component14\"},{\"id\":\"Component15\"},{\"id\":\"Component16\"},{\"id\":\"Component17\"},{\"id\":\"Component18\"}" +
             "]}}";
 
     @ArquillianResource
@@ -61,14 +59,12 @@ public class ComponentsResourceIT extends AbstractSeedWebIT {
     @Test
     public void get_with_pagination() throws JSONException {
         mockedComponents.forEach(datastore::save);
-        /////
 
         Response response = expect().statusCode(200).given().header("Content-Type", "application/hal+json")
                 .get(baseURL.toString() + "components?pageIndex=1&pageSize=5&search=ponent1");
 
         JSONAssert.assertEquals(requestWithPagination, response.asString(), false);
 
-        /////
         mockedComponents.forEach(datastore::delete);
     }
 }

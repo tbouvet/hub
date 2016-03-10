@@ -7,7 +7,10 @@
  */
 package org.seedstack.hub.infra.vcs;
 
-import mockit.*;
+import mockit.Injectable;
+import mockit.Mocked;
+import mockit.NonStrictExpectations;
+import mockit.Tested;
 import mockit.integration.junit4.JMockit;
 import org.apache.commons.configuration.Configuration;
 import org.assertj.core.api.Assertions;
@@ -110,20 +113,29 @@ public class ProxySelectorServiceTest {
 
     private void givenProxy(String type, String host, Integer port, String exclude) {
         new NonStrictExpectations() {{
-            application.getConfiguration(); result = configuration;
+            application.getConfiguration();
+            result = configuration;
 
-            configuration.isEmpty(); result = type == null && host == null && port == null;
+            configuration.isEmpty();
+            result = type == null && host == null && port == null;
 
-            configuration.containsKey("type"); result = type != null;
-            configuration.getString("type"); result = type;
+            configuration.containsKey("type");
+            result = type != null;
+            configuration.getString("type");
+            result = type;
 
-            configuration.containsKey("host"); result = host != null;
-            configuration.getString("host"); result = host;
+            configuration.containsKey("host");
+            result = host != null;
+            configuration.getString("host");
+            result = host;
 
-            configuration.containsKey("port"); result = port != null;
-            configuration.getInt("port"); result = port;
+            configuration.containsKey("port");
+            result = port != null;
+            configuration.getInt("port");
+            result = port;
 
-            configuration.getString("exclude", null); result = exclude != null ? ".mycompany.com" : null;
+            configuration.getString("exclude", null);
+            result = exclude != null ? ".mycompany.com" : null;
         }};
     }
 }

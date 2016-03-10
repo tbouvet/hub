@@ -17,12 +17,12 @@ public class TextDocument extends Document {
     private Charset charset;
     private String text;
 
-    TextDocument(DocumentId documentId, TextFormat format) {
+    public TextDocument(DocumentId documentId, TextFormat format) {
         this(documentId, format, Charset.forName("UTF-8"));
     }
 
-    TextDocument(DocumentId documentId, TextFormat format, Charset charset) {
-        super(documentId, String.format("%s; charset=%s", format.getContentType(), charset.name()));
+    public TextDocument(DocumentId documentId, TextFormat format, Charset charset) {
+        super(documentId, String.format("%s; charset=%s", format.contentType(), charset.name()));
         this.format = format;
         this.charset = charset;
     }
@@ -49,6 +49,6 @@ public class TextDocument extends Document {
 
     @Override
     public String toString() {
-        return String.format("TextDocument{id=%s, format=%s, charset=%s, size='%d'}", getDocumentId(), format, charset, text.length());
+        return String.format("TextDocument{id=%s, format=%s, charset=%s, size='%d'}", getId(), format, charset, text.length());
     }
 }

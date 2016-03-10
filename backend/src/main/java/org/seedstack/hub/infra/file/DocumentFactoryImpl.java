@@ -5,19 +5,30 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
-package org.seedstack.hub.domain.model.document;
+package org.seedstack.hub.infra.file;
 
 import org.seedstack.business.domain.BaseFactory;
+import org.seedstack.hub.domain.model.component.Component;
+import org.seedstack.hub.domain.model.document.*;
+import org.seedstack.hub.domain.services.text.TextService;
 
+import javax.inject.Inject;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
+import java.util.HashSet;
 import java.util.Optional;
+import java.util.Set;
+import java.util.function.Function;
+import java.util.stream.Stream;
 
 public class DocumentFactoryImpl extends BaseFactory<Document> implements DocumentFactory {
     public static final Charset TEXT_CHARSET = Charset.forName("UTF-8");
     public static final int MAX_DOCUMENT_SIZE = 2 * 1024 * 1024;
+
+    @Inject
+    private TextService textService;
 
     @Override
     public Document createDocument(DocumentId documentId, File directory) {
@@ -61,9 +72,35 @@ public class DocumentFactoryImpl extends BaseFactory<Document> implements Docume
         return binaryDocument;
     }
 
+    @Override
+    public Stream<Document> createDocuments(Component component, File directory) {
+        Set<DocumentId> documents = new HashSet<>();
+
+        documents.add(component.getDescription().getReadme());
+        documents.add(component.getDescription().getIcon());
+        documents.addAll(component.getDescription().getImages());
+        documents.addAll(component.getDocs());
+
+        return documents.stream()
+                .map(documentId -> buildDocumentStream(documentId, directory))
+                .flatMap(Function.identity());
+    }
+
+    private Stream<Document> buildDocumentStream(DocumentId documentId, File directory) {
+        Document document = createDocument(documentId, directory);
+        if (document instanceof TextDocument) {
+            return Stream.concat(
+                    Stream.of(document),
+                    textService.findReferences((TextDocument) document).stream().map(referenceDocumentId -> createDocument(referenceDocumentId, directory))
+            );
+        } else {
+            return Stream.of(document);
+        }
+    }
+
     private Optional<TextFormat> detectTextFormat(File file) {
         for (TextFormat textFormat : TextFormat.values()) {
-            for (String extension : textFormat.getValidExtensions()) {
+            for (String extension : textFormat.validExtensions()) {
                 if (file.getName().endsWith(extension)) {
                     return Optional.of(textFormat);
                 }

@@ -5,19 +5,15 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
-package org.seedstack.hub.application.importer;
+package org.seedstack.hub.application;
 
 import org.seedstack.business.Service;
 import org.seedstack.hub.domain.model.component.Component;
-import org.seedstack.hub.domain.model.document.Document;
+import org.seedstack.hub.domain.services.fetch.VCSType;
 
-import java.io.File;
-import java.util.Set;
-import java.util.stream.Stream;
+import java.net.URL;
 
 @Service
 public interface ImportService {
-    Component importComponent(File directory);
-
-    Stream<Document> streamDocuments(Component component, File directory);
+    Component importComponent(VCSType vcsType, URL url);
 }

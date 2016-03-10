@@ -35,7 +35,7 @@ public class TextServiceImpl implements TextService {
             for (File file : files) {
                 if (file.isFile()) {
                     for (TextFormat textFormat : TextFormat.values()) {
-                        for (String validExtension : textFormat.getValidExtensions()) {
+                        for (String validExtension : textFormat.validExtensions()) {
                             if (String.format("%s.%s", name, validExtension).equalsIgnoreCase(file.getName())) {
                                 return new DocumentId(componentId, file.getName());
                             }
@@ -61,7 +61,7 @@ public class TextServiceImpl implements TextService {
     private TextFormatService getTextFormatService(TextDocument textDocument) {
         return domainRegistry.getService(
                 TextFormatService.class,
-                textDocument.getFormat().getTextRenderingServiceQualifier()
+                textDocument.getFormat().qualifier()
         );
     }
 }

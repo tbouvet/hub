@@ -38,6 +38,8 @@ public class Component extends BaseAggregateRoot<ComponentId> {
     private List<DocumentId> docs = new ArrayList<>();
     @Min(0)
     private int stars = 0;
+    private List<UserId> maintainers = new ArrayList<>();
+
 
     public Component(ComponentId componentId, UserId owner, Description description) {
         this.componentId = componentId;
@@ -54,7 +56,7 @@ public class Component extends BaseAggregateRoot<ComponentId> {
         return componentId;
     }
 
-    public ComponentId getComponentId() {
+    public ComponentId getId() {
         return componentId;
     }
 
@@ -70,19 +72,19 @@ public class Component extends BaseAggregateRoot<ComponentId> {
         return state;
     }
 
-    public void publish() throws ChangeStateException {
+    public void publish() throws ComponentException {
         if (state == State.PENDING || state == State.ARCHIVED) {
             state = State.PUBLISHED;
         } else {
-            throw new ChangeStateException("Component cannot be published");
+            throw new ComponentException("Component cannot be published");
         }
     }
 
-    public void archive() throws ChangeStateException {
+    public void archive() throws ComponentException {
         if (state == State.PUBLISHED) {
             state = State.ARCHIVED;
         } else {
-            throw new ChangeStateException("Component cannot be archived");
+            throw new ComponentException("Component cannot be archived");
         }
     }
 
@@ -131,5 +133,22 @@ public class Component extends BaseAggregateRoot<ComponentId> {
 
     public int getStars() {
         return stars;
+    }
+
+    public List<UserId> getMaintainers() {
+        return Collections.unmodifiableList(maintainers);
+    }
+
+    public void addMaintainer(UserId maintainer) {
+        this.maintainers.add(maintainer);
+    }
+
+    public void removeMaintainer(UserId maintainer) {
+        this.maintainers.remove(maintainer);
+    }
+
+    public void replaceMaintainers(List<UserId> maintainers) {
+        this.maintainers.clear();
+        this.maintainers.addAll(maintainers);
     }
 }

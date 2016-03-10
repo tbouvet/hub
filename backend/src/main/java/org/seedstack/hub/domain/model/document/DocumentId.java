@@ -7,16 +7,20 @@
  */
 package org.seedstack.hub.domain.model.document;
 
+import org.hibernate.validator.constraints.NotBlank;
 import org.mongodb.morphia.annotations.Embedded;
 import org.seedstack.business.domain.BaseValueObject;
 import org.seedstack.hub.domain.model.component.ComponentId;
 
+import javax.validation.constraints.NotNull;
 import java.net.MalformedURLException;
 import java.net.URL;
 
 @Embedded
 public class DocumentId extends BaseValueObject {
+    @NotNull
     private ComponentId componentId;
+    @NotBlank
     private String path;
 
     public DocumentId(ComponentId componentId, String path) {
@@ -47,6 +51,6 @@ public class DocumentId extends BaseValueObject {
 
     @Override
     public String toString() {
-        return String.format("DocumentId{componentId=%s, path='%s'}", componentId, path);
+        return componentId + (path.startsWith("/") ? path : "/" + path);
     }
 }

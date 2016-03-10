@@ -46,7 +46,7 @@ public class MarkdownTextFormatService implements TextFormatService {
                 .stream()
                 .map(ReferenceNode::getUrl)
                 .filter(this::isRelative)
-                .map(path -> new DocumentId(textDocument.getDocumentId(), path))
+                .map(path -> new DocumentId(textDocument.getId(), path))
                 .collect(toSet());
     }
 }

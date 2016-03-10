@@ -19,15 +19,18 @@ hosts = localhost
 databases = hub
 
 [org.seedstack.hub.domain.model.*]
+default-repository = org.seedstack.mongodb.morphia.Morphia
 morphia.clientName = main
 morphia.dbName = hub
 
+[org.seedstack.hub.domain.model.user.User]
+default-repository =
 
 [org.seedstack.w20]
 masterpage-template = META-INF/resources/index.html
 
 # [proxy]
-# type=HTTP
-# host=proxy.mycompany.com
-# port=8080
-# exclude=.mycompany.com
+# type = HTTP
+# host = proxy.mycompany.com
+# port = 8080
+# exclude = .mycompany.com

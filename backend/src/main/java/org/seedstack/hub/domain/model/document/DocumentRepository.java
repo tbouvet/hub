@@ -5,14 +5,9 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
-package org.seedstack.hub.application.importer;
+package org.seedstack.hub.domain.model.document;
 
-public class ImportException extends RuntimeException {
-    public ImportException(String message, Throwable cause) {
-        super(message, cause);
-    }
+import org.seedstack.business.domain.GenericRepository;
 
-    public ImportException(String s) {
-        super(s);
-    }
+public interface DocumentRepository extends GenericRepository<Document, DocumentId> {
 }

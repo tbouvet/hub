@@ -7,8 +7,12 @@
  */
 package org.seedstack.hub.domain.model.component;
 
-public class ChangeStateException extends Exception {
-    public ChangeStateException(String message) {
+public class ComponentException extends RuntimeException {
+    public ComponentException(String message) {
         super(message);
+    }
+
+    public ComponentException(String message, Throwable cause) {
+        super(message, cause);
     }
 }

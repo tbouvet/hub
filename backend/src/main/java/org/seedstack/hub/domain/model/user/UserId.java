@@ -7,12 +7,13 @@
  */
 package org.seedstack.hub.domain.model.user;
 
+import org.hibernate.validator.constraints.NotBlank;
+import org.mongodb.morphia.annotations.Embedded;
 import org.seedstack.business.domain.BaseValueObject;
 
-import javax.validation.constraints.NotNull;
-
+@Embedded
 public class UserId extends BaseValueObject {
-    @NotNull
+    @NotBlank
     private String id;
 
     public UserId(String id) {
@@ -27,4 +28,8 @@ public class UserId extends BaseValueObject {
         return id;
     }
 
+    @Override
+    public String toString() {
+        return id;
+    }
 }

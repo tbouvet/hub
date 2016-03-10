@@ -20,15 +20,15 @@ public enum TextFormat {
         this.validExtensions = validExtensions;
     }
 
-    public String[] getValidExtensions() {
+    public String[] validExtensions() {
         return validExtensions;
     }
 
-    public String getContentType() {
+    public String contentType() {
         return contentType;
     }
 
-    public String getTextRenderingServiceQualifier() {
+    public String qualifier() {
         return this.name().toLowerCase();
     }
 }
