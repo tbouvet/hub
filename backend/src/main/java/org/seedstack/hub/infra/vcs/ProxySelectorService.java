@@ -15,10 +15,18 @@ import org.seedstack.seed.LifecycleListener;
 
 import javax.inject.Inject;
 import java.io.IOException;
-import java.net.*;
+import java.net.InetSocketAddress;
+import java.net.Proxy;
+import java.net.ProxySelector;
+import java.net.SocketAddress;
+import java.net.URI;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.regex.Pattern;
+
+import static java.util.stream.Collectors.toList;
 
 public class ProxySelectorService extends ProxySelector implements LifecycleListener {
 
@@ -26,10 +34,10 @@ public class ProxySelectorService extends ProxySelector implements LifecycleList
     public static final String PORT = "port";
     public static final String HOST = "host";
     public static final String TYPE = "type";
-    public static final String EXCLUDE = "exclude";
+    public static final String EXCLUSIONS = "exclusions";
     private ProxySelector defaultProxySelector;
     private Optional<Proxy> proxy = Optional.empty();
-    private Optional<String> exclude = Optional.empty();
+    private List<Pattern> exclusions = new ArrayList<>();
 
     @Inject
     private Application application;
@@ -53,7 +61,18 @@ public class ProxySelectorService extends ProxySelector implements LifecycleList
     }
 
     private boolean isNotExcluded(URI uri) {
-        return !exclude.isPresent() || !uri.getHost().contains(exclude.get());
+        String host = uri.getHost();
+        if ("localhost".equals(host) || "127.0.0.1".equals(host)) {
+            return false;
+        }
+
+        for (Pattern exclusion : exclusions) {
+            if (exclusion.matcher(host).matches()) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     @Override
@@ -87,12 +106,19 @@ public class ProxySelectorService extends ProxySelector implements LifecycleList
             }
             int port = proxyConfig.getInt(PORT);
 
-            exclude = Optional.ofNullable(proxyConfig.getString(EXCLUDE, null));
+            String[] exclusionsConfig = proxyConfig.getStringArray(EXCLUSIONS);
+            if (exclusionsConfig != null) {
+                exclusions = Arrays.stream(exclusionsConfig).map(this::makePattern).collect(toList());
+            }
             proxy = Optional.of(new Proxy(Proxy.Type.valueOf(type), new InetSocketAddress(url, port)));
         } else {
             proxy = Optional.empty();
-            exclude = Optional.empty();
+            exclusions = new ArrayList<>();
         }
+    }
+
+    private Pattern makePattern(String noProxy) {
+        return Pattern.compile(noProxy.replaceAll("\\.", "\\\\.").replaceAll("\\*", ".*"));
     }
 
     @Override

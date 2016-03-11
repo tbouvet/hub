@@ -49,7 +49,7 @@ public class ProxySelectorServiceTest {
 
     @Test
     public void testWithNoProxy() throws Exception {
-        givenProxy(null, null, null, null);
+        givenProxy(null, null, null);
         underTest.started();
         List<Proxy> select = underTest.select(new URI("http://localhost:42"));
         underTest.stopping();
@@ -64,7 +64,7 @@ public class ProxySelectorServiceTest {
 
     @Test
     public void testConfigurationError() throws Exception {
-        givenProxy("HTTP", null, 8080, null);
+        givenProxy("HTTP", null, 8080);
         try {
             underTest.started();
             Assertions.failBecauseExceptionWasNotThrown(ConfigurationException.class);
@@ -75,16 +75,16 @@ public class ProxySelectorServiceTest {
 
     @Test
     public void testWithProxy() throws Exception {
-        givenProxy("HTTP", "proxy.mycompany.com", 8080, null);
+        givenProxy("HTTP", "proxy.mycompany.com", 8080);
         underTest.started();
-        List<Proxy> select = underTest.select(new URI("http://localhost"));
+        List<Proxy> select = underTest.select(new URI("http://app.otherdomain.com"));
         underTest.stopping();
         assertProxy(select, Proxy.Type.HTTP, "proxy.mycompany.com", 8080);
     }
 
     @Test
     public void testProxyWithExclusion() throws Exception {
-        givenProxy("HTTP", "proxy.mycompany.com", 8080, "mycompany.com");
+        givenProxy("HTTP", "proxy.mycompany.com", 8080, "*.mycompany.com");
         underTest.started();
         List<Proxy> select = underTest.select(new URI("http://app.mycompany.com"));
         underTest.stopping();
@@ -92,10 +92,32 @@ public class ProxySelectorServiceTest {
     }
 
     @Test
-    public void testProxyWithExclusionNoMatch() throws Exception {
-        givenProxy("HTTP", "proxy.mycompany.com", 8080, "mycompany.com");
+    public void testProxyWithLocalhost() throws Exception {
+        givenProxy("HTTP", "proxy.mycompany.com", 8080);
         underTest.started();
         List<Proxy> select = underTest.select(new URI("http://localhost"));
+        underTest.stopping();
+        assertNoProxy(select);
+    }
+
+    @Test
+    public void testProxyWithMultipleExclusion() throws Exception {
+        givenProxy("HTTP", "proxy.mycompany.com", 8080, "*.mycompany.com", "*.otherdomain.com");
+        underTest.started();
+        List<Proxy> select1 = underTest.select(new URI("http://app.mycompany.com"));
+        List<Proxy> select2 = underTest.select(new URI("http://app.otherdomain.com"));
+        List<Proxy> select3 = underTest.select(new URI("http://app.yetanotherdomain.com"));
+        underTest.stopping();
+        assertNoProxy(select1);
+        assertNoProxy(select2);
+        assertProxy(select3, Proxy.Type.HTTP, "proxy.mycompany.com", 8080);
+    }
+
+    @Test
+    public void testProxyWithExclusionNoMatch() throws Exception {
+        givenProxy("HTTP", "proxy.mycompany.com", 8080, "*.mycompany.com");
+        underTest.started();
+        List<Proxy> select = underTest.select(new URI("http://app.otherdomain.com"));
         underTest.stopping();
         assertProxy(select, Proxy.Type.HTTP, "proxy.mycompany.com", 8080);
     }
@@ -111,7 +133,7 @@ public class ProxySelectorServiceTest {
         Assertions.assertThat(((InetSocketAddress) select.get(0).address()).getPort()).isEqualTo(port);
     }
 
-    private void givenProxy(String type, String host, Integer port, String exclude) {
+    private void givenProxy(String type, String host, Integer port, String... exclusions) {
         new NonStrictExpectations() {{
             application.getConfiguration();
             result = configuration;
@@ -134,8 +156,8 @@ public class ProxySelectorServiceTest {
             configuration.getInt("port");
             result = port;
 
-            configuration.getString("exclude", null);
-            result = exclude != null ? ".mycompany.com" : null;
+            configuration.getStringArray("exclusions");
+            result = exclusions != null ? exclusions : null;
         }};
     }
 }

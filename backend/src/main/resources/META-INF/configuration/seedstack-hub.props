@@ -33,4 +33,4 @@ masterpage-template = META-INF/resources/index.html
 # type = HTTP
 # host = proxy.mycompany.com
 # port = 8080
-# exclude = .mycompany.com
+# exclusions = .mycompany.com
