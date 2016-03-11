@@ -7,8 +7,6 @@
  */
 package org.seedstack.hub.infra.text;
 
-import org.jsoup.Jsoup;
-import org.jsoup.safety.Whitelist;
 import org.pegdown.Extensions;
 import org.pegdown.PegDownProcessor;
 import org.pegdown.ast.ReferenceNode;
@@ -33,10 +31,9 @@ public class MarkdownTextFormatService implements TextFormatService {
             Extensions.EXTANCHORLINKS
     );
 
-
     @Override
     public String renderHtml(TextDocument textDocument) {
-        return Jsoup.clean(pegDownProcessor.markdownToHtml(textDocument.getText()), Whitelist.basic());
+        return HtmlTextFormatService.cleanHtml(pegDownProcessor.markdownToHtml(textDocument.getText()));
     }
 
     @Override
