@@ -12,7 +12,6 @@ import org.pegdown.PegDownProcessor;
 import org.pegdown.ast.ReferenceNode;
 import org.seedstack.hub.domain.model.document.DocumentId;
 import org.seedstack.hub.domain.model.document.TextDocument;
-import org.seedstack.hub.domain.services.text.TextFormatService;
 
 import javax.inject.Named;
 import java.util.Set;
@@ -20,7 +19,7 @@ import java.util.Set;
 import static java.util.stream.Collectors.toSet;
 
 @Named("markdown")
-public class MarkdownTextFormatService implements TextFormatService {
+public class MarkdownTextFormatService extends AbstractTextFormatService {
     private final PegDownProcessor pegDownProcessor = new PegDownProcessor(Extensions.AUTOLINKS |
             Extensions.TABLES |
             Extensions.SMARTS |
@@ -33,7 +32,7 @@ public class MarkdownTextFormatService implements TextFormatService {
 
     @Override
     public String renderHtml(TextDocument textDocument) {
-        return HtmlTextFormatService.cleanHtml(pegDownProcessor.markdownToHtml(textDocument.getText()));
+        return cleanHtml(pegDownProcessor.markdownToHtml(textDocument.getText()));
     }
 
     @Override

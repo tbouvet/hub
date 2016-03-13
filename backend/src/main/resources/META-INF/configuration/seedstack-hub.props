@@ -6,13 +6,15 @@
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 #
 
+[org.seedstack]
+mongodb.clients = main
+w20.pretty-urls = false
+w20.masterpage-template = META-INF/resources/index.html
+
 [org.seedstack.seed.core]
 application-id = seedstack-hub
 application-name = SeedStack.hub
 version = 1.0.0
-
-[org.seedstack.mongodb]
-clients = main
 
 [org.seedstack.mongodb.client.main]
 hosts = localhost
@@ -25,9 +27,6 @@ morphia.dbName = hub
 
 [org.seedstack.hub.domain.model.user.User]
 default-repository =
-
-[org.seedstack.w20]
-masterpage-template = META-INF/resources/index.html
 
 # [proxy]
 # type = HTTP

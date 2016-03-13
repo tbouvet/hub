@@ -15,7 +15,7 @@ enum RepositoryType {
 }
 
 interface IRepository {
-    type: RepositoryType;
+    vcs: RepositoryType;
     url: string;
 }
 
@@ -46,7 +46,7 @@ class AddComponentController {
     static $inject = ['HomeService', '$mdDialog'];
 
     constructor(private api, private $mdDialog) {
-        this.repository.type = this.repositoryTypes[0];
+        this.repository.vcs = this.repositoryTypes[0];
         this.repository.url = '';
     };
 

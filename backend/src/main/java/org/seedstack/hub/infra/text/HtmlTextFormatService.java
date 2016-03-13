@@ -19,7 +19,7 @@ import java.util.Set;
 import static java.util.stream.Collectors.toSet;
 
 @Named("html")
-public class HtmlTextFormatService implements TextFormatService {
+public class HtmlTextFormatService extends AbstractTextFormatService {
     @Override
     public String renderHtml(TextDocument textDocument) {
         return cleanHtml(textDocument.getText());
@@ -34,9 +34,5 @@ public class HtmlTextFormatService implements TextFormatService {
                 .filter(this::isRelative)
                 .map(path -> new DocumentId(textDocument.getId(), path))
                 .collect(toSet());
-    }
-
-    static String cleanHtml(String rawHtml) {
-        return rawHtml;
     }
 }

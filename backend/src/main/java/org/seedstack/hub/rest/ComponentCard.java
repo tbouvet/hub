@@ -7,11 +7,8 @@
  */
 package org.seedstack.hub.rest;
 
-import org.seedstack.business.assembler.DtoOf;
-import org.seedstack.hub.domain.model.component.Component;
 import org.seedstack.seed.rest.hal.HalRepresentation;
 
-@DtoOf(Component.class)
 public class ComponentCard extends HalRepresentation {
     private String id;
     private String name;

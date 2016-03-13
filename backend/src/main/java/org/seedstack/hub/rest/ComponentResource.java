@@ -25,6 +25,7 @@ import org.seedstack.seed.rest.hal.Link;
 import org.slf4j.Logger;
 
 import javax.inject.Inject;
+import javax.servlet.ServletContext;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -35,9 +36,13 @@ import java.net.URL;
 import java.util.Optional;
 
 import static java.util.Optional.ofNullable;
+import static java.util.stream.Collectors.toList;
 
-@Path("/components")
+@Path("/")
 public class ComponentResource {
+    public static final int DEFAULT_QUANTITY = 6;
+    public static final String RECENT = "recent";
+    public static final String POPULAR = "popular";
     public static final String COMPONENTS = "components";
     public static final String COMPONENT = "component";
 
@@ -51,33 +56,94 @@ public class ComponentResource {
     private ImportService importService;
     @Inject
     private FluentAssembler fluentAssembler;
+    @Inject
+    ServletContext servletContext;
     @Logging
     private Logger logger;
 
     @Rel(value = COMPONENTS, home = true)
     @GET
-    @Produces({"application/json", "application/hal"})
-    public HalRepresentation getList(@QueryParam("search") String searchName, @BeanParam PageInfo pageInfo,
+    @Produces({"application/json", "application/hal+json"})
+    @Path("/components")
+    public HalRepresentation list(@QueryParam("search") String searchName, @BeanParam PageInfo pageInfo,
                                      @QueryParam("sort") String sort) {
         PaginatedView<ComponentCard> paginatedView = componentFinder.findCards(pageInfo.page(), searchName, sort);
-        return buildListHALRepresentation(paginatedView, searchName, pageInfo);
+        updateUrls(paginatedView);
+        return buildHALRepresentation(paginatedView, searchName, pageInfo);
+    }
+
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces({"application/json", "application/hal+json"})
+    @Path("/components")
+    public Response post(@FormParam("vcs") @NotBlank String vcs, @FormParam("url") @NotBlank String sourceUrl) throws URISyntaxException {
+        VCSType vcsType;
+        try {
+            vcsType = VCSType.valueOf(vcs.toUpperCase());
+        } catch (IllegalArgumentException e) {
+            throw new BadRequestException("Unsupported VCS type " + vcs);
+        }
+
+        Component component;
+        try {
+            component = importService.importComponent(vcsType, new URL(sourceUrl));
+        } catch (MalformedURLException e) {
+            throw new BadRequestException("Malformed URL " + sourceUrl);
+        } catch (Exception e) {
+            logger.error("Error during component import", e);
+            throw new WebApplicationException(400);
+        }
+
+        ComponentCard componentCard = fluentAssembler.assemble(component).with(AssemblerTypes.MODEL_MAPPER).to(ComponentCard.class);
+        updateUrls(componentCard);
+        return Response.created(new URI(relRegistry.uri(COMPONENT).set("componentId", componentCard.getId()).expand())).entity(componentCard).build();
     }
 
     @Rel(value = COMPONENT, home = true)
     @GET
-    @Path("/{componentId}")
-    @Produces({"application/json", "application/hal"})
-    public HalRepresentation getList(@PathParam("componentId") String componentId) {
+    @Produces({"application/json", "application/hal+json"})
+    @Path("/components/{componentId}")
+    public ComponentDetails details(@PathParam("componentId") String componentId) {
         Component component = componentRepository.load(new ComponentId(componentId));
 
         if (component == null) {
             throw new NotFoundException("Component " + componentId + " not found");
         }
 
-        return fluentAssembler.assemble(component).with(AssemblerTypes.MODEL_MAPPER).to(ComponentDetails.class);
+        ComponentDetails componentDetails = fluentAssembler.assemble(component).with(AssemblerTypes.MODEL_MAPPER).to(ComponentDetails.class);
+        updateUrls(componentDetails);
+        return componentDetails;
     }
 
-    private HalRepresentation buildListHALRepresentation(PaginatedView<ComponentCard> paginatedView, String searchName, PageInfo pageInfo) {
+    @Rel(value = POPULAR, home = true)
+    @GET
+    @Produces({"application/json", "application/hal+json"})
+    @Path("/popular")
+    public HalRepresentation popularCards() {
+        HalRepresentation halRepresentation = new HalRepresentation();
+        PaginatedView<ComponentCard> popularCards = componentFinder.findPopularCards(DEFAULT_QUANTITY);
+        updateUrls(popularCards);
+        halRepresentation.embedded(POPULAR, popularCards);
+        halRepresentation.link("self", relRegistry.uri(POPULAR).expand());
+
+        return halRepresentation;
+    }
+
+    @Rel(value = RECENT, home = true)
+    @GET
+    @Produces({"application/json", "application/hal+json"})
+    @Path("/recent")
+    public HalRepresentation recentCards() {
+        HalRepresentation halRepresentation = new HalRepresentation();
+        PaginatedView<ComponentCard> recentCards = componentFinder.findRecentCards(DEFAULT_QUANTITY);
+        updateUrls(recentCards);
+        halRepresentation.embedded(RECENT, recentCards);
+        halRepresentation.link("self", relRegistry.uri(RECENT).expand());
+
+        return halRepresentation;
+    }
+
+    private HalRepresentation buildHALRepresentation(PaginatedView<ComponentCard> paginatedView, String searchName, PageInfo pageInfo) {
         HalRepresentation halRepresentation = new HalRepresentation();
         halRepresentation.embedded(COMPONENTS, paginatedView.getView());
 
@@ -103,29 +169,18 @@ public class ComponentResource {
         return link.expand();
     }
 
-    @POST
-    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-    @Produces({"application/json", "application/hal"})
-    public Response post(@FormParam("vcs") @NotBlank String vcs, @FormParam("url") @NotBlank String sourceUrl) throws URISyntaxException {
-        VCSType vcsType;
-        try {
-            vcsType = VCSType.valueOf(vcs.toUpperCase());
-        } catch (IllegalArgumentException e) {
-            throw new BadRequestException("Unsupported VCS type " + vcs);
-        }
+    private void updateUrls(ComponentDetails componentDetails) {
+        componentDetails.setImages(componentDetails.getImages().stream().map(url -> servletContext.getContextPath() + "/" + url).collect(toList()));
+        componentDetails.setDocs(componentDetails.getDocs().stream().map(url -> servletContext.getContextPath() + "/" + url).collect(toList()));
+        componentDetails.setIcon(servletContext.getContextPath() + "/" + componentDetails.getIcon());
+        componentDetails.setReadme(servletContext.getContextPath() + "/" + componentDetails.getReadme());
+    }
 
-        Component component;
-        try {
-            component = importService.importComponent(vcsType, new URL(sourceUrl));
-        } catch (MalformedURLException e) {
-            throw new BadRequestException("Malformed URL " + sourceUrl);
-        } catch (Exception e) {
-            logger.error("Error during component import", e);
-            throw new WebApplicationException(400);
-        }
+    private void updateUrls(ComponentCard componentCard) {
+        componentCard.setIcon(servletContext.getContextPath() + "/" + componentCard.getIcon());
+    }
 
-        ComponentCard componentCard = fluentAssembler.assemble(component).with(AssemblerTypes.MODEL_MAPPER).to(ComponentCard.class);
-
-        return Response.created(new URI(relRegistry.uri(COMPONENT).set("componentId", componentCard.getId()).expand())).entity(componentCard).build();
+    private void updateUrls(PaginatedView<ComponentCard> paginatedView) {
+        paginatedView.getView().stream().forEach(this::updateUrls);
     }
 }
