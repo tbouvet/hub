@@ -11,26 +11,13 @@ import org.seedstack.business.Service;
 import org.seedstack.hub.domain.model.document.DocumentId;
 import org.seedstack.hub.domain.model.document.TextDocument;
 
-import java.io.File;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.Set;
 
 @Service
 public interface TextFormatService {
+
     String renderHtml(TextDocument textDocument);
 
     Set<DocumentId> findRelativeReferences(TextDocument textDocument);
 
-    default boolean isRelative(String rawPath) {
-        try {
-            URL src = new URL(rawPath);
-            String path = src.getPath();
-            return (src.getProtocol() == null || src.getProtocol().isEmpty()) &&
-                    !path.startsWith("/") &&
-                    !new File(path).toPath().normalize().toString().contains("..");
-        } catch (MalformedURLException e) {
-            return false;
-        }
-    }
 }

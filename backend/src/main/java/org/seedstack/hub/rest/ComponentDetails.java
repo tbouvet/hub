@@ -7,13 +7,10 @@
  */
 package org.seedstack.hub.rest;
 
-import org.seedstack.business.assembler.DtoOf;
-import org.seedstack.hub.domain.model.component.Component;
 import org.seedstack.seed.rest.hal.HalRepresentation;
 
 import java.util.List;
 
-@DtoOf(Component.class)
 public class ComponentDetails extends HalRepresentation {
     private String id;
     private String owner;
@@ -23,6 +20,7 @@ public class ComponentDetails extends HalRepresentation {
     private String readme;
     private List<String> images;
     private List<String> docs;
+    private int stars;
     private List<String> maintainers;
 
     public String getId() {
@@ -87,6 +85,14 @@ public class ComponentDetails extends HalRepresentation {
 
     public void setDocs(List<String> docs) {
         this.docs = docs;
+    }
+
+    public int getStars() {
+        return stars;
+    }
+
+    public void setStars(int stars) {
+        this.stars = stars;
     }
 
     public List<String> getMaintainers() {

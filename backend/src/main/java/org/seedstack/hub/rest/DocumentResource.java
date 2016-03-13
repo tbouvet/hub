@@ -13,15 +13,19 @@ import org.seedstack.hub.domain.model.document.BinaryDocument;
 import org.seedstack.hub.domain.model.document.Document;
 import org.seedstack.hub.domain.model.document.DocumentId;
 import org.seedstack.hub.domain.model.document.TextDocument;
+import org.seedstack.hub.domain.services.text.TextService;
 
 import javax.inject.Inject;
 import javax.ws.rs.*;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-@Path("/components/{componentId}/{documentPath:.+}")
+@Path("/components/{componentId}/files/{documentPath:.+}")
 public class DocumentResource {
     @Inject
     private Repository<Document, DocumentId> documentRepository;
+    @Inject
+    private TextService textService;
 
     @GET
     public Response retrieveDocument(@PathParam("componentId") String componentId, @PathParam("documentPath") String path) {
@@ -31,7 +35,7 @@ public class DocumentResource {
         }
 
         if (doc instanceof TextDocument) {
-            return Response.ok(((TextDocument) doc).getText()).type("text/plain").build();
+            return Response.ok(textService.renderHtml((TextDocument) doc)).type(MediaType.TEXT_HTML_TYPE).build();
         } else if (doc instanceof BinaryDocument) {
             return Response.ok(((BinaryDocument) doc).getData()).type(doc.getContentType()).build();
         } else {

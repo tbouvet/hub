@@ -9,7 +9,6 @@ package org.seedstack.hub.infra.text;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Element;
-import org.jsoup.safety.Whitelist;
 import org.seedstack.hub.domain.model.document.DocumentId;
 import org.seedstack.hub.domain.model.document.TextDocument;
 import org.seedstack.hub.domain.services.text.TextFormatService;
@@ -20,24 +19,20 @@ import java.util.Set;
 import static java.util.stream.Collectors.toSet;
 
 @Named("html")
-public class HtmlTextFormatService implements TextFormatService {
+public class HtmlTextFormatService extends AbstractTextFormatService {
     @Override
     public String renderHtml(TextDocument textDocument) {
-        return cleanHtml(textDocument);
+        return cleanHtml(textDocument.getText());
     }
 
     @Override
     public Set<DocumentId> findRelativeReferences(TextDocument textDocument) {
-        return Jsoup.parse(cleanHtml(textDocument))
+        return Jsoup.parse(cleanHtml(textDocument.getText()))
                 .getElementsByTag("img")
                 .stream()
                 .map(Element::toString)
                 .filter(this::isRelative)
                 .map(path -> new DocumentId(textDocument.getId(), path))
                 .collect(toSet());
-    }
-
-    private String cleanHtml(TextDocument textDocument) {
-        return Jsoup.clean(textDocument.getText(), Whitelist.basic());
     }
 }

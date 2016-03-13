@@ -23,6 +23,7 @@ import org.seedstack.hub.domain.model.component.ComponentId;
 import org.seedstack.seed.rest.RelRegistry;
 import org.seedstack.seed.rest.hal.HalRepresentation;
 
+import javax.servlet.ServletContext;
 import java.util.List;
 import java.util.stream.IntStream;
 
@@ -45,6 +46,8 @@ public class ComponentsResourceTest {
     private ImportService importService;
     @Injectable
     private FluentAssembler fluentAssembler;
+    @Injectable
+    private ServletContext servletContext;
 
     private String searchName = "foo";
     private String sort = "publishedData";
@@ -65,7 +68,7 @@ public class ComponentsResourceTest {
 
     @Test
     public void testGetHasEmbeddedComponents() {
-        HalRepresentation halRepresentation = undertest.getList(searchName, new PageInfo(pageIndex, pageSize), sort);
+        HalRepresentation halRepresentation = undertest.list(searchName, new PageInfo(pageIndex, pageSize), sort);
 
         assertThat(halRepresentation).isNotNull();
         assertThat(halRepresentation.getEmbedded().get(ComponentResource.COMPONENTS)).isEqualTo(componentCards);

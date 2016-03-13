@@ -9,9 +9,16 @@ package org.seedstack.hub.infra.file;
 
 import org.seedstack.business.domain.BaseFactory;
 import org.seedstack.hub.domain.model.component.Component;
-import org.seedstack.hub.domain.model.document.*;
+import org.seedstack.hub.domain.model.document.BinaryDocument;
+import org.seedstack.hub.domain.model.document.Document;
+import org.seedstack.hub.domain.model.document.DocumentException;
+import org.seedstack.hub.domain.model.document.DocumentFactory;
+import org.seedstack.hub.domain.model.document.DocumentId;
+import org.seedstack.hub.domain.model.document.TextDocument;
+import org.seedstack.hub.domain.model.document.TextFormat;
 import org.seedstack.hub.domain.services.text.TextService;
 
+import javax.activation.MimetypesFileTypeMap;
 import javax.inject.Inject;
 import java.io.File;
 import java.io.IOException;
@@ -27,6 +34,7 @@ public class DocumentFactoryImpl extends BaseFactory<Document> implements Docume
     public static final Charset TEXT_CHARSET = Charset.forName("UTF-8");
     public static final int MAX_DOCUMENT_SIZE = 2 * 1024 * 1024;
 
+    private final MimetypesFileTypeMap mimetypesFileTypeMap = new MimetypesFileTypeMap();
     @Inject
     private TextService textService;
 
@@ -63,7 +71,7 @@ public class DocumentFactoryImpl extends BaseFactory<Document> implements Docume
 
     @Override
     public BinaryDocument createBinaryDocument(DocumentId documentId, File file) {
-        BinaryDocument binaryDocument = new BinaryDocument(documentId, "octet/stream");
+        BinaryDocument binaryDocument = new BinaryDocument(documentId, detectContentType(file));
         try {
             binaryDocument.setData(Files.readAllBytes(file.toPath()));
         } catch (IOException e) {
@@ -108,5 +116,10 @@ public class DocumentFactoryImpl extends BaseFactory<Document> implements Docume
         }
 
         return Optional.empty();
+    }
+
+    private String detectContentType(File file) {
+        String contentType = mimetypesFileTypeMap.getContentType(file);
+        return contentType == null || contentType.isEmpty() ? "application/octet-stream" : contentType;
     }
 }

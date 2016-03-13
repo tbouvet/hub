@@ -22,23 +22,23 @@ public class GitFetchService extends AbstractFetchService {
     @Logging
     private Logger logger;
 
-    protected void doFetch(URL remote, File target) throws FetchException {
+    protected void doFetch(URL remote, File target) {
         logger.debug("Cloning Git remote {} into directory {}", remote.toExternalForm(), target.getAbsolutePath());
 
-        try (Git result = Git.cloneRepository().setURI(stripBranchName(remote)).setDirectory(target).call()) {
+        try (Git localRepository = Git.cloneRepository().setURI(stripBranchName(remote)).setDirectory(target).call()) {
             String branchName = getBranchName(remote);
 
             logger.debug("Checking out {} branch in directory {}", branchName, target.getAbsolutePath());
 
-            if (result.getRepository().getRef(branchName) == null) {
-                result.branchCreate()
+            if (localRepository.getRepository().getRef(branchName) == null) {
+                localRepository.branchCreate()
                         .setName(branchName)
                         .setUpstreamMode(CreateBranchCommand.SetupUpstreamMode.TRACK)
                         .setStartPoint("origin/" + branchName)
                         .call();
             }
 
-            result.checkout().setName(branchName).call();
+            localRepository.checkout().setName(branchName).call();
         } catch (Exception e) {
             throw new FetchException("Unable to fetch Git remote " + remote.toExternalForm(), e);
         }
