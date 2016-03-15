@@ -74,6 +74,10 @@
             <artifactId>seed-web-undertow</artifactId>
         </dependency>
         <dependency>
+            <groupId>org.seedstack.addons.swagger</groupId>
+            <artifactId>swagger</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.seedstack.addons.mongodb</groupId>
             <artifactId>mongodb-morphia</artifactId>
         </dependency>

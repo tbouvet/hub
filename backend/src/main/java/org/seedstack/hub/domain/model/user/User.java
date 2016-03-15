@@ -11,8 +11,11 @@ import org.hibernate.validator.constraints.Email;
 import org.mongodb.morphia.annotations.Entity;
 import org.mongodb.morphia.annotations.Id;
 import org.seedstack.business.domain.BaseAggregateRoot;
+import org.seedstack.hub.domain.model.component.ComponentId;
 
 import javax.validation.constraints.NotNull;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity("users")
 public class User extends BaseAggregateRoot<UserId> {
@@ -22,6 +25,8 @@ public class User extends BaseAggregateRoot<UserId> {
     @NotNull
     @Email
     private String email;
+
+    private List<ComponentId> starred = new ArrayList<>();
 
     public User(UserId userId, String email) {
         this.userId = userId;
@@ -43,5 +48,21 @@ public class User extends BaseAggregateRoot<UserId> {
 
     public String getEmail() {
         return email;
+    }
+
+    public List<ComponentId> getStarred() {
+        return starred;
+    }
+
+    public void star(ComponentId componentId) {
+        this.starred.add(0, componentId);
+    }
+
+    public boolean hasStarred(ComponentId componentId) {
+        return this.starred.contains(componentId);
+    }
+
+    public boolean unstar(ComponentId componentId) {
+        return this.starred.remove(componentId);
     }
 }
