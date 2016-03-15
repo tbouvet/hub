@@ -18,6 +18,7 @@ import org.seedstack.business.assembler.FluentAssembler;
 import org.seedstack.business.domain.Repository;
 import org.seedstack.business.view.PaginatedView;
 import org.seedstack.hub.application.ImportService;
+import org.seedstack.hub.application.SecurityService;
 import org.seedstack.hub.domain.model.component.Component;
 import org.seedstack.hub.domain.model.component.ComponentId;
 import org.seedstack.seed.rest.RelRegistry;
@@ -46,6 +47,8 @@ public class ComponentsResourceTest {
     private ImportService importService;
     @Injectable
     private FluentAssembler fluentAssembler;
+    @Injectable
+    private SecurityService securityService;
     @Injectable
     private ServletContext servletContext;
 

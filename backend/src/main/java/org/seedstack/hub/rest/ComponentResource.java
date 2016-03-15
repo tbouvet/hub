@@ -12,17 +12,22 @@ import org.hibernate.validator.constraints.NotBlank;
 import org.seedstack.business.assembler.AssemblerTypes;
 import org.seedstack.business.assembler.FluentAssembler;
 import org.seedstack.business.domain.Repository;
+import org.seedstack.business.finder.Result;
 import org.seedstack.business.view.Page;
 import org.seedstack.business.view.PaginatedView;
 import org.seedstack.hub.application.ImportService;
+import org.seedstack.hub.application.SecurityService;
+import org.seedstack.hub.domain.model.component.Comment;
 import org.seedstack.hub.domain.model.component.Component;
 import org.seedstack.hub.domain.model.component.ComponentId;
+import org.seedstack.hub.domain.model.user.User;
 import org.seedstack.hub.domain.services.fetch.VCSType;
 import org.seedstack.seed.Logging;
 import org.seedstack.seed.rest.Rel;
 import org.seedstack.seed.rest.RelRegistry;
 import org.seedstack.seed.rest.hal.HalRepresentation;
 import org.seedstack.seed.rest.hal.Link;
+import org.seedstack.seed.security.AuthenticationException;
 import org.slf4j.Logger;
 
 import javax.inject.Inject;
@@ -34,6 +39,7 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.Date;
 import java.util.Optional;
 
 import static java.util.Optional.ofNullable;
@@ -42,11 +48,12 @@ import static java.util.stream.Collectors.toList;
 @Api
 @Path("/")
 public class ComponentResource {
-    public static final int DEFAULT_QUANTITY = 6;
+    public static final String DEFAULT_QUANTITY = "6";
     public static final String RECENT = "recent";
     public static final String POPULAR = "popular";
     public static final String COMPONENTS = "components";
     public static final String COMPONENT = "component";
+    public static final String COMMENT = "comment";
 
     @Inject
     private ComponentFinder componentFinder;
@@ -59,7 +66,9 @@ public class ComponentResource {
     @Inject
     private FluentAssembler fluentAssembler;
     @Inject
-    ServletContext servletContext;
+    private SecurityService securityService;
+    @Inject
+    private ServletContext servletContext;
     @Logging
     private Logger logger;
 
@@ -117,13 +126,44 @@ public class ComponentResource {
         return componentDetails;
     }
 
+    @Rel(value = COMMENT)
+    @GET
+    @Produces({"application/json", "application/hal+json"})
+    @Path("/components/{componentId}/comments")
+    public HalRepresentation getComments(@PathParam("componentId") String componentId, @BeanParam PageInfo pageInfo) {
+        HalRepresentation halRepresentation = new HalRepresentation();
+        PaginatedView<Comment> comments = componentFinder.findComments(new ComponentId(componentId), pageInfo.page());
+        halRepresentation.embedded(COMMENT, comments);
+        halRepresentation.link("self", relRegistry.uri(COMMENT)
+                .set("componentId", componentId)
+                .set("pageIndex", pageInfo.getPageIndex())
+                .set("pageSize", pageInfo.getPageSize())
+                .expand());
+        return halRepresentation;
+    }
+
+    @Rel(value = COMMENT)
+    @POST
+    @Produces({"application/json", "application/hal+json"})
+    @Path("/components/{componentId}/comments")
+    public Response postComments(@PathParam("componentId") String componentId, String comment) {
+        Component component = componentRepository.load(new ComponentId(componentId));
+        if (component == null) {
+            throw new NotFoundException();
+        }
+        User user = securityService.getAuthenticatedUser().orElseThrow(AuthenticationException::new);
+        component.addComment(new Comment(user.getId().getId(), comment, new Date()));
+        componentRepository.persist(component);
+        return Response.created(URI.create(relRegistry.uri(COMMENT).set("componentId", componentId).expand())).build();
+    }
+
     @Rel(value = POPULAR, home = true)
     @GET
     @Produces({"application/json", "application/hal+json"})
     @Path("/popular")
-    public HalRepresentation popularCards() {
+    public HalRepresentation popularCards(@QueryParam("size") @DefaultValue(DEFAULT_QUANTITY) int size) {
         HalRepresentation halRepresentation = new HalRepresentation();
-        PaginatedView<ComponentCard> popularCards = componentFinder.findPopularCards(DEFAULT_QUANTITY);
+        Result<ComponentCard> popularCards = componentFinder.findPopularCards(size);
         updateUrls(popularCards);
         halRepresentation.embedded(POPULAR, popularCards);
         halRepresentation.link("self", relRegistry.uri(POPULAR).expand());
@@ -135,9 +175,9 @@ public class ComponentResource {
     @GET
     @Produces({"application/json", "application/hal+json"})
     @Path("/recent")
-    public HalRepresentation recentCards() {
+    public HalRepresentation recentCards(@QueryParam("size") @DefaultValue(DEFAULT_QUANTITY) int size) {
         HalRepresentation halRepresentation = new HalRepresentation();
-        PaginatedView<ComponentCard> recentCards = componentFinder.findRecentCards(DEFAULT_QUANTITY);
+        Result<ComponentCard> recentCards = componentFinder.findRecentCards(size);
         updateUrls(recentCards);
         halRepresentation.embedded(RECENT, recentCards);
         halRepresentation.link("self", relRegistry.uri(RECENT).expand());
@@ -184,5 +224,9 @@ public class ComponentResource {
 
     private void updateUrls(PaginatedView<ComponentCard> paginatedView) {
         paginatedView.getView().stream().forEach(this::updateUrls);
+    }
+
+    private void updateUrls(Result<ComponentCard> result) {
+        result.getResult().stream().forEach(this::updateUrls);
     }
 }
