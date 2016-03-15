@@ -12,5 +12,6 @@ import org.seedstack.business.domain.Repository;
 import java.util.Optional;
 
 public interface UserRepository extends Repository<User, UserId> {
+    Optional<User> findByName(String name);
     Optional<User> findByEmail(String email);
 }

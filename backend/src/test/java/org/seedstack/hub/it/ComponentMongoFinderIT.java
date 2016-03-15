@@ -37,6 +37,7 @@ public class ComponentMongoFinderIT {
 
     @Inject
     private ComponentFinder componentFinder;
+
     private final List<Component> mockedComponents = IntStream.range(0, 23)
             .mapToObj(MockedComponentBuilder::mock)
             .collect(toList());

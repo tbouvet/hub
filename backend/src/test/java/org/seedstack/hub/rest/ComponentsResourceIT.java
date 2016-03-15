@@ -14,12 +14,13 @@ import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.json.JSONException;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.mongodb.morphia.Datastore;
 import org.seedstack.hub.domain.model.component.Component;
 import org.seedstack.mongodb.morphia.MorphiaDatastore;
 import org.seedstack.seed.it.AbstractSeedWebIT;
-import org.skyscreamer.jsonassert.JSONAssert;
 
 import javax.inject.Inject;
 import java.net.URL;
@@ -28,12 +29,9 @@ import java.util.stream.IntStream;
 
 import static com.jayway.restassured.RestAssured.expect;
 import static java.util.stream.Collectors.toList;
+import static org.skyscreamer.jsonassert.JSONAssert.assertEquals;
 
 public class ComponentsResourceIT extends AbstractSeedWebIT {
-
-    private final List<Component> mockedComponents = IntStream.range(0, 23)
-            .mapToObj(MockedComponentBuilder::mock)
-            .collect(toList());
 
     final String requestWithPagination = "{\"_links\":{" +
             "\"next\":{\"href\":\"/components?search=ponent1&pageIndex=2&pageSize=5\"}," +
@@ -46,9 +44,22 @@ public class ComponentsResourceIT extends AbstractSeedWebIT {
 
     @ArquillianResource
     private URL baseURL;
+
     @Inject
     @MorphiaDatastore(clientName = "main", dbName = "hub")
     private Datastore datastore;
+
+    @Inject
+    private ComponentFinder componentFinder;
+
+    private final List<Component> mockedComponents = IntStream.range(0, 23)
+            .mapToObj(MockedComponentBuilder::mock)
+            .collect(toList());
+
+    @Before
+    public void setUp() throws Exception {
+        mockedComponents.forEach(datastore::save);
+    }
 
     @Deployment
     public static WebArchive createDeployment() {
@@ -58,13 +69,32 @@ public class ComponentsResourceIT extends AbstractSeedWebIT {
     @RunAsClient
     @Test
     public void get_with_pagination() throws JSONException {
-        mockedComponents.forEach(datastore::save);
+        Response response = httpGet("components?pageIndex=1&pageSize=5&search=ponent1");
+        assertEquals(requestWithPagination, response.asString(), false);
+    }
 
-        Response response = expect().statusCode(200).given().header("Content-Type", "application/hal+json")
-                .get(baseURL.toString() + "components?pageIndex=1&pageSize=5&search=ponent1");
+    @RunAsClient
+    @Test
+    public void get_popular_with_pagination() throws JSONException {
+        Response response = httpGet("popular");
+        assertEquals("{}", response.asString(), false);
+    }
 
-        JSONAssert.assertEquals(requestWithPagination, response.asString(), false);
+    @RunAsClient
+    @Test
+    public void get_recent_with_pagination() throws JSONException {
+        Response response = httpGet("recent");
+        assertEquals("{}", response.asString(), false);
+    }
 
+    private Response httpGet(String path) {
+        return expect().statusCode(200).given()
+                .header("Content-Type", "application/hal+json")
+                .get(baseURL.toString() + path);
+    }
+
+    @After
+    public void tearDown() throws Exception {
         mockedComponents.forEach(datastore::delete);
     }
 }

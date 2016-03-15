@@ -16,6 +16,10 @@ application-id = seedstack-hub
 application-name = SeedStack.hub
 version = 1.0.0
 
+[org.seedstack.seed.web.cors]
+enabled = true
+property.supportedMethods= GET\\, POST\\, HEAD\\, OPTIONS\\, PUT\\, DELETE
+
 [org.seedstack.mongodb.client.main]
 hosts = localhost
 databases = hub

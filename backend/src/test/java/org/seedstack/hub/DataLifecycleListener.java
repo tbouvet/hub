@@ -15,8 +15,9 @@ import org.seedstack.seed.LifecycleListener;
 import javax.inject.Inject;
 
 public class DataLifecycleListener implements LifecycleListener {
+
     @Inject
-    UserRepository userRepository;
+    private UserRepository userRepository;
 
     @Override
     public void started() {

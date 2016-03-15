@@ -7,6 +7,7 @@
  */
 package org.seedstack.hub.rest;
 
+import io.swagger.annotations.Api;
 import org.hibernate.validator.constraints.NotBlank;
 import org.seedstack.business.assembler.AssemblerTypes;
 import org.seedstack.business.assembler.FluentAssembler;
@@ -38,6 +39,7 @@ import java.util.Optional;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
 
+@Api
 @Path("/")
 public class ComponentResource {
     public static final int DEFAULT_QUANTITY = 6;
