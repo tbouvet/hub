@@ -20,9 +20,9 @@ import java.util.Optional;
 
 public class SecurityServiceImpl implements SecurityService {
     @Inject
-    UserRepository userRepository;
+    private UserRepository userRepository;
     @Inject
-    SecuritySupport securitySupport;
+    private SecuritySupport securitySupport;
 
     @Override
     public Optional<User> getAuthenticatedUser() {

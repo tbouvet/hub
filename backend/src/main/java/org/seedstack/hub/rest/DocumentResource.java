@@ -7,6 +7,7 @@
  */
 package org.seedstack.hub.rest;
 
+import io.swagger.annotations.Api;
 import org.seedstack.business.domain.Repository;
 import org.seedstack.hub.domain.model.component.ComponentId;
 import org.seedstack.hub.domain.model.document.BinaryDocument;
@@ -20,6 +21,7 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+@Api
 @Path("/components/{componentId}/files/{documentPath:.+}")
 public class DocumentResource {
     @Inject
