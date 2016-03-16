@@ -89,6 +89,7 @@ public class ComponentsResourceIT extends AbstractSeedWebIT {
 
     private Response httpGet(String path) {
         return expect().statusCode(200).given()
+                .auth().basic("adrienlauer", "password")
                 .header("Content-Type", "application/hal+json")
                 .get(baseURL.toString() + path);
     }

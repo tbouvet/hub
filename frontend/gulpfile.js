@@ -46,6 +46,7 @@ gulp.task('copy', ['bower', 'clean', 'ts-compile', 'less-compile'], function () 
         .pipe(gulp.dest('dist'));
 });
 
+
 gulp.task('test', ['bower', 'ts-compile'], function (done) {
     new Server({
         configFile: __dirname + '/karma.conf.js',
@@ -109,6 +110,18 @@ gulp.task('build-src', ['clean', 'bower', 'ts-compile', 'less-compile', 'test', 
 gulp.task('default', ['build']);
 
 // While in dev
+gulp.task('copy-dev', ['bower', 'clean', 'ts-compile', 'less-compile'], function () {
+    return gulp.src([
+            '!bower_components/**/*',
+            'hub/**/*',
+            'hub/**/*.ts',
+            'hub/**/*.less',
+            '!w20.app.json'],
+        { base : './' })
+        .pipe(gulp.dest('../backend/src/main/resources/META-INF/resources'));
+});
+
 gulp.task('watch', ['ts-compile'], function () {
     gulp.watch(['hub/**/*.ts'], ['ts-compile']);
 });
+

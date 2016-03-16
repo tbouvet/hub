@@ -8,7 +8,3 @@
 
 org.seedstack.seed.security.realms = ConfigurationRealm
 
-[org.seedstack.seed.security.users]
-adrienlauer = password
-pith = password
-kavi87 = password

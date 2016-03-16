@@ -28,6 +28,7 @@ import org.seedstack.seed.rest.RelRegistry;
 import org.seedstack.seed.rest.hal.HalRepresentation;
 import org.seedstack.seed.rest.hal.Link;
 import org.seedstack.seed.security.AuthenticationException;
+import org.seedstack.seed.security.AuthorizationException;
 import org.slf4j.Logger;
 
 import javax.inject.Inject;
@@ -84,7 +85,7 @@ public class ComponentResource {
     }
 
     @POST
-    @Consumes(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     @Produces({"application/json", "application/hal+json"})
     @Path("/components")
     public Response post(@FormParam("vcs") @NotBlank String vcs, @FormParam("url") @NotBlank String sourceUrl) throws URISyntaxException {
@@ -100,9 +101,11 @@ public class ComponentResource {
             component = importService.importComponent(vcsType, new URL(sourceUrl));
         } catch (MalformedURLException e) {
             throw new BadRequestException("Malformed URL " + sourceUrl);
+        } catch (AuthenticationException | AuthorizationException e) {
+            throw e;
         } catch (Exception e) {
             logger.error("Error during component import", e);
-            throw new WebApplicationException(400);
+            throw new WebApplicationException(e.getMessage(), 400);
         }
 
         ComponentCard componentCard = fluentAssembler.assemble(component).with(AssemblerTypes.MODEL_MAPPER).to(ComponentCard.class);
@@ -165,7 +168,7 @@ public class ComponentResource {
         HalRepresentation halRepresentation = new HalRepresentation();
         Result<ComponentCard> popularCards = componentFinder.findPopularCards(size);
         updateUrls(popularCards);
-        halRepresentation.embedded(POPULAR, popularCards);
+        halRepresentation.embedded(COMPONENTS, popularCards.getResult());
         halRepresentation.link("self", relRegistry.uri(POPULAR).expand());
 
         return halRepresentation;
@@ -179,7 +182,7 @@ public class ComponentResource {
         HalRepresentation halRepresentation = new HalRepresentation();
         Result<ComponentCard> recentCards = componentFinder.findRecentCards(size);
         updateUrls(recentCards);
-        halRepresentation.embedded(RECENT, recentCards);
+        halRepresentation.embedded(COMPONENTS, recentCards.getResult());
         halRepresentation.link("self", relRegistry.uri(RECENT).expand());
 
         return halRepresentation;

@@ -88,14 +88,22 @@ class ImportServiceImpl implements ImportService {
             Files.walkFileTree(directory.toPath(), new SimpleFileVisitor<Path>() {
                 @Override
                 public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
-                    Files.delete(file);
-                    return FileVisitResult.CONTINUE;
+                    return safeDelete(file);
+                }
+
+                private FileVisitResult safeDelete(Path file) {
+                    try {
+                        Files.delete(file);
+                        return FileVisitResult.CONTINUE;
+                    } catch (Exception e) {
+                        logger.warn(e.getMessage());
+                        return FileVisitResult.TERMINATE;
+                    }
                 }
 
                 @Override
                 public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
-                    Files.delete(dir);
-                    return FileVisitResult.CONTINUE;
+                    return safeDelete(dir);
                 }
             });
         } catch (IOException e) {

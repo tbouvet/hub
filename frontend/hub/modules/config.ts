@@ -14,6 +14,10 @@ define([
 
     var module = angular.module('config', ['w20CSSFramework']);
 
+/*    module.config(['$httpProvider', function($httpProvider) {
+        $httpProvider.defaults.headers.post  = {'Content-Type': 'application/x-www-form-urlencoded'};
+    }]);*/
+
     module.config(['$mdThemingProvider', '$mdIconProvider', function ($mdThemingProvider, $mdIconProvider) {
 
         $mdIconProvider
