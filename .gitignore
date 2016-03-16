@@ -18,11 +18,12 @@ backend/pom.xml.versionsBackup
 backend/pom.xml.next
 backend/release.properties
 backend/src/main/resources/META-INF/resources/
+backend/src/main/resources/META-INF/configuration/proxy.props
 
 # Frontend
 frontend/bower_components/
 frontend/mock/node_modules/
-frontend/hub/**/*.js
-frontend/hub/**/*.js.map
+frontend/hub/modules/**/*.js
+frontend/hub/modules/**/*.js.map
 frontend/node_modules/
 frontend/dist/

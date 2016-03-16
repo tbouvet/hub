@@ -15,7 +15,7 @@ import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-public abstract class AbstractTextFormatService implements TextFormatService {
+abstract class AbstractTextFormatService implements TextFormatService {
     protected String cleanHtml(String rawHtml) {
         return Jsoup.clean(rawHtml, Whitelist.relaxed());
     }

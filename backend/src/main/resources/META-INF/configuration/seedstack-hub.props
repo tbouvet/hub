@@ -40,8 +40,3 @@ morphia.dbName = hub
 [org.seedstack.hub.domain.model.user.User]
 default-repository =
 
-[proxy]
-type = HTTP
-host = http.internetpsa.inetpsa.com
-port = 80
-# exclusions = .mycompany.com

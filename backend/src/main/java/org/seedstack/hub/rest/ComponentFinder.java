@@ -8,15 +8,20 @@
 package org.seedstack.hub.rest;
 
 import org.seedstack.business.finder.Finder;
+import org.seedstack.business.finder.Result;
 import org.seedstack.business.view.Page;
 import org.seedstack.business.view.PaginatedView;
+import org.seedstack.hub.domain.model.component.Comment;
+import org.seedstack.hub.domain.model.component.ComponentId;
 
 @Finder
 public interface ComponentFinder {
 
     PaginatedView<ComponentCard> findCards(Page page, String searchName, String sort);
 
-    PaginatedView<ComponentCard> findRecentCards(int howMany);
+    PaginatedView<Comment> findComments(ComponentId componentId, Page page);
 
-    PaginatedView<ComponentCard> findPopularCards(int howMany);
+    Result<ComponentCard> findRecentCards(int howMany);
+
+    Result<ComponentCard> findPopularCards(int howMany);
 }

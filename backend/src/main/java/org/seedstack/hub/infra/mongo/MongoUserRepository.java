@@ -14,7 +14,7 @@ import org.seedstack.mongodb.morphia.BaseMorphiaRepository;
 
 import java.util.Optional;
 
-public class MongoUserRepository extends BaseMorphiaRepository<User, UserId> implements UserRepository {
+class MongoUserRepository extends BaseMorphiaRepository<User, UserId> implements UserRepository {
     @Override
     public Optional<User> findByName(String name) {
         return Optional.ofNullable(load(new UserId(name)));

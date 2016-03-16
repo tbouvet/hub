@@ -30,7 +30,7 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
-public class DocumentFactoryImpl extends BaseFactory<Document> implements DocumentFactory {
+class DocumentFactoryImpl extends BaseFactory<Document> implements DocumentFactory {
     public static final Charset TEXT_CHARSET = Charset.forName("UTF-8");
     public static final int MAX_DOCUMENT_SIZE = 2 * 1024 * 1024;
 

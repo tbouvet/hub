@@ -19,7 +19,7 @@ import java.util.Set;
 import static java.util.stream.Collectors.toSet;
 
 @Named("html")
-public class HtmlTextFormatService extends AbstractTextFormatService {
+class HtmlTextFormatService extends AbstractTextFormatService {
     @Override
     public String renderHtml(TextDocument textDocument) {
         return cleanHtml(textDocument.getText());

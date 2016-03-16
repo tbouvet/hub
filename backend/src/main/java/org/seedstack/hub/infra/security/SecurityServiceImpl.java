@@ -18,7 +18,7 @@ import org.seedstack.seed.security.principals.SimplePrincipalProvider;
 import javax.inject.Inject;
 import java.util.Optional;
 
-public class SecurityServiceImpl implements SecurityService {
+class SecurityServiceImpl implements SecurityService {
     @Inject
     private UserRepository userRepository;
     @Inject

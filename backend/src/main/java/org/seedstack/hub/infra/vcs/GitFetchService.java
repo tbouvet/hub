@@ -18,7 +18,7 @@ import java.io.File;
 import java.net.URL;
 
 @Named("git")
-public class GitFetchService extends AbstractFetchService {
+class GitFetchService extends AbstractFetchService {
     @Logging
     private Logger logger;
 

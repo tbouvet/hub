@@ -9,13 +9,17 @@ package org.seedstack.hub.domain.model.component;
 
 import org.seedstack.business.domain.BaseValueObject;
 
+import java.util.Date;
+
 public class Comment extends BaseValueObject {
     private String author;
     private String text;
+    private Date publicationDate;
 
-    public Comment(String author, String text) {
+    public Comment(String author, String text, Date publicationDate) {
         this.author = author;
         this.text = text;
+        this.publicationDate = publicationDate;
     }
 
     private Comment() {
@@ -27,5 +31,9 @@ public class Comment extends BaseValueObject {
 
     public String getText() {
         return text;
+    }
+
+    public Date getPublicationDate() {
+        return publicationDate;
     }
 }
