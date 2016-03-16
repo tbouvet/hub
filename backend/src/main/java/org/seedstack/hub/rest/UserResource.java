@@ -31,16 +31,29 @@ import static java.util.stream.Collectors.toList;
 public class UserResource {
 
     public static final String STARS = "stars";
+    public static final String USER_COMPONENTS = "/user/components";
 
     @Inject
     private StarringService starringService;
     @Inject
-    private Repository<Component, ComponentId> componentRepository;
+    private ComponentFinder componentFinder;
     @Inject
     private FluentAssembler fluentAssembler;
     @Inject
     private RelRegistry relRegistry;
 
+    @Rel(USER_COMPONENTS)
+    @GET
+    @Path("/components")
+    @Produces({"application/json", "application/hal+json"})
+    public HalRepresentation getComponents(@BeanParam PageInfo pageInfo) {
+        return new HalRepresentation()
+                .embedded("components", componentFinder.findCurrentUserCards(pageInfo.page()))
+                .link("self", relRegistry.uri(USER_COMPONENTS)
+                        .set("pageIndex", pageInfo.getPageIndex())
+                        .set("pageSize", pageInfo.getPageSize())
+                        .expand());
+    }
     @Rel(STARS)
     @GET
     @Path("/stars")

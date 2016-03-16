@@ -15,4 +15,8 @@ import java.util.Optional;
 @Service
 public interface SecurityService {
     Optional<User> getAuthenticatedUser();
+
+    void checkUserIsAdmin();
+
+    boolean isUserAdmin();
 }

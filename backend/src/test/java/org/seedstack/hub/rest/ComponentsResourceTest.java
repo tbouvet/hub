@@ -19,6 +19,7 @@ import org.seedstack.business.domain.Repository;
 import org.seedstack.business.view.PaginatedView;
 import org.seedstack.hub.application.ImportService;
 import org.seedstack.hub.application.SecurityService;
+import org.seedstack.hub.application.StatePolicy;
 import org.seedstack.hub.domain.model.component.Component;
 import org.seedstack.hub.domain.model.component.ComponentId;
 import org.seedstack.seed.rest.RelRegistry;
@@ -51,6 +52,8 @@ public class ComponentsResourceTest {
     private SecurityService securityService;
     @Injectable
     private ServletContext servletContext;
+    @Injectable
+    private StatePolicy statePolicy;
 
     private String searchName = "foo";
     private String sort = "publishedData";

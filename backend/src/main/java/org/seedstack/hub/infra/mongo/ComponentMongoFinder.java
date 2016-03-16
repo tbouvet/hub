@@ -8,23 +8,26 @@
 package org.seedstack.hub.infra.mongo;
 
 import org.mongodb.morphia.Datastore;
-import org.mongodb.morphia.aggregation.Projection;
 import org.mongodb.morphia.query.Query;
 import org.seedstack.business.assembler.FluentAssembler;
 import org.seedstack.business.finder.Range;
 import org.seedstack.business.finder.Result;
 import org.seedstack.business.view.Page;
 import org.seedstack.business.view.PaginatedView;
+import org.seedstack.hub.application.SecurityService;
 import org.seedstack.hub.domain.model.component.Comment;
 import org.seedstack.hub.domain.model.component.Component;
 import org.seedstack.hub.domain.model.component.ComponentId;
+import org.seedstack.hub.domain.model.component.State;
+import org.seedstack.hub.domain.model.user.User;
+import org.seedstack.hub.domain.model.user.UserId;
 import org.seedstack.hub.rest.ComponentCard;
 import org.seedstack.hub.rest.ComponentFinder;
 import org.seedstack.mongodb.morphia.MorphiaDatastore;
+import org.seedstack.seed.security.AuthenticationException;
 
 import javax.inject.Inject;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import static org.seedstack.business.assembler.AssemblerTypes.MODEL_MAPPER;
@@ -38,24 +41,51 @@ class ComponentMongoFinder implements ComponentFinder {
     @Inject
     private FluentAssembler fluentAssembler;
 
+    @Inject
+    private SecurityService securityService;
+
     @Override
     public PaginatedView<ComponentCard> findCards(Page page, String searchName, String sort) {
         Query<Component> query = datastore.find(Component.class);
         if (searchName != null && !"".equals(searchName)) {
             query = query.field("_id.name").containsIgnoreCase(searchName);
         }
-        return executeQuery(query, page);
+        return findPublishedComponentCards(query, page);
     }
 
-    private PaginatedView<ComponentCard> executeQuery(Query<Component> query, Page page) {
+    private PaginatedView<ComponentCard> findPublishedComponentCards(Query<Component> query, Page page) {
         Range range = Range.rangeFromPageInfo(page.getIndex(), page.getCapacity());
-        return new PaginatedView<>(executeQuery(query, range), page);
+        return new PaginatedView<>(findPublishedComponentCards(query, range), page);
     }
 
-    private Result<ComponentCard> executeQuery(Query<Component> query, Range range) {
+    private Result<ComponentCard> findPublishedComponentCards(Query<Component> query, Range range) {
+        query.field("state").equal(State.PUBLISHED);
+        return findComponentCards(query, range);
+    }
+
+    private Result<ComponentCard> findComponentCards(Query<Component> query, Range range) {
         List<Component> list = paginateQuery(query, range);
         List<ComponentCard> cards = fluentAssembler.assemble(list).with(MODEL_MAPPER).to(ComponentCard.class);
         return new Result<>(cards, range.getOffset(), query.countAll());
+    }
+
+    @Override
+    public PaginatedView<ComponentCard> findCurrentUserCards(Page page) {
+        Range range = Range.rangeFromPageInfo(page.getIndex(), page.getCapacity());
+        String userId = securityService.getAuthenticatedUser().orElseThrow(AuthenticationException::new).getId().getId();
+        Query<Component> q = datastore.find(Component.class);
+        q.or(
+                q.criteria("owner").equal(userId),
+                q.criteria("maintainers.id").contains(userId)
+        );
+        return new PaginatedView<>(findComponentCards(q, range), page);
+    }
+
+    @Override
+    public PaginatedView<ComponentCard> findCardsByState(Page page, State state) {
+        Range range = Range.rangeFromPageInfo(page.getIndex(), page.getCapacity());
+        Query<Component> query = datastore.find(Component.class).field("state").equal(state);
+        return new PaginatedView<>(findComponentCards(query, range), page);
     }
 
     private List<Component> paginateQuery(Query<Component> query, Range range) {
@@ -71,13 +101,13 @@ class ComponentMongoFinder implements ComponentFinder {
     @Override
     public Result<ComponentCard> findRecentCards(int howMany) {
         Query<Component> queryComponent = datastore.find(Component.class).order("-versions.publicationDate");
-        return executeQuery(queryComponent, new Range(0, howMany));
+        return findPublishedComponentCards(queryComponent, new Range(0, howMany));
     }
 
     @Override
     public Result<ComponentCard> findPopularCards(int howMany) {
         Query<Component> query = datastore.find(Component.class).order("-stars");
-        return executeQuery(query, new Range(0, howMany));
+        return findPublishedComponentCards(query, new Range(0, howMany));
     }
 
     @Override

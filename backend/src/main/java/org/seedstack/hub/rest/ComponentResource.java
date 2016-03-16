@@ -1,6 +1,6 @@
 /**
  * Copyright (c) 2015-2016, The SeedStack authors <http://seedstack.org>
- *
+ * <p>
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
@@ -17,9 +17,11 @@ import org.seedstack.business.view.Page;
 import org.seedstack.business.view.PaginatedView;
 import org.seedstack.hub.application.ImportService;
 import org.seedstack.hub.application.SecurityService;
+import org.seedstack.hub.application.StatePolicy;
 import org.seedstack.hub.domain.model.component.Comment;
 import org.seedstack.hub.domain.model.component.Component;
 import org.seedstack.hub.domain.model.component.ComponentId;
+import org.seedstack.hub.domain.model.component.State;
 import org.seedstack.hub.domain.model.user.User;
 import org.seedstack.hub.domain.services.fetch.VCSType;
 import org.seedstack.seed.Logging;
@@ -29,8 +31,10 @@ import org.seedstack.seed.rest.hal.HalRepresentation;
 import org.seedstack.seed.rest.hal.Link;
 import org.seedstack.seed.security.AuthenticationException;
 import org.seedstack.seed.security.AuthorizationException;
+import org.seedstack.seed.security.RequiresRoles;
 import org.slf4j.Logger;
 
+import javax.annotation.Nullable;
 import javax.inject.Inject;
 import javax.servlet.ServletContext;
 import javax.ws.rs.*;
@@ -55,6 +59,8 @@ public class ComponentResource {
     public static final String COMPONENTS = "components";
     public static final String COMPONENT = "component";
     public static final String COMMENT = "comment";
+    public static final String STATE = "state";
+    public static final String PENDING = "pending";
 
     @Inject
     private ComponentFinder componentFinder;
@@ -70,6 +76,8 @@ public class ComponentResource {
     private SecurityService securityService;
     @Inject
     private ServletContext servletContext;
+    @Inject
+    private StatePolicy statePolicy;
     @Logging
     private Logger logger;
 
@@ -78,10 +86,21 @@ public class ComponentResource {
     @Produces({"application/json", "application/hal+json"})
     @Path("/components")
     public HalRepresentation list(@QueryParam("search") String searchName, @BeanParam PageInfo pageInfo,
-                                     @QueryParam("sort") String sort) {
+                                  @QueryParam("sort") String sort) {
         PaginatedView<ComponentCard> paginatedView = componentFinder.findCards(pageInfo.page(), searchName, sort);
         updateUrls(paginatedView);
-        return buildHALRepresentation(paginatedView, searchName, pageInfo);
+        return buildHALRepresentation(paginatedView, pageInfo, searchName);
+    }
+
+    @RequiresRoles("admin")
+    @Rel(value = PENDING, home = true)
+    @GET
+    @Produces({"application/json", "application/hal+json"})
+    @Path("/pending")
+    public HalRepresentation list(@BeanParam PageInfo pageInfo) {
+        PaginatedView<ComponentCard> paginatedView = componentFinder.findCardsByState(pageInfo.page(), State.PENDING);
+        updateUrls(paginatedView);
+        return buildHALRepresentation(paginatedView, pageInfo, null);
     }
 
     @POST
@@ -127,6 +146,32 @@ public class ComponentResource {
         ComponentDetails componentDetails = fluentAssembler.assemble(component).with(AssemblerTypes.MODEL_MAPPER).to(ComponentDetails.class);
         updateUrls(componentDetails);
         return componentDetails;
+    }
+
+    @Rel(value = STATE)
+    @PUT
+    @Produces({"application/json", "application/hal+json"})
+    @Path("/components/{componentId}/state")
+    public void changeState(@PathParam("componentId") String componentId, State state) {
+        Component component = componentRepository.load(new ComponentId(componentId));
+        switch (state) {
+            case PUBLISHED:
+                if (statePolicy.canPublish(component)) {
+                    component.publish();
+                } else {
+                    throw new AuthorizationException();
+                }
+                break;
+            case ARCHIVED:
+                if (statePolicy.canArchive(component)) {
+                    component.archive();
+                } else {
+                    throw new AuthorizationException();
+                }
+                break;
+            default:
+                throw new BadRequestException();
+        }
     }
 
     @Rel(value = COMMENT)
@@ -188,7 +233,7 @@ public class ComponentResource {
         return halRepresentation;
     }
 
-    private HalRepresentation buildHALRepresentation(PaginatedView<ComponentCard> paginatedView, String searchName, PageInfo pageInfo) {
+    private HalRepresentation buildHALRepresentation(PaginatedView<ComponentCard> paginatedView, PageInfo pageInfo, @Nullable String searchName) {
         HalRepresentation halRepresentation = new HalRepresentation();
         halRepresentation.embedded(COMPONENTS, paginatedView.getView());
 

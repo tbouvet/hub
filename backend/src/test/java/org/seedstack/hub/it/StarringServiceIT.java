@@ -17,7 +17,7 @@ import org.seedstack.hub.application.StarringService;
 import org.seedstack.hub.domain.model.component.Component;
 import org.seedstack.hub.domain.model.component.ComponentId;
 import org.seedstack.hub.domain.model.user.UserRepository;
-import org.seedstack.hub.rest.MockedComponentBuilder;
+import org.seedstack.hub.rest.MockBuilder;
 import org.seedstack.mongodb.morphia.MorphiaDatastore;
 import org.seedstack.seed.it.SeedITRunner;
 import org.seedstack.seed.security.SecuritySupport;
@@ -34,7 +34,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class StarringServiceIT {
 
     private final List<Component> mockedComponents = IntStream.range(0, 23)
-            .mapToObj(MockedComponentBuilder::mock)
+            .mapToObj(MockBuilder::mock)
             .collect(toList());
     @Inject
     @MorphiaDatastore(clientName = "main", dbName = "hub")

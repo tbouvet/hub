@@ -18,9 +18,13 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.mongodb.morphia.Datastore;
+import org.seedstack.business.domain.Repository;
 import org.seedstack.hub.domain.model.component.Component;
+import org.seedstack.hub.domain.model.component.ComponentId;
+import org.seedstack.hub.domain.model.component.State;
 import org.seedstack.mongodb.morphia.MorphiaDatastore;
 import org.seedstack.seed.it.AbstractSeedWebIT;
+import org.seedstack.seed.security.WithUser;
 
 import javax.inject.Inject;
 import java.net.URL;
@@ -42,6 +46,15 @@ public class ComponentsResourceIT extends AbstractSeedWebIT {
             "{\"id\":\"Component14\"},{\"id\":\"Component15\"},{\"id\":\"Component16\"},{\"id\":\"Component17\"},{\"id\":\"Component18\"}" +
             "]}}";
 
+    final String requestByState = "{\"_links\":{" +
+            "\"next\":{\"href\":\"/components?search=ponent1&pageIndex=2&pageSize=5\"}," +
+            "\"prev\":{\"href\":\"/components?search=ponent1&pageIndex=0&pageSize=5\"}," +
+            "\"self\":{\"href\":\"/components?search=ponent1&pageIndex=1&pageSize=5\"}" +
+            "},\"_embedded\":{" +
+            "\"components\":[" +
+            "{\"id\":\"Component14\"},{\"id\":\"Component15\"},{\"id\":\"Component16\"},{\"id\":\"Component17\"},{\"id\":\"Component18\"}" +
+            "]}}";
+
     @ArquillianResource
     private URL baseURL;
 
@@ -50,10 +63,10 @@ public class ComponentsResourceIT extends AbstractSeedWebIT {
     private Datastore datastore;
 
     @Inject
-    private ComponentFinder componentFinder;
+    private Repository<Component, ComponentId> componentRepository;
 
     private final List<Component> mockedComponents = IntStream.range(0, 23)
-            .mapToObj(MockedComponentBuilder::mock)
+            .mapToObj(MockBuilder::mock)
             .collect(toList());
 
     @Before
@@ -71,6 +84,15 @@ public class ComponentsResourceIT extends AbstractSeedWebIT {
     public void get_with_pagination() throws JSONException {
         Response response = httpGet("components?pageIndex=1&pageSize=5&search=ponent1");
         assertEquals(requestWithPagination, response.asString(), false);
+    }
+
+    @RunAsClient
+    @Test
+    public void get_by_state() throws JSONException {
+        componentRepository.save(MockBuilder.mock(99, State.PENDING));
+        Response response = httpGet("pending");
+        assertEquals("{}", response.asString(), false);
+        componentRepository.delete(new ComponentId("Component99"));
     }
 
     @RunAsClient
