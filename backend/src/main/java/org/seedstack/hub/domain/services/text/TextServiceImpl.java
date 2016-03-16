@@ -19,7 +19,7 @@ import java.util.Set;
 
 import static java.util.stream.Collectors.toSet;
 
-public class TextServiceImpl implements TextService {
+class TextServiceImpl implements TextService {
     @Inject
     private DomainRegistry domainRegistry;
 

@@ -19,7 +19,7 @@ import java.util.Set;
 import static java.util.stream.Collectors.toSet;
 
 @Named("markdown")
-public class MarkdownTextFormatService extends AbstractTextFormatService {
+class MarkdownTextFormatService extends AbstractTextFormatService {
     private final PegDownProcessor pegDownProcessor = new PegDownProcessor(Extensions.AUTOLINKS |
             Extensions.TABLES |
             Extensions.SMARTS |

@@ -23,7 +23,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class ComponentFactoryImpl extends BaseFactory<Component> implements ComponentFactory {
+class ComponentFactoryImpl extends BaseFactory<Component> implements ComponentFactory {
     public static final String FULL_MANIFEST_PATTERN = "seedstack-component.%s";
     public static final String SHORT_MANIFEST_PATTERN = "component.%s";
 

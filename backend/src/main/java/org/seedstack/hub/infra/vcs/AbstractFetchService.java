@@ -16,7 +16,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 
-public abstract class AbstractFetchService implements FetchService {
+abstract class AbstractFetchService implements FetchService {
     @Logging
     private Logger logger;
 

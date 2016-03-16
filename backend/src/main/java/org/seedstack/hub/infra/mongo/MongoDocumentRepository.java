@@ -12,5 +12,5 @@ import org.seedstack.hub.domain.model.document.DocumentId;
 import org.seedstack.hub.domain.model.document.DocumentRepository;
 import org.seedstack.mongodb.morphia.BaseMorphiaRepository;
 
-public class MongoDocumentRepository extends BaseMorphiaRepository<Document, DocumentId> implements DocumentRepository {
+class MongoDocumentRepository extends BaseMorphiaRepository<Document, DocumentId> implements DocumentRepository {
 }

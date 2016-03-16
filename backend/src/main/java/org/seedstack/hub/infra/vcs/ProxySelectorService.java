@@ -28,7 +28,7 @@ import java.util.regex.Pattern;
 
 import static java.util.stream.Collectors.toList;
 
-public class ProxySelectorService extends ProxySelector implements LifecycleListener {
+class ProxySelectorService extends ProxySelector implements LifecycleListener {
 
     public static final String PROXY = "proxy";
     public static final String PORT = "port";

@@ -9,6 +9,7 @@ package org.seedstack.hub.domain.model.component;
 
 import org.mongodb.morphia.annotations.Entity;
 import org.mongodb.morphia.annotations.Id;
+import org.mongodb.morphia.annotations.PrePersist;
 import org.seedstack.business.domain.BaseAggregateRoot;
 import org.seedstack.hub.domain.model.document.DocumentId;
 import org.seedstack.hub.domain.model.user.UserId;
@@ -86,6 +87,11 @@ public class Component extends BaseAggregateRoot<ComponentId> {
         } else {
             throw new ComponentException("Component cannot be archived");
         }
+    }
+
+    @PrePersist
+    void sortComments() {
+        Collections.reverse(comments);
     }
 
     public List<Comment> getComments() {
