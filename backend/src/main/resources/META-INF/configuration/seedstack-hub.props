@@ -16,6 +16,14 @@ application-id = seedstack-hub
 application-name = SeedStack.hub
 version = 1.0.0
 
+[org.seedstack.seed.security.urls]
+/** = authcBasic
+
+[org.seedstack.seed.security.users]
+adrienlauer = password
+pith = password
+kavi87 = password
+
 [org.seedstack.seed.web.cors]
 enabled = true
 property.supportedMethods= GET\\, POST\\, HEAD\\, OPTIONS\\, PUT\\, DELETE
@@ -32,8 +40,8 @@ morphia.dbName = hub
 [org.seedstack.hub.domain.model.user.User]
 default-repository =
 
-# [proxy]
-# type = HTTP
-# host = proxy.mycompany.com
-# port = 8080
+[proxy]
+type = HTTP
+host = http.internetpsa.inetpsa.com
+port = 80
 # exclusions = .mycompany.com

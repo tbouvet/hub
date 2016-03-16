@@ -13,6 +13,7 @@ public class ComponentCard extends HalRepresentation {
     private String id;
     private String name;
     private String summary;
+    private String owner;
     private int stars;
     private String icon;
 
@@ -61,5 +62,13 @@ public class ComponentCard extends HalRepresentation {
 
     public void setIcon(String icon) {
         this.icon = icon;
+    }
+
+    public String getOwner() {
+        return owner;
+    }
+
+    public void setOwner(String owner) {
+        this.owner = owner;
     }
 }
