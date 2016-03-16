@@ -47,21 +47,31 @@
 
                         <p>
                             To import a component you need to provide the URL to either a Git or SVN repository.
-                            The repository must contain a component descriptor <code>seedstack-component.json</code>.
+                            The repository must contain a component descriptor <code>component.yaml|json</code>.
                         </p>
 
                         <p>
-                            Example:
+                            Example (yaml):
                         </p>
                         <code>
-                            { <br>
-                            &nbsp; "name": "Component name", <br>
-                            &nbsp; "author": "Author of the component", <br>
-                            &nbsp; "logo": "path/to/component/logo.(png|svg|jpg)", <br>
-                            &nbsp; "docs": "path/to/docs/folder", <br>
-                            &nbsp; "readme": "path/to/README.md", <br>
-                            &nbsp; "source": "path/to/sources" <br>
-                            } <br>
+                            id: MyComponent <br>
+                            version: 1.0.0 <br>
+                            owner: owner@domain.com <br>
+                            publicationDate: 2020-03-08 <br>
+                            url: http://fake.url.org/mycomponent <br>
+                            summary: Your awesome component description !<br>
+                            icon: images/icon.png<br>
+                            images:<br>
+                            - images/screenshot-1.png<br>
+                            - images/screenshot-2.png<br>
+                            - images/screenshot-3.png<br>
+                            maintainers:<br>
+                            - some@domain.com<br>
+                            - friends@ext.mpsa.com<br>
+                            docs:<br>
+                            - docs/intro.md<br>
+                            - docs/integration.md<br>
+                            - docs/usage.md<br>
                         </code>
                     </md-content>
                 </md-tab>

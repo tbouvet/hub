@@ -36,7 +36,7 @@
       "autoload": true
     },
     "component-details": {
-      "path": "{hub}/modules/component-details",
+      "path": "{hub}/modules/controllers/component-details",
       "autoload": true
     },
     "search": {
@@ -63,7 +63,7 @@
       "templateUrl": "{hub}/views/search.html",
       "controller":"SearchController as $ctrl"
     },
-    "/component/:name": {
+    "/component/:id": {
       "templateUrl":"{hub}/views/component-details.html",
       "controller":"ComponentDetailsController as details"
     }
