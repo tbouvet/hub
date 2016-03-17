@@ -38,7 +38,6 @@ import java.util.Date;
 import java.util.List;
 
 import static java.util.stream.Collectors.toList;
-import static org.seedstack.business.assembler.AssemblerTypes.MODEL_MAPPER;
 import static org.seedstack.hub.rest.Rels.COMPONENT;
 import static org.seedstack.hub.rest.Rels.STATE;
 
@@ -72,7 +71,7 @@ public class ComponentResource {
             throw new NotFoundException("Component " + componentId + " not found");
         }
 
-        ComponentDetails componentDetails = fluentAssembler.assemble(component).with(MODEL_MAPPER).to(ComponentDetails.class);
+        ComponentDetails componentDetails = fluentAssembler.assemble(component).to(ComponentDetails.class);
         updateUrls(componentDetails);
         return componentDetails;
     }

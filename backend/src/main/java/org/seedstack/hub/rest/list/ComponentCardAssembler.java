@@ -40,7 +40,7 @@ public class ComponentCardAssembler extends BaseAssembler<Component, ComponentCa
 
     @Override
     protected void doMergeAggregateWithDto(Component component, ComponentCard componentCard) {
-
+        throw new UnsupportedOperationException();
     }
 
     private String documentIdToString(DocumentId documentId) {

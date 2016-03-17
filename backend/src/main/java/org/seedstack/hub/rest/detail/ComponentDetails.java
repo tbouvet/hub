@@ -7,6 +7,7 @@
  */
 package org.seedstack.hub.rest.detail;
 
+import org.seedstack.hub.domain.model.component.State;
 import org.seedstack.seed.rest.hal.HalRepresentation;
 
 import java.util.List;
@@ -14,6 +15,7 @@ import java.util.List;
 public class ComponentDetails extends HalRepresentation {
     private String id;
     private String version;
+    private State state;
     private String owner;
     private String name;
     private String summary;
@@ -38,6 +40,14 @@ public class ComponentDetails extends HalRepresentation {
 
     public void setVersion(String version) {
         this.version = version;
+    }
+
+    public State getState() {
+        return state;
+    }
+
+    public void setState(State state) {
+        this.state = state;
     }
 
     public String getOwner() {
