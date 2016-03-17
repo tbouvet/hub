@@ -19,8 +19,12 @@ class ComponentDetailsController {
         });
     }
 
-    public getComponent(): IResource {
+    public getComponent (): IResource {
         return this.api('home').enter('component', { componentId: this.$routeParams.id }).get();
+    }
+
+    public starComponent (component): void {
+        // todo use link from hypermedia
     }
 }
 

@@ -11,8 +11,10 @@ const dist = process.argv.slice(2)[0];
 const express = require('express');
 const bodyParser = require("body-parser");
 const app = express();
+const fs = require('fs');
 var home = require('./home');
 var cards = require('./components-card');
+var component = require('./component');
 
 function is(req, mimeType) {
     return req.headers.accept === mimeType;
@@ -83,8 +85,22 @@ app.post('/components', (req, res) => {
     setTimeout(() => { res.json(newComponent); }, 5000);
 });
 
-app.get('/user/components', (req, res, next) => {
-    // Get the current user components
+app.get('/components/:componentId', (req, res, next) => {
+    component.id = req.params.componentId;
+    component.name = 'Name ' + req.params.componentId;
+    res.json(component);
+});
+
+app.get('/components/*/files/images/*', (req, res, next) => {
+    var img = fs.readFileSync('../hub/frontend/mock/images/ubuntu.png');
+    res.writeHead(200, {'Content-Type': 'image/png' });
+    res.end(img, 'binary');
+});
+
+app.get('/components/*/files/README.md', (req, res, next) => {
+    var readme = fs.readFileSync('../hub/frontend/mock/docs/readme.html');
+    res.writeHead(200, {'Content-Type': 'text/html' });
+    res.end(readme);
 });
 
 if (dist === 'dist') {

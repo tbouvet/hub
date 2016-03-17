@@ -9,6 +9,21 @@ var home = {
                 "show": "/doc/components/param/show"
             }
         },
+        "component": {
+            "href-vars": {
+                "componentId": "componentId"
+            },
+            "hints": {
+                "allow": [
+                    "GET"
+                ],
+                "formats": {
+                    "application/hal+json": "",
+                    "application/json": ""
+                }
+            },
+            "href-template": "/components/{componentId}"
+        },
         "popular": {
             "href": "/popular"
         },
