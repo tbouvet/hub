@@ -20,7 +20,7 @@ version = 1.0.0
 /** = authcBasic
 
 [org.seedstack.seed.security.users]
-adrienlauer = password
+adrienlauer = password, admin
 pith = password
 kavi87 = password
 
