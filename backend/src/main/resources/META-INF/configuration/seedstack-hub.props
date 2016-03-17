@@ -17,6 +17,7 @@ application-name = SeedStack.hub
 version = 1.0.0
 
 [org.seedstack.seed.security.urls]
+/swagger.json = anon
 /** = authcBasic
 
 [org.seedstack.seed.security.users]

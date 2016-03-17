@@ -35,6 +35,10 @@
       "path": "{hub}/modules/directives/speed-dial/actions/add-component",
       "autoload": true
     },
+    "comment": {
+      "path": "{hub}/modules/directives/comments/comments",
+      "autoload": true
+    },
     "component-details": {
       "path": "{hub}/modules/controllers/component-details",
       "autoload": true
@@ -65,7 +69,7 @@
     },
     "/component/:id": {
       "templateUrl":"{hub}/views/component-details.html",
-      "controller":"ComponentDetailsController as details"
+      "controller":"ComponentDetailsController as $ctrl"
     }
   },
 

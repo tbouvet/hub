@@ -20,7 +20,12 @@ html, body  {
 #sidebar {
     width: 200px !important;
     max-width: 250px;
-
+    md-toolbar {
+        md-icon {
+            margin: 11px 18px 0 4px;
+            font-size: 35px
+        }
+    }
     button {
         text-align: left !important;
     }
@@ -28,7 +33,7 @@ html, body  {
 
 #view {
     height: 100%;
-    background-color: #fafafa;
+    background-color: #EEEEEE;
     padding-left: 13%;
     padding-right: 13%;
 }
@@ -60,7 +65,7 @@ md-card[md-ink-ripple] {
 }
 
 .muted {
-    color: #808080;
+    color: #808080 !important;
 }
 
 .spacer {
@@ -77,6 +82,5 @@ md-card[md-ink-ripple] {
     }
 }
 
-
-
+@import "markdown";
 
