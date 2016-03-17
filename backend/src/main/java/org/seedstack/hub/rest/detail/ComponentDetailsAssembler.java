@@ -5,10 +5,14 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
-package org.seedstack.hub.rest;
+package org.seedstack.hub.rest.detail;
 
 import org.modelmapper.PropertyMap;
 import org.seedstack.hub.domain.model.component.Component;
+import org.seedstack.hub.domain.model.component.Version;
+import org.seedstack.hub.rest.AbstractComponentAssembler;
+
+import java.util.List;
 
 @org.seedstack.business.assembler.ModelMapper
 public class ComponentDetailsAssembler extends AbstractComponentAssembler<ComponentDetails> {
@@ -23,6 +27,10 @@ public class ComponentDetailsAssembler extends AbstractComponentAssembler<Compon
                 map(source.getDescription().getReadme()).setReadme(null);
                 map(source.getDescription().getImages()).setImages(null);
                 map(source.getDocs()).setDocs(null);
+                List<Version> versions = source.getVersions();
+                if (!versions.isEmpty()) {
+                    map(versions.get(0).toString()).setVersion(null);
+                }
             }
         };
     }

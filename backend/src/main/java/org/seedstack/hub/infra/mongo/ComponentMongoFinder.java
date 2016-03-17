@@ -14,23 +14,18 @@ import org.seedstack.business.finder.Range;
 import org.seedstack.business.finder.Result;
 import org.seedstack.business.view.Page;
 import org.seedstack.business.view.PaginatedView;
-import org.seedstack.hub.application.SecurityService;
 import org.seedstack.hub.domain.model.component.Comment;
 import org.seedstack.hub.domain.model.component.Component;
 import org.seedstack.hub.domain.model.component.ComponentId;
 import org.seedstack.hub.domain.model.component.State;
-import org.seedstack.hub.domain.model.user.User;
 import org.seedstack.hub.domain.model.user.UserId;
-import org.seedstack.hub.rest.ComponentCard;
-import org.seedstack.hub.rest.ComponentFinder;
+import org.seedstack.hub.rest.list.ComponentCard;
+import org.seedstack.hub.rest.list.ComponentFinder;
 import org.seedstack.mongodb.morphia.MorphiaDatastore;
-import org.seedstack.seed.security.AuthenticationException;
 
 import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
-
-import static org.seedstack.business.assembler.AssemblerTypes.MODEL_MAPPER;
 
 class ComponentMongoFinder implements ComponentFinder {
 
@@ -40,9 +35,6 @@ class ComponentMongoFinder implements ComponentFinder {
 
     @Inject
     private FluentAssembler fluentAssembler;
-
-    @Inject
-    private SecurityService securityService;
 
     @Override
     public PaginatedView<ComponentCard> findCards(Page page, String searchName, String sort) {
@@ -65,14 +57,14 @@ class ComponentMongoFinder implements ComponentFinder {
 
     private Result<ComponentCard> findComponentCards(Query<Component> query, Range range) {
         List<Component> list = paginateQuery(query, range);
-        List<ComponentCard> cards = fluentAssembler.assemble(list).with(MODEL_MAPPER).to(ComponentCard.class);
+        List<ComponentCard> cards = fluentAssembler.assemble(list).to(ComponentCard.class);
         return new Result<>(cards, range.getOffset(), query.countAll());
     }
 
     @Override
-    public PaginatedView<ComponentCard> findCurrentUserCards(Page page) {
+    public PaginatedView<ComponentCard> findCurrentUserCards(UserId user, Page page) {
         Range range = Range.rangeFromPageInfo(page.getIndex(), page.getCapacity());
-        String userId = securityService.getAuthenticatedUser().orElseThrow(AuthenticationException::new).getId().getId();
+        String userId = user.getId();
         Query<Component> q = datastore.find(Component.class);
         q.or(
                 q.criteria("owner").equal(userId),
@@ -99,15 +91,15 @@ class ComponentMongoFinder implements ComponentFinder {
     }
 
     @Override
-    public Result<ComponentCard> findRecentCards(int howMany) {
+    public Result<ComponentCard> findRecentCards(Range range) {
         Query<Component> queryComponent = datastore.find(Component.class).order("-versions.publicationDate");
-        return findPublishedComponentCards(queryComponent, new Range(0, howMany));
+        return findPublishedComponentCards(queryComponent, range);
     }
 
     @Override
-    public Result<ComponentCard> findPopularCards(int howMany) {
+    public Result<ComponentCard> findPopularCards(Range range) {
         Query<Component> query = datastore.find(Component.class).order("-stars");
-        return findPublishedComponentCards(query, new Range(0, howMany));
+        return findPublishedComponentCards(query, range);
     }
 
     @Override

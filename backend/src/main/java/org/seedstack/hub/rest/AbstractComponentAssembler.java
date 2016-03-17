@@ -14,6 +14,7 @@ import org.modelmapper.spi.MappingContext;
 import org.seedstack.business.assembler.modelmapper.ModelMapperAssembler;
 import org.seedstack.hub.domain.model.component.Component;
 import org.seedstack.hub.domain.model.document.DocumentId;
+import org.seedstack.hub.rest.shared.UriBuilder;
 
 public abstract class AbstractComponentAssembler<DTO> extends ModelMapperAssembler<Component, DTO> {
     @Override
@@ -35,8 +36,7 @@ public abstract class AbstractComponentAssembler<DTO> extends ModelMapperAssembl
 
     protected abstract PropertyMap<Component, DTO> providePropertyMap();
 
-
     private String documentIdToString(DocumentId documentId) {
-        return String.format("components/%s/files/%s", documentId.getComponentId(), documentId.getPath());
+        return UriBuilder.uri("components", documentId.getComponentId().toString(), "files", documentId.getPath());
     }
 }
