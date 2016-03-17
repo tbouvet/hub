@@ -15,13 +15,12 @@ import org.seedstack.business.domain.Repository;
 import org.seedstack.business.finder.Result;
 import org.seedstack.business.view.Page;
 import org.seedstack.business.view.PaginatedView;
-import org.seedstack.hub.domain.model.component.Comment;
-import org.seedstack.hub.domain.model.component.Component;
-import org.seedstack.hub.domain.model.component.ComponentId;
+import org.seedstack.hub.domain.model.component.*;
 import org.seedstack.hub.rest.ComponentCard;
 import org.seedstack.hub.rest.ComponentFinder;
-import org.seedstack.hub.rest.MockedComponentBuilder;
+import org.seedstack.hub.rest.MockBuilder;
 import org.seedstack.seed.it.SeedITRunner;
+import org.seedstack.seed.security.WithUser;
 
 import javax.inject.Inject;
 import java.time.LocalDate;
@@ -42,7 +41,7 @@ public class ComponentMongoFinderIT {
     private Repository<Component, ComponentId> componentRepository;
 
     private final List<Component> mockedComponents = IntStream.range(0, 23)
-            .mapToObj(MockedComponentBuilder::mock)
+            .mapToObj(MockBuilder::mock)
             .collect(toList());
 
     @Before
@@ -83,6 +82,53 @@ public class ComponentMongoFinderIT {
         List<ComponentCard> recentCards = componentCards.getResult();
         assertThat(recentCards).hasSize(6);
         assertThat(recentCards.get(0).getId()).isEqualToIgnoringCase("Component0");
+    }
+
+    @Test
+    public void testFindOnlyPublishedRecent() {
+        givenArchivedComponent("Component0");
+
+        Result<ComponentCard> componentCards = componentFinder.findRecentCards(6);
+
+        // assert archived component is not returned
+        List<ComponentCard> recentCards = componentCards.getResult();
+        assertThat(recentCards).hasSize(6);
+        assertThat(recentCards.get(0).getId()).isEqualToIgnoringCase("Component1");
+    }
+
+    private void givenArchivedComponent(String componentId) {
+        Component component0 = componentRepository.load(new ComponentId(componentId));
+        component0.archive();
+        componentRepository.save(component0);
+    }
+
+    @Test
+    public void testFindCardsByState() {
+        givenArchivedComponent("Component0");
+        componentRepository.save(MockBuilder.mock(99, State.PENDING));
+
+        PaginatedView<ComponentCard> archived = componentFinder.findCardsByState(new Page(0,10), State.ARCHIVED);
+        assertThat(archived.getView()).hasSize(1);
+        assertThat(archived.getView().get(0).getId()).isEqualTo("Component0");
+
+        PaginatedView<ComponentCard> pending = componentFinder.findCardsByState(new Page(0,10), State.PENDING);
+        assertThat(pending.getView()).hasSize(1);
+        assertThat(pending.getView().get(0).getId()).isEqualTo("Component99");
+
+        PaginatedView<ComponentCard> published = componentFinder.findCardsByState(new Page(0,10), State.PUBLISHED);
+        assertThat(published.getView()).hasSize(10);
+        assertThat(published.getView().get(0).getId()).isEqualTo("Component1");
+        componentRepository.delete(new ComponentId("Component99"));
+    }
+
+    @WithUser(id = "pith", password = "password")
+    @Test
+    public void test_findCurrentUserCards_retrieve_also_archived() {
+        givenArchivedComponent("Component0");
+
+        PaginatedView<ComponentCard> archived = componentFinder.findCurrentUserCards(new Page(0,10));
+        assertThat(archived.getView()).hasSize(10);
+        assertThat(archived.getView().get(0).getId()).isEqualTo("Component0");
     }
 
     @Test

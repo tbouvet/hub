@@ -11,6 +11,7 @@ import org.seedstack.hub.application.SecurityService;
 import org.seedstack.hub.domain.model.user.User;
 import org.seedstack.hub.domain.model.user.UserId;
 import org.seedstack.hub.domain.model.user.UserRepository;
+import org.seedstack.seed.security.AuthorizationException;
 import org.seedstack.seed.security.SecuritySupport;
 import org.seedstack.seed.security.principals.Principals;
 import org.seedstack.seed.security.principals.SimplePrincipalProvider;
@@ -32,5 +33,17 @@ class SecurityServiceImpl implements SecurityService {
         } else {
             return Optional.empty();
         }
+    }
+
+    @Override
+    public void checkUserIsAdmin() {
+        if (!isUserAdmin()) {
+            throw new AuthorizationException();
+        }
+    }
+
+    @Override
+    public boolean isUserAdmin() {
+        return !securitySupport.hasRole("admin");
     }
 }

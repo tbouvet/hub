@@ -7,16 +7,13 @@
  */
 package org.seedstack.hub.application;
 
-import org.seedstack.business.Service;
-import org.seedstack.hub.domain.model.user.User;
+import org.seedstack.business.domain.DomainPolicy;
+import org.seedstack.hub.domain.model.component.Component;
+import org.seedstack.hub.domain.model.component.ComponentId;
 
-import java.util.Optional;
+@DomainPolicy
+public interface StatePolicy {
 
-@Service
-public interface SecurityService {
-    Optional<User> getAuthenticatedUser();
-
-    void checkUserIsAdmin();
-
-    boolean isUserAdmin();
+    boolean canPublish(Component component);
+    boolean canArchive(Component component);
 }

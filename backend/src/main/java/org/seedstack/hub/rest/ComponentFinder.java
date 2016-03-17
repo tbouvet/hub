@@ -13,11 +13,16 @@ import org.seedstack.business.view.Page;
 import org.seedstack.business.view.PaginatedView;
 import org.seedstack.hub.domain.model.component.Comment;
 import org.seedstack.hub.domain.model.component.ComponentId;
+import org.seedstack.hub.domain.model.component.State;
 
 @Finder
 public interface ComponentFinder {
 
     PaginatedView<ComponentCard> findCards(Page page, String searchName, String sort);
+
+    PaginatedView<ComponentCard> findCurrentUserCards(Page page);
+
+    PaginatedView<ComponentCard> findCardsByState(Page page, State state);
 
     PaginatedView<Comment> findComments(ComponentId componentId, Page page);
 
