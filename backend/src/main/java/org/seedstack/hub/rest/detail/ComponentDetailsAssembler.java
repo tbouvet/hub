@@ -55,8 +55,8 @@ public class ComponentDetailsAssembler extends BaseAssembler<Component, Componen
         componentDetails.link(Rels.AUTHOR_COMPONENTS, relRegistry
                 .uri(Rels.AUTHOR_COMPONENTS).set(USER_ID, component.getOwner().getId()).expand());
 
-        componentDetails.link(Rels.STARS, relRegistry
-                .uri(Rels.STARS).set(COMPONENT_ID, componentId).expand());
+        componentDetails.link(Rels.STAR, relRegistry
+                .uri(Rels.STAR).set(COMPONENT_ID, componentId).expand());
 
         componentDetails.link(Rels.COMMENT, relRegistry
                 .uri(Rels.COMMENT).set(COMPONENT_ID, componentId).expand());
