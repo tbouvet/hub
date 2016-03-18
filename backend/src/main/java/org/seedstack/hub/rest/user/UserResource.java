@@ -34,6 +34,7 @@ import static org.seedstack.hub.rest.Rels.*;
 @Api
 @Path("/user")
 public class UserResource {
+    public static final String USER_ID = "userId";
     @Inject
     private StarringService starringService;
     @Inject
@@ -64,7 +65,7 @@ public class UserResource {
     @GET
     @Path("{userId}/components")
     @Produces({"application/json", "application/hal+json"})
-    public HalRepresentation getComponents(@PathParam("userId") String userId, @BeanParam PageInfo pageInfo) {
+    public HalRepresentation getComponents(@PathParam(USER_ID) String userId, @BeanParam PageInfo pageInfo) {
         PaginatedView<ComponentCard> userComponents = componentFinder.findCurrentUserCards(new UserId(userId), pageInfo.page());
         return new HalRepresentation()
                 .embedded("components", userComponents)

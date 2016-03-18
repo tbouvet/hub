@@ -75,4 +75,9 @@ public class Version extends BaseEntity<VersionId> implements Comparable<Version
     public int compareTo(Version o) {
         return versionId.compareTo(o.versionId);
     }
+
+    @Override
+    public String toString() {
+        return versionId.toString();
+    }
 }

@@ -20,33 +20,18 @@ import javax.inject.Inject;
 import java.util.List;
 
 import static java.util.stream.Collectors.toList;
+import static org.seedstack.hub.rest.detail.ComponentResource.COMPONENT_ID;
+import static org.seedstack.hub.rest.user.UserResource.USER_ID;
 
 public class ComponentDetailsAssembler extends BaseAssembler<Component, ComponentDetails> {
-    //    @Override
-//    protected PropertyMap<Component, ComponentDetails> providePropertyMap() {
-//        return new PropertyMap<Component, ComponentDetails>() {
-//            @Override
-//            protected void configure() {
-//                map().setName(source.getDescription().getName());
-//                map().setSummary(source.getDescription().getSummary());
-//                map(source.getDescription().getIcon()).setIcon(null);
-//                map(source.getDescription().getReadme()).setReadme(null);
-//                map(source.getDescription().getImages()).setImages(null);
-//                map(source.getDocs()).setDocs(null);
-//                List<Version> versions = source.getVersions();
-//                if (!versions.isEmpty()) {
-//                    map(versions.get(0).toString()).setVersion(null);
-//                }
-//            }
-//        };
-//    }
 
     @Inject
     private RelRegistry relRegistry;
 
     @Override
     protected void doAssembleDtoFromAggregate(ComponentDetails componentDetails, Component component) {
-        componentDetails.setId(component.getId().getName());
+        String componentId = component.getId().getName();
+        componentDetails.setId(componentId);
         componentDetails.setName(component.getEntityId().getName());
         componentDetails.setSummary(component.getDescription().getSummary());
         componentDetails.setIcon(documentIdToString(component.getDescription().getIcon()));
@@ -65,9 +50,16 @@ public class ComponentDetailsAssembler extends BaseAssembler<Component, Componen
 
         componentDetails.link("self", relRegistry
                 .uri(Rels.COMPONENT)
-                .set("componentId", component.getId().getName()).expand());
+                .set(COMPONENT_ID, componentId).expand());
+
         componentDetails.link(Rels.AUTHOR_COMPONENTS, relRegistry
-                .uri(Rels.AUTHOR_COMPONENTS).set("userId", component.getOwner().getId()).expand());
+                .uri(Rels.AUTHOR_COMPONENTS).set(USER_ID, component.getOwner().getId()).expand());
+
+        componentDetails.link(Rels.STARS, relRegistry
+                .uri(Rels.STARS).set(COMPONENT_ID, componentId).expand());
+
+        componentDetails.link(Rels.COMMENT, relRegistry
+                .uri(Rels.COMMENT).set(COMPONENT_ID, componentId).expand());
     }
 
     @Override

@@ -45,6 +45,7 @@ import static org.seedstack.hub.rest.Rels.STATE;
 @Path("/components/{componentId}")
 @Produces({"application/json", "application/hal+json"})
 public class ComponentResource {
+    public static final String COMPONENT_ID = "componentId";
     @Inject
     private ComponentFinder componentFinder;
     @Inject
@@ -60,7 +61,7 @@ public class ComponentResource {
     @Inject
     private StatePolicy statePolicy;
 
-    @PathParam("componentId")
+    @PathParam(COMPONENT_ID)
     private String componentId;
 
     @GET
@@ -109,7 +110,7 @@ public class ComponentResource {
         PaginatedView<Comment> comments = componentFinder.findComments(new ComponentId(componentId), pageInfo.page());
         halRepresentation.embedded(Rels.COMMENT, comments);
         halRepresentation.link("self", relRegistry.uri(Rels.COMMENT)
-                .set("componentId", componentId)
+                .set(COMPONENT_ID, componentId)
                 .set("pageIndex", pageInfo.getPageIndex())
                 .set("pageSize", pageInfo.getPageSize())
                 .expand());
@@ -127,7 +128,7 @@ public class ComponentResource {
         User user = securityService.getAuthenticatedUser().orElseThrow(AuthenticationException::new);
         component.addComment(new Comment(user.getId().getId(), comment, new Date()));
         componentRepository.persist(component);
-        return Response.created(URI.create(relRegistry.uri(Rels.COMMENT).set("componentId", componentId).expand())).build();
+        return Response.created(URI.create(relRegistry.uri(Rels.COMMENT).set(COMPONENT_ID, componentId).expand())).build();
     }
 
     private void updateUrls(ComponentDetails componentDetails) {

@@ -37,16 +37,7 @@ import static org.skyscreamer.jsonassert.JSONAssert.assertEquals;
 
 public class ComponentsResourceIT extends AbstractSeedWebIT {
 
-    final String requestWithPagination = "{\"_links\":{" +
-            "\"next\":{\"href\":\"/components?search=ponent1&pageIndex=2&pageSize=5\"}," +
-            "\"prev\":{\"href\":\"/components?search=ponent1&pageIndex=0&pageSize=5\"}," +
-            "\"self\":{\"href\":\"/components?search=ponent1&pageIndex=1&pageSize=5\"}" +
-            "},\"_embedded\":{" +
-            "\"components\":[" +
-            "{\"id\":\"Component14\"},{\"id\":\"Component15\"},{\"id\":\"Component16\"},{\"id\":\"Component17\"},{\"id\":\"Component18\"}" +
-            "]}}";
-
-    final String requestByState = "{\"_links\":{" +
+    private final String requestWithPagination = "{\"_links\":{" +
             "\"next\":{\"href\":\"/components?search=ponent1&pageIndex=2&pageSize=5\"}," +
             "\"prev\":{\"href\":\"/components?search=ponent1&pageIndex=0&pageSize=5\"}," +
             "\"self\":{\"href\":\"/components?search=ponent1&pageIndex=1&pageSize=5\"}" +
