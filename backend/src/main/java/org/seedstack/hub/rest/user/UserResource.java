@@ -88,7 +88,15 @@ public class UserResource {
                 .link("self", relRegistry.uri(STARS).expand());
     }
 
-    @Rel(STARS)
+    @Rel(STAR)
+    @GET
+    @Path("/stars/{componentId}")
+    public Response isStarredComponent(@PathParam("componentId") String componentId) throws URISyntaxException {
+        boolean hasStarred = starringService.hasStarred(new ComponentId(componentId));
+        return Response.ok(String.format("{isStarred: %s}", hasStarred)).build();
+    }
+
+    @Rel(STAR)
     @POST
     @Path("/stars/{componentId}")
     public Response starComponent(@PathParam("componentId") String componentId) throws URISyntaxException {
@@ -96,7 +104,7 @@ public class UserResource {
         return Response.created(new URI(relRegistry.uri(STARS).set("componentId", componentId).expand())).build();
     }
 
-    @Rel(STARS)
+    @Rel(STAR)
     @DELETE
     @Path("/stars/{componentId}")
     public void unstarComponent(@PathParam("componentId") String componentId) throws URISyntaxException {
