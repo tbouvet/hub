@@ -45,7 +45,9 @@ import static org.seedstack.hub.rest.Rels.STATE;
 @Path("/components/{componentId}")
 @Produces({"application/json", "application/hal+json"})
 public class ComponentResource {
-    public static final String COMPONENT_ID = "componentId";
+
+    static final String COMPONENT_ID = "componentId";
+
     @Inject
     private ComponentFinder componentFinder;
     @Inject

@@ -30,7 +30,6 @@ public class MockBuilder {
 
         Component component = new Component(componentId, john, description);
         Version m1 = new Version(new VersionId(1, 2, 3, "M1"));
-        m1.setPublicationDate(LocalDate.now());
         component.addVersion(m1);
         changeState(component, state);
 

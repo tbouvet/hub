@@ -37,15 +37,6 @@ import static org.skyscreamer.jsonassert.JSONAssert.assertEquals;
 
 public class ComponentsResourceIT extends AbstractSeedWebIT {
 
-    private final String requestWithPagination = "{\"_links\":{" +
-            "\"next\":{\"href\":\"/components?search=ponent1&pageIndex=2&pageSize=5\"}," +
-            "\"prev\":{\"href\":\"/components?search=ponent1&pageIndex=0&pageSize=5\"}," +
-            "\"self\":{\"href\":\"/components?search=ponent1&pageIndex=1&pageSize=5\"}" +
-            "},\"_embedded\":{" +
-            "\"components\":[" +
-            "{\"id\":\"Component14\"},{\"id\":\"Component15\"},{\"id\":\"Component16\"},{\"id\":\"Component17\"},{\"id\":\"Component18\"}" +
-            "]}}";
-
     @ArquillianResource
     private URL baseURL;
 
@@ -74,6 +65,16 @@ public class ComponentsResourceIT extends AbstractSeedWebIT {
     @Test
     public void get_with_pagination() throws JSONException {
         Response response = httpGet("components?search=ponent1&pageIndex=1&pageSize=5");
+
+        String requestWithPagination = "{\"_links\":{" +
+                "\"next\":{\"href\":\"/components?search=ponent1&pageIndex=2&pageSize=5\"}," +
+                "\"prev\":{\"href\":\"/components?search=ponent1&pageIndex=0&pageSize=5\"}," +
+                "\"self\":{\"href\":\"/components?search=ponent1&pageIndex=1&pageSize=5\"}" +
+                "},\"_embedded\":{" +
+                "\"components\":[" +
+                "{\"id\":\"Component14\"},{\"id\":\"Component15\"},{\"id\":\"Component16\"},{\"id\":\"Component17\"},{\"id\":\"Component18\"}" +
+                "]}}";
+
         assertEquals(requestWithPagination, response.asString(), false);
     }
 
