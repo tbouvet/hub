@@ -1,12 +1,12 @@
-<section hub-infinite-scroll on-bottom-reached="loadNewComments()" criterias="paginationCriterias">
+<section hub-infinite-scroll on-bottom-reached="loadNewComments(criterias)" criterias="paginationCriterias">
     <h1> Comments </h1>
     <form name="comment" ng-submit="submitComment(newCommentText)">
         <md-input-container class="md-block" flex-gt-sm>
             <label>Add a comment</label>
-            <textarea md-maxlength="150" rows="5" ng-model="newCommentText" md-select-on-focus></textarea>
+            <textarea md-maxlength="144" rows="5" ng-model="newCommentText" md-select-on-focus></textarea>
         </md-input-container>
         <div layout="row" layout-align="center center">
-            <md-button type="submit" ng-disabled="!newComment">Add comment</md-button>
+            <md-button type="submit" ng-disabled="!newCommentText">Add comment</md-button>
         </div>
     </form>
 

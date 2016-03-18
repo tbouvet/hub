@@ -11,9 +11,11 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.seedstack.hub.domain.model.component.State;
 import org.seedstack.hub.rest.MockBuilder;
+import org.seedstack.hub.rest.Rels;
 import org.seedstack.hub.rest.detail.ComponentDetails;
 import org.seedstack.hub.rest.detail.ComponentDetailsAssembler;
 import org.seedstack.seed.it.SeedITRunner;
+import org.seedstack.seed.rest.hal.Link;
 
 import javax.inject.Inject;
 
@@ -39,5 +41,7 @@ public class ComponentDetailsAssemblerIT {
         assertThat(detail.getStars()).isEqualTo(3);
         assertThat(detail.getState()).isEqualTo(State.PUBLISHED);
         assertThat(detail.getVersion()).isEqualTo("1.2.3-M1");
+        assertThat(((Link) detail.getLink("self")).expand()).isEqualTo("/components/Component2");
+        assertThat(((Link) detail.getLink(Rels.STAR)).expand()).isEqualTo("/user/stars/Component2");
     }
 }

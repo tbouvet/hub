@@ -35,6 +35,7 @@ class SearchController {
         this.getCards(searchCriterias, results => {
                 if (results.$embedded('components') && results.$embedded('components').constructor === Array) {
                     this.components = this.components.concat(results.$embedded('components'));
+                    this.searchCriterias.pageIndex++;
                 }
             }, () => {});
     }

@@ -15,13 +15,12 @@ class HubInfiniteScroll implements ng.IDirective {
         this.$timeout(() => {
             var parent = angular.element('#view');
             var raw = parent[0];
-            parent.bind('scroll', <any> lodash['throttle'](() => {
+            parent.bind('scroll', () => {
                 if (raw.scrollTop + raw.offsetHeight >= raw.scrollHeight) {
-                    scope.criterias.pageIndex++;
                     scope.onBottomReached({criterias: scope.criterias});
                 }
-            }, 200));
-        })
+            });
+        });
     }
 }
 

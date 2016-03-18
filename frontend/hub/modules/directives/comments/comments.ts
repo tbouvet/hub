@@ -11,7 +11,7 @@ import angular = require('{angular}/angular');
 import commentTemplate = require('[text]!{hub}/modules/directives/comments/comment.tmpl.html');
 import Collator = Intl.Collator;
 
-interface Comment {
+interface IComment {
     author: string,
     publicationDate: string,
     text: string
@@ -24,20 +24,22 @@ interface PaginationCriteria {
 
 interface ICommentScope extends ng.IScope {
     submitComment(comment: string): void;
+    newCommentText: string;
     paginationCriterias: PaginationCriteria;
-    loadNewComments():void;
+    loadNewComments(criterias):void;
     comments: Comment[];
     component: any;
 }
 class HubComment implements ng.IDirective {
-    static $inject = ['HomeService'];
-    constructor(private api) {};
+    static $inject = ['HomeService', '$resource'];
+    constructor(private api, private $resource) {};
     scope = {
       component: '='
     };
     template = commentTemplate;
     link: ng.IDirectiveLinkFn = (scope: ICommentScope) => {
         scope.comments = [];
+        scope.newCommentText = '';
 
         scope.paginationCriterias = {
             pageIndex: 0,
@@ -45,17 +47,20 @@ class HubComment implements ng.IDirective {
         };
 
         scope.submitComment = (text: string) => {
-          scope.component.$links('comment').save(text).$promise.then(() => {
-              scope.comments
+          scope.component.$links('comment').save(text).$promise.then((comment: IComment) => {
+              scope.newCommentText = '';
+              scope.comments.push(comment);
           }, (reject) => { throw new Error(reject); });
         };
 
         scope.loadNewComments = () => {
-            alert(scope.component.name)
-            //this.api('home').enter('')
+            scope.component.$links('comment', scope.paginationCriterias).get((results: any) => {
+                if (results.$embedded('comment').view.length) {
+                    scope.comments = <Comment[]> scope.comments.concat(results.$embedded('comment').view);
+                    scope.paginationCriterias.pageIndex++;
+                }
+            }, (reject) => { throw new Error(reject); });
         };
-
-
     }
 }
 
