@@ -17,7 +17,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class VersionId extends BaseValueObject implements Comparable<VersionId> {
-    public static final Pattern VERSION_PATTERN = Pattern.compile("(\\d+)(\\.(\\d+))?(\\.(\\d+))?(-(\\w+))?");
+    private static final Pattern VERSION_PATTERN = Pattern.compile("(\\d+)(\\.(\\d+))?(\\.(\\d+))?(-(\\w+))?");
 
     @NotNull
     private Integer majorNumber;
@@ -71,26 +71,58 @@ public class VersionId extends BaseValueObject implements Comparable<VersionId> 
     public int compareTo(VersionId that) {
         int result;
 
-        result = this.majorNumber.compareTo(that.majorNumber);
+        result = compareTo(this.majorNumber, that.majorNumber);
         if (result != 0) {
             return result;
         }
-
-        result = this.minorNumber.compareTo(that.minorNumber);
+        result = compareTo(minorNumber, that.minorNumber);
         if (result != 0) {
             return result;
         }
-
-        result = this.microNumber.compareTo(that.microNumber);
+        result = compareTo(microNumber, that.microNumber);
         if (result != 0) {
             return result;
         }
-
-        result = this.qualifier.compareTo(that.qualifier);
+        result = compareTo(qualifier, that.qualifier);
+        result = versionWithoutQualifierIsGreater(that, result);
         if (result != 0) {
             return result;
         }
-
         return 0;
+    }
+
+    private int versionWithoutQualifierIsGreater(VersionId that, int result) {
+        if (qualifier == null || that.qualifier == null) {
+            result = result * -1;
+        }
+        return result;
+    }
+
+    private <T> int compareTo(Comparable<T> i, Comparable<T> j) {
+        if (i == null && j == null) {
+            return 0;
+        } else if (i == null) {
+            return -1;
+        } else if (j == null) {
+            return 1;
+        }
+        return i.compareTo((T) j);
+    }
+
+
+    @Override
+    public String toString() {
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append(majorNumber);
+        if (minorNumber != null) {
+            stringBuilder.append(".").append(minorNumber);
+        }
+        if (microNumber != null) {
+            stringBuilder.append(".").append(microNumber);
+        }
+        if (qualifier != null) {
+            stringBuilder.append("-").append(qualifier);
+        }
+        return stringBuilder.toString();
     }
 }

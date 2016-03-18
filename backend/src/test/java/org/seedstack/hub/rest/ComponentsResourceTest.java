@@ -15,13 +15,12 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.seedstack.business.assembler.FluentAssembler;
-import org.seedstack.business.domain.Repository;
 import org.seedstack.business.view.PaginatedView;
 import org.seedstack.hub.application.ImportService;
-import org.seedstack.hub.application.SecurityService;
-import org.seedstack.hub.application.StatePolicy;
-import org.seedstack.hub.domain.model.component.Component;
-import org.seedstack.hub.domain.model.component.ComponentId;
+import org.seedstack.hub.rest.list.ComponentCard;
+import org.seedstack.hub.rest.list.ComponentFinder;
+import org.seedstack.hub.rest.list.ComponentsResource;
+import org.seedstack.hub.rest.shared.PageInfo;
 import org.seedstack.seed.rest.RelRegistry;
 import org.seedstack.seed.rest.hal.HalRepresentation;
 
@@ -36,24 +35,18 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class ComponentsResourceTest {
 
     @Tested
-    private ComponentResource undertest;
+    private ComponentsResource undertest;
 
     @Injectable
     private ComponentFinder componentFinder;
     @Injectable
-    private Repository<Component, ComponentId> componentRepository;
+    private ServletContext servletContext;
     @Injectable
     private RelRegistry relRegistry;
     @Injectable
     private ImportService importService;
     @Injectable
     private FluentAssembler fluentAssembler;
-    @Injectable
-    private SecurityService securityService;
-    @Injectable
-    private ServletContext servletContext;
-    @Injectable
-    private StatePolicy statePolicy;
 
     private String searchName = "foo";
     private String sort = "publishedData";
@@ -77,6 +70,6 @@ public class ComponentsResourceTest {
         HalRepresentation halRepresentation = undertest.list(searchName, new PageInfo(pageIndex, pageSize), sort);
 
         assertThat(halRepresentation).isNotNull();
-        assertThat(halRepresentation.getEmbedded().get(ComponentResource.COMPONENTS)).isEqualTo(componentCards);
+        assertThat(halRepresentation.getEmbedded().get(Rels.COMPONENTS)).isEqualTo(componentCards);
     }
 }

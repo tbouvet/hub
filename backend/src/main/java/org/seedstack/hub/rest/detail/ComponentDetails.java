@@ -5,14 +5,17 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
-package org.seedstack.hub.rest;
+package org.seedstack.hub.rest.detail;
 
+import org.seedstack.hub.domain.model.component.State;
 import org.seedstack.seed.rest.hal.HalRepresentation;
 
 import java.util.List;
 
 public class ComponentDetails extends HalRepresentation {
     private String id;
+    private String version;
+    private State state;
     private String owner;
     private String name;
     private String summary;
@@ -29,6 +32,22 @@ public class ComponentDetails extends HalRepresentation {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public String getVersion() {
+        return version;
+    }
+
+    public void setVersion(String version) {
+        this.version = version;
+    }
+
+    public State getState() {
+        return state;
+    }
+
+    public void setState(State state) {
+        this.state = state;
     }
 
     public String getOwner() {

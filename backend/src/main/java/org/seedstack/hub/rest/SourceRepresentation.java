@@ -9,9 +9,6 @@ package org.seedstack.hub.rest;
 
 import java.net.URL;
 
-/**
- * Created by e444429 on 10/03/2016.
- */
 public class SourceRepresentation {
 
     private String type; // Repo type TODO (use model enum)

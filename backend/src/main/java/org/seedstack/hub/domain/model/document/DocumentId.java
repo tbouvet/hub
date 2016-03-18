@@ -11,6 +11,7 @@ import org.hibernate.validator.constraints.NotBlank;
 import org.mongodb.morphia.annotations.Embedded;
 import org.seedstack.business.domain.BaseValueObject;
 import org.seedstack.hub.domain.model.component.ComponentId;
+import org.seedstack.hub.rest.shared.UriBuilder;
 
 import javax.validation.constraints.NotNull;
 import java.net.MalformedURLException;
@@ -51,6 +52,6 @@ public class DocumentId extends BaseValueObject {
 
     @Override
     public String toString() {
-        return componentId + (path.startsWith("/") ? path : "/" + path);
+        return UriBuilder.uri(componentId.toString(), path);
     }
 }

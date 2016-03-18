@@ -5,7 +5,7 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
-package org.seedstack.hub.rest;
+package org.seedstack.it;
 
 import com.jayway.restassured.response.Response;
 import org.jboss.arquillian.container.test.api.Deployment;
@@ -22,9 +22,9 @@ import org.seedstack.business.domain.Repository;
 import org.seedstack.hub.domain.model.component.Component;
 import org.seedstack.hub.domain.model.component.ComponentId;
 import org.seedstack.hub.domain.model.component.State;
+import org.seedstack.hub.rest.MockBuilder;
 import org.seedstack.mongodb.morphia.MorphiaDatastore;
 import org.seedstack.seed.it.AbstractSeedWebIT;
-import org.seedstack.seed.security.WithUser;
 
 import javax.inject.Inject;
 import java.net.URL;
@@ -36,24 +36,6 @@ import static java.util.stream.Collectors.toList;
 import static org.skyscreamer.jsonassert.JSONAssert.assertEquals;
 
 public class ComponentsResourceIT extends AbstractSeedWebIT {
-
-    final String requestWithPagination = "{\"_links\":{" +
-            "\"next\":{\"href\":\"/components?search=ponent1&pageIndex=2&pageSize=5\"}," +
-            "\"prev\":{\"href\":\"/components?search=ponent1&pageIndex=0&pageSize=5\"}," +
-            "\"self\":{\"href\":\"/components?search=ponent1&pageIndex=1&pageSize=5\"}" +
-            "},\"_embedded\":{" +
-            "\"components\":[" +
-            "{\"id\":\"Component14\"},{\"id\":\"Component15\"},{\"id\":\"Component16\"},{\"id\":\"Component17\"},{\"id\":\"Component18\"}" +
-            "]}}";
-
-    final String requestByState = "{\"_links\":{" +
-            "\"next\":{\"href\":\"/components?search=ponent1&pageIndex=2&pageSize=5\"}," +
-            "\"prev\":{\"href\":\"/components?search=ponent1&pageIndex=0&pageSize=5\"}," +
-            "\"self\":{\"href\":\"/components?search=ponent1&pageIndex=1&pageSize=5\"}" +
-            "},\"_embedded\":{" +
-            "\"components\":[" +
-            "{\"id\":\"Component14\"},{\"id\":\"Component15\"},{\"id\":\"Component16\"},{\"id\":\"Component17\"},{\"id\":\"Component18\"}" +
-            "]}}";
 
     @ArquillianResource
     private URL baseURL;
@@ -82,7 +64,17 @@ public class ComponentsResourceIT extends AbstractSeedWebIT {
     @RunAsClient
     @Test
     public void get_with_pagination() throws JSONException {
-        Response response = httpGet("components?pageIndex=1&pageSize=5&search=ponent1");
+        Response response = httpGet("components?search=ponent1&pageIndex=1&pageSize=5");
+
+        String requestWithPagination = "{\"_links\":{" +
+                "\"next\":{\"href\":\"/components?search=ponent1&pageIndex=2&pageSize=5\"}," +
+                "\"prev\":{\"href\":\"/components?search=ponent1&pageIndex=0&pageSize=5\"}," +
+                "\"self\":{\"href\":\"/components?search=ponent1&pageIndex=1&pageSize=5\"}" +
+                "},\"_embedded\":{" +
+                "\"components\":[" +
+                "{\"id\":\"Component14\"},{\"id\":\"Component15\"},{\"id\":\"Component16\"},{\"id\":\"Component17\"},{\"id\":\"Component18\"}" +
+                "]}}";
+
         assertEquals(requestWithPagination, response.asString(), false);
     }
 

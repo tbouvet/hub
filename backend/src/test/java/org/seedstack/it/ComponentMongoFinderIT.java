@@ -5,22 +5,26 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
-package org.seedstack.hub.it;
+package org.seedstack.it;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.seedstack.business.domain.Repository;
+import org.seedstack.business.finder.Range;
 import org.seedstack.business.finder.Result;
 import org.seedstack.business.view.Page;
 import org.seedstack.business.view.PaginatedView;
-import org.seedstack.hub.domain.model.component.*;
-import org.seedstack.hub.rest.ComponentCard;
-import org.seedstack.hub.rest.ComponentFinder;
+import org.seedstack.hub.domain.model.component.Comment;
+import org.seedstack.hub.domain.model.component.Component;
+import org.seedstack.hub.domain.model.component.ComponentId;
+import org.seedstack.hub.domain.model.component.State;
+import org.seedstack.hub.domain.model.user.UserId;
 import org.seedstack.hub.rest.MockBuilder;
+import org.seedstack.hub.rest.list.ComponentCard;
+import org.seedstack.hub.rest.list.ComponentFinder;
 import org.seedstack.seed.it.SeedITRunner;
-import org.seedstack.seed.security.WithUser;
 
 import javax.inject.Inject;
 import java.time.LocalDate;
@@ -78,7 +82,7 @@ public class ComponentMongoFinderIT {
 
     @Test
     public void testFindRecent() {
-        Result<ComponentCard> componentCards = componentFinder.findRecentCards(6);
+        Result<ComponentCard> componentCards = componentFinder.findRecentCards(new Range(0,6));
         List<ComponentCard> recentCards = componentCards.getResult();
         assertThat(recentCards).hasSize(6);
         assertThat(recentCards.get(0).getId()).isEqualToIgnoringCase("Component0");
@@ -88,7 +92,7 @@ public class ComponentMongoFinderIT {
     public void testFindOnlyPublishedRecent() {
         givenArchivedComponent("Component0");
 
-        Result<ComponentCard> componentCards = componentFinder.findRecentCards(6);
+        Result<ComponentCard> componentCards = componentFinder.findRecentCards(new Range(0,6));
 
         // assert archived component is not returned
         List<ComponentCard> recentCards = componentCards.getResult();
@@ -121,19 +125,18 @@ public class ComponentMongoFinderIT {
         componentRepository.delete(new ComponentId("Component99"));
     }
 
-    @WithUser(id = "pith", password = "password")
     @Test
     public void test_findCurrentUserCards_retrieve_also_archived() {
         givenArchivedComponent("Component0");
 
-        PaginatedView<ComponentCard> archived = componentFinder.findCurrentUserCards(new Page(0,10));
+        PaginatedView<ComponentCard> archived = componentFinder.findCurrentUserCards(new UserId("pith"), new Page(0,10));
         assertThat(archived.getView()).hasSize(10);
         assertThat(archived.getView().get(0).getId()).isEqualTo("Component0");
     }
 
     @Test
     public void testFindPopular() {
-        Result<ComponentCard> componentCards = componentFinder.findPopularCards(6);
+        Result<ComponentCard> componentCards = componentFinder.findPopularCards(new Range(0,6));
         List<ComponentCard> popular = componentCards.getResult();
         assertThat(popular).hasSize(6);
         assertThat(popular.get(0).getId()).isEqualToIgnoringCase("Component22");

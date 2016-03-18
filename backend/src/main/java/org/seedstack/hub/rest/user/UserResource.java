@@ -5,18 +5,22 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
-package org.seedstack.hub.rest;
+package org.seedstack.hub.rest.user;
 
 import io.swagger.annotations.Api;
-import org.seedstack.business.assembler.AssemblerTypes;
 import org.seedstack.business.assembler.FluentAssembler;
-import org.seedstack.business.domain.Repository;
-import org.seedstack.hub.domain.model.component.Component;
-import org.seedstack.hub.domain.model.component.ComponentId;
+import org.seedstack.business.view.PaginatedView;
+import org.seedstack.hub.application.SecurityService;
 import org.seedstack.hub.application.StarringService;
+import org.seedstack.hub.domain.model.component.ComponentId;
+import org.seedstack.hub.domain.model.user.UserId;
+import org.seedstack.hub.rest.list.ComponentCard;
+import org.seedstack.hub.rest.list.ComponentFinder;
+import org.seedstack.hub.rest.shared.PageInfo;
 import org.seedstack.seed.rest.Rel;
 import org.seedstack.seed.rest.RelRegistry;
 import org.seedstack.seed.rest.hal.HalRepresentation;
+import org.seedstack.seed.security.AuthenticationException;
 
 import javax.inject.Inject;
 import javax.ws.rs.*;
@@ -25,14 +29,12 @@ import java.net.URI;
 import java.net.URISyntaxException;
 
 import static java.util.stream.Collectors.toList;
+import static org.seedstack.hub.rest.Rels.*;
 
 @Api
 @Path("/user")
 public class UserResource {
-
-    public static final String STARS = "stars";
-    public static final String USER_COMPONENTS = "/user/components";
-
+    public static final String USER_ID = "userId";
     @Inject
     private StarringService starringService;
     @Inject
@@ -41,19 +43,38 @@ public class UserResource {
     private FluentAssembler fluentAssembler;
     @Inject
     private RelRegistry relRegistry;
+    @Inject
+    private SecurityService securityService;
 
     @Rel(USER_COMPONENTS)
     @GET
     @Path("/components")
     @Produces({"application/json", "application/hal+json"})
     public HalRepresentation getComponents(@BeanParam PageInfo pageInfo) {
+        UserId userId = securityService.getAuthenticatedUser().orElseThrow(AuthenticationException::new).getEntityId();
+        PaginatedView<ComponentCard> userComponents = componentFinder.findCurrentUserCards(userId, pageInfo.page());
         return new HalRepresentation()
-                .embedded("components", componentFinder.findCurrentUserCards(pageInfo.page()))
+                .embedded("components", userComponents)
                 .link("self", relRegistry.uri(USER_COMPONENTS)
                         .set("pageIndex", pageInfo.getPageIndex())
                         .set("pageSize", pageInfo.getPageSize())
                         .expand());
     }
+
+    @Rel(AUTHOR_COMPONENTS)
+    @GET
+    @Path("{userId}/components")
+    @Produces({"application/json", "application/hal+json"})
+    public HalRepresentation getComponents(@PathParam(USER_ID) String userId, @BeanParam PageInfo pageInfo) {
+        PaginatedView<ComponentCard> userComponents = componentFinder.findCurrentUserCards(new UserId(userId), pageInfo.page());
+        return new HalRepresentation()
+                .embedded("components", userComponents)
+                .link("self", relRegistry.uri(USER_COMPONENTS)
+                        .set("pageIndex", pageInfo.getPageIndex())
+                        .set("pageSize", pageInfo.getPageSize())
+                        .expand());
+    }
+
     @Rel(STARS)
     @GET
     @Path("/stars")
@@ -62,7 +83,7 @@ public class UserResource {
         return new HalRepresentation()
                 .embedded("components",
                         starringService.starredComponents()
-                                .map(c -> fluentAssembler.assemble(c).with(AssemblerTypes.MODEL_MAPPER).to(ComponentCard.class))
+                                .map(c -> fluentAssembler.assemble(c).to(ComponentCard.class))
                                 .collect(toList()))
                 .link("self", relRegistry.uri(STARS).expand());
     }
