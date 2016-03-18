@@ -30,8 +30,11 @@
             </div>
         </div>
         <div id="component-detail-actions" layout-xs="row" layout-align-xs="center" style="margin-top: 20px">
-            <md-button ng-click="$ctrl.starComponent($ctrl.component)" aria-label="Star" layout="row" layout-align="start center" title="star this component">
-                <md-icon md-font-set="material-icons">star_rate</md-icon> {{ $ctrl.component.stars }}
+            <md-button ng-show="$ctrl.component.isStarred" ng-click="$ctrl.rateComponent($ctrl.component)" aria-label="Star" layout="row" layout-align="start center" title="unstar this component">
+                    <md-icon md-font-set="material-icons">star_rate</md-icon> {{ $ctrl.component.stars }}
+            </md-button>
+            <md-button ng-show="!$ctrl.component.isStarred" ng-click="$ctrl.rateComponent($ctrl.component)" aria-label="Star" layout="row" layout-align="start center" title="star this component">
+                <md-icon md-font-set="material-icons">star_border</md-icon> {{ $ctrl.component.stars }}
             </md-button>
             <md-button class="md-raised">Manage</md-button>
             <md-button class="md-raised md-primary">Install</md-button>
@@ -39,28 +42,28 @@
     </div>
     <div id="component-detail-info" layout-padding layout="row" layout-xs="column" style="margin-top: 20px;">
         <div id="component-detail-readme" flex="75" flex-xs="100" flex-order-xs="2">
-            <md-content class="md-whiteframe-0dp" flex layout-padding>
+            <md-content class="md-whiteframe-1dp" flex layout-padding>
                 <div class="markdown-body" ng-include="$ctrl.component.readme"></div>
             </md-content>
         </div>
         <div flex="25" flex-xs="100" layout-align="end center" layout-align-xs="center" flex-order-xs="1">
             <aside id="component-detail-meta" layout="column" flex-xs="100">
-                <section id="component-detail-meta-usage" class="md-whiteframe-0dp">
+                <section id="component-detail-meta-usage" class="md-whiteframe-1dp">
                     <md-content style="overflow: hidden">
                         <md-list>
                             <md-list-item>
                                 <md-icon md-font-set="material-icons">change_history</md-icon>
-                                <p> Latest: 2.3.1 </p>
+                                <p> Latest: {{ $ctrl.component.version }} </p>
                             </md-list-item>
                             <md-list-item>
                                 <md-icon md-font-set="material-icons">gavel</md-icon>
-                                <p> Licence: MPL 2.0 </p>
+                                <p> License:{{ $ctrl.component.license }} </p>
                             </md-list-item>
                         </md-list>
                     </md-content>
                 </section>
                 <div class="spacer"></div>
-                <section id="component-detail-meta-general" class="md-whiteframe-0dp">
+                <section id="component-detail-meta-general" class="md-whiteframe-1dp">
                     <md-content style="overflow: hidden">
                         <md-subheader class="md-no-sticky">Used in 12 projects</md-subheader>
                         <md-list>
@@ -83,6 +86,6 @@
         </div>
     </div>
     <div id="component-detail-comment" layout="column" layout-padding layout="row" layout-xs="column" style="margin-top: 20px;">
-        <div hub-comment></div>
+        <div hub-comment component="$ctrl.component"></div>
     </div>
 </div>

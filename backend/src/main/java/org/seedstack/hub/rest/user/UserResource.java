@@ -88,7 +88,7 @@ public class UserResource {
                 .link("self", relRegistry.uri(STARS).expand());
     }
 
-    @Rel(STARS)
+    @Rel(STAR)
     @POST
     @Path("/stars/{componentId}")
     public Response starComponent(@PathParam("componentId") String componentId) throws URISyntaxException {
@@ -96,7 +96,7 @@ public class UserResource {
         return Response.created(new URI(relRegistry.uri(STARS).set("componentId", componentId).expand())).build();
     }
 
-    @Rel(STARS)
+    @Rel(STAR)
     @DELETE
     @Path("/stars/{componentId}")
     public void unstarComponent(@PathParam("componentId") String componentId) throws URISyntaxException {

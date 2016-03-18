@@ -16,6 +16,7 @@ public final class Rels {
     public static final String POPULAR = "popular";
     public static final String PENDING = "pending";
     public static final String STARS = "stars";
+    public static final String STAR = "star";
     public static final String USER_COMPONENTS = "user/components";
     public static final String AUTHOR_COMPONENTS = "author/components";
 }

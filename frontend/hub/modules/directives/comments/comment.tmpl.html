@@ -1,9 +1,9 @@
-<section>
+<section hub-infinite-scroll on-bottom-reached="loadNewComments()" criterias="paginationCriterias">
     <h1> Comments </h1>
-    <form name="comment" ng-submit="submitComment(newComment)">
+    <form name="comment" ng-submit="submitComment(newCommentText)">
         <md-input-container class="md-block" flex-gt-sm>
             <label>Add a comment</label>
-            <textarea md-maxlength="150" rows="5" ng-model="newComment" md-select-on-focus></textarea>
+            <textarea md-maxlength="150" rows="5" ng-model="newCommentText" md-select-on-focus></textarea>
         </md-input-container>
         <div layout="row" layout-align="center center">
             <md-button type="submit" ng-disabled="!newComment">Add comment</md-button>
@@ -12,9 +12,8 @@
 
     <md-list flex>
         <md-list-item class="md-3-line" ng-repeat="comment in comments">
-            <md-icon class="material-icons">comment</md-icon>
             <div class="md-list-item-text" layout="column">
-                <h3>{{ comment.author }} - <span class="md-caption">{{ comment.publicationDate }}</span></h3>
+                <h3><md-icon class="material-icons">comment</md-icon> {{ comment.author }} - <span class="md-caption">{{ comment.publicationDate }}</span></h3>
                 <p>{{ comment.text }}</p>
             </div>
         </md-list-item>
