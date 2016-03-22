@@ -122,15 +122,17 @@ public class ComponentResource {
     @POST
     @Path("/comments")
     @Rel(value = Rels.COMMENT)
-    public Response postComments(@Length(max = 144) String comment) {
+    public Response postComments(@Length(max = 144) String content) {
         Component component = componentRepository.load(new ComponentId(componentId));
         if (component == null) {
             throw new NotFoundException();
         }
         User user = securityService.getAuthenticatedUser().orElseThrow(AuthenticationException::new);
-        component.addComment(new Comment(user.getId().getId(), comment, new Date()));
+        Comment comment = new Comment(user.getId().getId(), content, new Date());
+        component.addComment(comment);
         componentRepository.persist(component);
-        return Response.created(URI.create(relRegistry.uri(Rels.COMMENT).set(COMPONENT_ID, componentId).expand())).build();
+        return Response.created(URI.create(relRegistry.uri(Rels.COMMENT).set(COMPONENT_ID, componentId).expand()))
+                .entity(comment).build();
     }
 
     private void updateUrls(ComponentDetails componentDetails) {

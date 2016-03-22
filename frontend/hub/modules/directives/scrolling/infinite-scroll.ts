@@ -4,20 +4,23 @@ import lodash = require('{lodash}/lodash');
 import IAugmentedJQuery = angular.IAugmentedJQuery;
 
 class HubInfiniteScroll implements ng.IDirective {
+    static $inject = ['$timeout'];
+    constructor(private $timeout) {};
     restrict = 'A';
     scope = {
-        hubInfiniteScroll: '&',
-        hubSearchCriterias: '='
+        onBottomReached: '&',
+        criterias: '='
     };
     link = (scope, element: JQuery) => {
-        var parent = angular.element(element[0].parentElement);
-        var raw = parent[0];
-        parent.bind('scroll', <any> lodash['throttle'](() => {
-            if (raw.scrollTop + raw.offsetHeight >= raw.scrollHeight) {
-                scope.hubSearchCriterias.pageIndex++;
-                scope.hubInfiniteScroll({criterias: scope.hubSearchCriterias});
-            }
-        }, 200));
+        this.$timeout(() => {
+            var parent = angular.element('#view');
+            var raw = parent[0];
+            parent.bind('scroll', () => {
+                if (raw.scrollTop + raw.offsetHeight >= raw.scrollHeight) {
+                    scope.onBottomReached({criterias: scope.criterias});
+                }
+            });
+        });
     }
 }
 

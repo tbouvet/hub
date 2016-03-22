@@ -23,8 +23,28 @@ class ComponentDetailsController {
         return this.api('home').enter('component', { componentId: this.$routeParams.id }).get();
     }
 
-    public starComponent (component): void {
-        // todo use link from hypermedia
+    public rateComponent (component): void {
+        if (component.isStarred) {
+            this.unStarComponent(component);
+        } else {
+            this.starComponent(component);
+        }
+    }
+
+    private starComponent (component): void {
+        component.$links('star').save(() => {
+            component.isStarred = true;
+            component.stars++;
+        }, (reject) => { throw new Error(reject); });
+    }
+
+    private unStarComponent (component): void {
+        component.$links('star').delete(() => {
+            component.isStarred = false;
+            if (component.stars > 0) {
+                component.stars--;
+            }
+        }, (reject) => { throw new Error(reject); })
     }
 }
 
