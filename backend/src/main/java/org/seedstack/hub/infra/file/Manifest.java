@@ -14,13 +14,16 @@ import java.util.List;
 class Manifest {
     @NotBlank
     private String id;
+    private String name;
     @NotBlank
     private String version;
+    private List<ReleaseDTO> releases;
     @NotBlank
     private String owner;
-    private String publicationDate;
     private String url;
+    private String issues;
     private String summary;
+    private String license;
     private String icon;
     private List<String> images;
     private List<String> maintainers;
@@ -34,12 +37,28 @@ class Manifest {
         this.id = id;
     }
 
+    String getName() {
+        return name;
+    }
+
+    void setName(String name) {
+        this.name = name;
+    }
+
     String getVersion() {
         return version;
     }
 
     void setVersion(String version) {
         this.version = version;
+    }
+
+    List<ReleaseDTO> getReleases() {
+        return releases;
+    }
+
+    void setReleases(List<ReleaseDTO> releases) {
+        this.releases = releases;
     }
 
     String getOwner() {
@@ -50,20 +69,20 @@ class Manifest {
         this.owner = owner;
     }
 
-    String getPublicationDate() {
-        return publicationDate;
-    }
-
-    void setPublicationDate(String publicationDate) {
-        this.publicationDate = publicationDate;
-    }
-
-    public String getUrl() {
+    String getUrl() {
         return url;
     }
 
-    public void setUrl(String url) {
+    void setUrl(String url) {
         this.url = url;
+    }
+
+    String getIssues() {
+        return issues;
+    }
+
+    void setIssues(String issues) {
+        this.issues = issues;
     }
 
     String getSummary() {
@@ -72,6 +91,14 @@ class Manifest {
 
     void setSummary(String summary) {
         this.summary = summary;
+    }
+
+    String getLicense() {
+        return license;
+    }
+
+    void setLicense(String license) {
+        this.license = license;
     }
 
     String getIcon() {

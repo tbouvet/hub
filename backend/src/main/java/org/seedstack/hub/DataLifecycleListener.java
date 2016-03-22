@@ -7,23 +7,39 @@
  */
 package org.seedstack.hub;
 
+import com.google.common.collect.Sets;
+import org.seedstack.business.domain.Repository;
+import org.seedstack.hub.domain.model.organisation.Organisation;
+import org.seedstack.hub.domain.model.organisation.OrganisationId;
 import org.seedstack.hub.domain.model.user.User;
 import org.seedstack.hub.domain.model.user.UserId;
 import org.seedstack.hub.domain.model.user.UserRepository;
 import org.seedstack.seed.LifecycleListener;
 
 import javax.inject.Inject;
+import java.util.HashSet;
+import java.util.Set;
 
 public class DataLifecycleListener implements LifecycleListener {
 
     @Inject
     private UserRepository userRepository;
+    @Inject
+    private Repository<Organisation, OrganisationId> organisationRepository;
 
     @Override
     public void started() {
         userRepository.persist(new User(new UserId("adrienlauer"), "adrien.lauer@mpsa.com"));
         userRepository.persist(new User(new UserId("pith"), "pierre.thirouin@ext.mpsa.com"));
         userRepository.persist(new User(new UserId("kavi87"), "kavi.ramyead@ext.mpsa.com"));
+
+        userRepository.persist(new User(new UserId("admin"), "admin@ext.mpsa.com"));
+
+        Set<UserId> owners = Sets.newHashSet(new UserId("adrienlauer"));
+        Organisation organisation = new Organisation(new OrganisationId("@seedstack"), "SeedStack", owners);
+        organisation.addMember(new UserId("admin"));
+        organisationRepository.save(organisation);
+
     }
 
     @Override

@@ -47,7 +47,7 @@ class ImportServiceImpl implements ImportService {
     @Inject
     private Repository<Document, DocumentId> documentRepository;
     @Logging
-    Logger logger;
+    private Logger logger;
 
     @Override
     public Component importComponent(VCSType vcsType, URL url) {
@@ -68,9 +68,7 @@ class ImportServiceImpl implements ImportService {
     }
 
     private void checkCurrentUserIs(UserId owner) {
-        UserId authenticatedUserId = securityService.getAuthenticatedUser().orElseThrow(() -> new AuthenticationException("No authenticated user available")).getId();
-
-        if (!owner.equals(authenticatedUserId)) {
+        if (!owner.equals(securityService.getAuthenticatedUser().getId())) {
             throw new ComponentException("Authenticated user is not the owner of component");
         }
     }

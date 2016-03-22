@@ -21,11 +21,13 @@ public class DataCleanerLifecycleListener implements LifecycleListener {
 
     @Override
     public void started() {
-        datastore.getDB().getCollection("components").drop();
     }
 
     @Override
     public void stopping() {
         datastore.getDB().getCollection("components").drop();
+        datastore.getDB().getCollection("users").drop();
+        datastore.getDB().getCollection("organisations").drop();
+        datastore.getDB().getCollection("documents").drop();
     }
 }

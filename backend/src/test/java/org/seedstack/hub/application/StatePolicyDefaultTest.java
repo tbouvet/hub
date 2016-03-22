@@ -16,16 +16,14 @@ import org.seedstack.hub.domain.model.component.Component;
 import org.seedstack.hub.domain.model.user.User;
 import org.seedstack.hub.domain.model.user.UserId;
 
-import java.util.Optional;
-
 @RunWith(JMockit.class)
 public class StatePolicyDefaultTest {
 
-    public static final String OWNER = "owner";
-    public static final String SOMEONE = "someone";
+    private static final String OWNER = "owner";
+    private static final String SOMEONE = "someone";
 
     @Tested
-    private DefaultStatePolicy underTest;
+    private StatePolicyDefault underTest;
     @Injectable
     private SecurityService securityService;
     @Mocked
@@ -54,31 +52,26 @@ public class StatePolicyDefaultTest {
     @Test
     public void testAdminCanArchive() throws Exception {
         givenCurrentUserIsAdmin(true);
-        givenUser(OWNER);
         Assertions.assertThat(underTest.canArchive(component)).isTrue();
     }
 
     @Test
     public void testOwnerCanArchive() throws Exception {
         givenCurrentUserIsAdmin(false);
-        givenUser(OWNER);
+        givenUserIsOwner(true);
         Assertions.assertThat(underTest.canArchive(component)).isTrue();
     }
 
-    private void givenUser(String name) {
+    private void givenUserIsOwner(boolean isOwner) {
         new Expectations() {{
-            securityService.getAuthenticatedUser(); result = Optional.of(user);
-            user.getEntityId(); result = new UserId(name);
-        }};
-        new NonStrictExpectations() {{
-            component.getOwner(); result = new UserId(OWNER);
+            securityService.isOwnerOf(component); result = isOwner;
         }};
     }
 
     @Test
     public void testBasicUserCannotArchive() throws Exception {
         givenCurrentUserIsAdmin(false);
-        givenUser(SOMEONE);
+        givenUserIsOwner(false);
         Assertions.assertThat(underTest.canArchive(component)).isFalse();
     }
 }

@@ -15,9 +15,9 @@ import java.nio.charset.Charset;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class DocumentTest {
-    public static final String IMAGE_PNG = "image/png";
-    public static final String TEXT_MARKDOWN = "text/markdown";
-    public static final String INVALID_CONTENT_TYPE = "image";
+    private static final String IMAGE_PNG = "image/png";
+    private static final String TEXT_MARKDOWN = "text/markdown";
+    private static final String INVALID_CONTENT_TYPE = "image";
 
     @Test
     public void simple_content_type_is_accepted() {

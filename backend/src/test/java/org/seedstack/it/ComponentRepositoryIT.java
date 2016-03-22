@@ -14,6 +14,7 @@ import org.seedstack.business.domain.Repository;
 import org.seedstack.hub.domain.model.component.Component;
 import org.seedstack.hub.domain.model.component.ComponentId;
 import org.seedstack.hub.domain.model.component.Description;
+import org.seedstack.hub.domain.model.component.Owner;
 import org.seedstack.hub.domain.model.document.DocumentId;
 import org.seedstack.hub.domain.model.user.UserId;
 import org.seedstack.seed.it.SeedITRunner;
@@ -28,8 +29,8 @@ public class ComponentRepositoryIT {
 
     @Test
     public void testRepo() {
-        ComponentId componentId = new ComponentId("SeedStack Hub");
-        Component component = new Component(componentId, new UserId("me"), buildDescription(componentId));
+        ComponentId componentId = new ComponentId("seedstack-hub");
+        Component component = new Component(componentId, "SeedStack Hub", new Owner("admin"), buildDescription(componentId));
         componentRepository.persist(component);
         Assertions.assertThat(componentRepository.load(componentId)).isNotNull();
         componentRepository.delete(component);
@@ -37,6 +38,6 @@ public class ComponentRepositoryIT {
     }
 
     private Description buildDescription(ComponentId componentId) {
-        return new Description("c1", "summary", new DocumentId(componentId, "/icon.png"), new DocumentId(componentId, "readme.md"));
+        return new Description("c1", "summary", "MPL2", new DocumentId(componentId, "/icon.png"), new DocumentId(componentId, "readme.md"));
     }
 }

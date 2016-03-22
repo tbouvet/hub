@@ -22,7 +22,7 @@ public interface ComponentFinder {
 
     PaginatedView<ComponentCard> findCards(Page page, String searchName, String sort);
 
-    PaginatedView<ComponentCard> findCurrentUserCards(UserId user, Page page);
+    PaginatedView<ComponentCard> findUserCards(UserId user, Page page);
 
     PaginatedView<ComponentCard> findCardsByState(Page page, State state);
 

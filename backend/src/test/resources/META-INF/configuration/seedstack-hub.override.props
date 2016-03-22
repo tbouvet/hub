@@ -8,3 +8,6 @@
 
 org.seedstack.seed.security.realms = ConfigurationRealm
 
+[org.seedstack.seed.security.users]
+admin = password, admin
+john = password

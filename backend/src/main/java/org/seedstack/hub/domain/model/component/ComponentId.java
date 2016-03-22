@@ -13,7 +13,7 @@ import org.seedstack.business.domain.BaseValueObject;
 
 @Embedded
 public class ComponentId extends BaseValueObject {
-    public static final ComponentId DEFAULT_COMPONENT = new ComponentId("default");
+    static final ComponentId DEFAULT_COMPONENT = new ComponentId("default");
 
     @NotBlank
     private String name;

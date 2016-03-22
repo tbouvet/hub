@@ -10,7 +10,7 @@ package org.seedstack.it;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.seedstack.hub.domain.model.component.State;
-import org.seedstack.hub.rest.MockBuilder;
+import org.seedstack.hub.MockBuilder;
 import org.seedstack.hub.rest.Rels;
 import org.seedstack.hub.rest.detail.ComponentDetails;
 import org.seedstack.hub.rest.detail.ComponentDetailsAssembler;
@@ -32,7 +32,7 @@ public class ComponentDetailsAssemblerIT {
         ComponentDetails detail = assembler.assembleDtoFromAggregate(MockBuilder.mock(2));
         assertThat(detail).isNotNull();
         assertThat(detail.getId()).isEqualTo("Component2");
-        assertThat(detail.getName()).isEqualTo("Component2");
+        assertThat(detail.getName()).isEqualTo("Component 2");
         assertThat(detail.getIcon()).isEqualTo("components/Component2/files/icon.png");
         assertThat(detail.getReadme()).isEqualTo("components/Component2/files/readme.md");
         assertThat(detail.getSummary()).isEqualTo("A little summary.");
@@ -40,7 +40,7 @@ public class ComponentDetailsAssemblerIT {
         assertThat(detail.getMaintainers()).containsOnly("pith", "kavi87");
         assertThat(detail.getStars()).isEqualTo(3);
         assertThat(detail.getState()).isEqualTo(State.PUBLISHED);
-        assertThat(detail.getVersion()).isEqualTo("1.2.3-M1");
+        assertThat(detail.getVersion()).isEqualTo("2.3.4-M2");
         assertThat(((Link) detail.getLink("self")).expand()).isEqualTo("/components/Component2");
         assertThat(((Link) detail.getLink(Rels.STAR)).expand()).isEqualTo("/user/stars/Component2");
     }

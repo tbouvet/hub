@@ -20,7 +20,6 @@ import org.seedstack.hub.rest.shared.PageInfo;
 import org.seedstack.seed.rest.Rel;
 import org.seedstack.seed.rest.RelRegistry;
 import org.seedstack.seed.rest.hal.HalRepresentation;
-import org.seedstack.seed.security.AuthenticationException;
 
 import javax.inject.Inject;
 import javax.ws.rs.*;
@@ -46,13 +45,13 @@ public class UserResource {
     @Inject
     private SecurityService securityService;
 
-    @Rel(USER_COMPONENTS)
+    @Rel(value = USER_COMPONENTS, home = true)
     @GET
     @Path("/components")
     @Produces({"application/json", "application/hal+json"})
     public HalRepresentation getComponents(@BeanParam PageInfo pageInfo) {
-        UserId userId = securityService.getAuthenticatedUser().orElseThrow(AuthenticationException::new).getEntityId();
-        PaginatedView<ComponentCard> userComponents = componentFinder.findCurrentUserCards(userId, pageInfo.page());
+        UserId userId = securityService.getAuthenticatedUser().getEntityId();
+        PaginatedView<ComponentCard> userComponents = componentFinder.findUserCards(userId, pageInfo.page());
         return new HalRepresentation()
                 .embedded("components", userComponents)
                 .link("self", relRegistry.uri(USER_COMPONENTS)
@@ -66,7 +65,7 @@ public class UserResource {
     @Path("{userId}/components")
     @Produces({"application/json", "application/hal+json"})
     public HalRepresentation getComponents(@PathParam(USER_ID) String userId, @BeanParam PageInfo pageInfo) {
-        PaginatedView<ComponentCard> userComponents = componentFinder.findCurrentUserCards(new UserId(userId), pageInfo.page());
+        PaginatedView<ComponentCard> userComponents = componentFinder.findUserCards(new UserId(userId), pageInfo.page());
         return new HalRepresentation()
                 .embedded("components", userComponents)
                 .link("self", relRegistry.uri(USER_COMPONENTS)
