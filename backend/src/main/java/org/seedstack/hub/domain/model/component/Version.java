@@ -5,79 +5,124 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
+/**
+ *
+ */
 package org.seedstack.hub.domain.model.component;
 
-import org.seedstack.business.domain.BaseEntity;
+import org.seedstack.business.domain.BaseValueObject;
 
-import java.time.Instant;
-import java.time.LocalDate;
-import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
-import java.util.Date;
+import javax.validation.constraints.NotNull;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
-public class Version extends BaseEntity<VersionId> implements Comparable<Version> {
-    private VersionId versionId;
-    private Date publicationDate;
-    private String url;
+public class Version extends BaseValueObject implements Comparable<Version> {
+    private static final Pattern VERSION_PATTERN = Pattern.compile("(\\d+)(\\.(\\d+))?(\\.(\\d+))?(-(\\w+))?");
 
-    public Version(VersionId versionId) {
-        this.versionId = versionId;
+    @NotNull
+    private Integer majorNumber;
+    private Integer minorNumber;
+    private Integer microNumber;
+    private String qualifier;
+
+    public Version(Integer majorNumber, Integer minorNumber, Integer microNumber, String qualifier) {
+        this.majorNumber = majorNumber;
+        this.minorNumber = minorNumber;
+        this.microNumber = microNumber;
+        this.qualifier = qualifier;
+    }
+
+    public Version(String value) {
+        Matcher matcher = VERSION_PATTERN.matcher(value);
+        if (matcher.matches()) {
+            this.majorNumber = Integer.parseInt(matcher.group(1));
+            this.minorNumber = matcher.group(3) != null ? Integer.parseInt(matcher.group(3)) : 0;
+            this.microNumber = matcher.group(5) != null ? Integer.parseInt(matcher.group(5)) : 0;
+            this.qualifier = matcher.group(7);
+        } else {
+            throw new IllegalArgumentException("Invalid version number " + value);
+        }
     }
 
     private Version() {
         // required by morphia
     }
 
+    public Integer getMajorNumber() {
+        return majorNumber;
+    }
+
+
+    public Integer getMinorNumber() {
+        return minorNumber;
+    }
+
+    public Integer getMicroNumber() {
+        return microNumber;
+    }
+
+
+    public String getQualifier() {
+        return qualifier;
+    }
+
+
     @Override
-    public VersionId getEntityId() {
-        return versionId;
-    }
+    public int compareTo(Version that) {
+        int result;
 
-    public VersionId getId() {
-        return versionId;
-    }
-
-    public LocalDate getPublicationDate() {
-        return asLocalDate(publicationDate);
-    }
-
-    public void setPublicationDate(LocalDate publicationDate) {
-        this.publicationDate = asDate(publicationDate);
-    }
-
-    public void setPublicationDate(String publicationDate) {
-        try {
-            this.publicationDate = asDate(LocalDate.parse(publicationDate, DateTimeFormatter.ISO_LOCAL_DATE));
-        } catch (DateTimeParseException e) {
-            throw new ComponentException("Invalid publication date " + publicationDate, e);
+        result = compareTo(this.majorNumber, that.majorNumber);
+        if (result != 0) {
+            return result;
         }
+        result = compareTo(minorNumber, that.minorNumber);
+        if (result != 0) {
+            return result;
+        }
+        result = compareTo(microNumber, that.microNumber);
+        if (result != 0) {
+            return result;
+        }
+        result = compareTo(qualifier, that.qualifier);
+        result = versionWithoutQualifierIsGreater(that, result);
+        if (result != 0) {
+            return result;
+        }
+        return 0;
     }
 
-    // Constructor LocalDate() required by Morphia does not exist, we use conversion from/to java.util.Date
-    private LocalDate asLocalDate(Date date) {
-        return Instant.ofEpochMilli(date.getTime()).atZone(ZoneId.systemDefault()).toLocalDate();
+    private int versionWithoutQualifierIsGreater(Version that, int result) {
+        if (qualifier == null || that.qualifier == null) {
+            result = result * -1;
+        }
+        return result;
     }
 
-    private Date asDate(LocalDate localDate) {
-        return Date.from(localDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant());
+    private <T> int compareTo(Comparable<T> i, Comparable<T> j) {
+        if (i == null && j == null) {
+            return 0;
+        } else if (i == null) {
+            return -1;
+        } else if (j == null) {
+            return 1;
+        }
+        return i.compareTo((T) j);
     }
 
-    public String getUrl() {
-        return url;
-    }
-
-    public void setUrl(String url) {
-        this.url = url;
-    }
-
-    @Override
-    public int compareTo(Version o) {
-        return versionId.compareTo(o.versionId);
-    }
 
     @Override
     public String toString() {
-        return versionId.toString();
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append(majorNumber);
+        if (minorNumber != null) {
+            stringBuilder.append(".").append(minorNumber);
+        }
+        if (microNumber != null) {
+            stringBuilder.append(".").append(microNumber);
+        }
+        if (qualifier != null) {
+            stringBuilder.append("-").append(qualifier);
+        }
+        return stringBuilder.toString();
     }
 }

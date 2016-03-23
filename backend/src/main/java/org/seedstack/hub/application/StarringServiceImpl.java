@@ -26,7 +26,7 @@ class StarringServiceImpl implements StarringService {
     private SecurityService securityService;
 
     private User getUser() {
-        return securityService.getAuthenticatedUser().orElseThrow(AuthenticationException::new);
+        return securityService.getAuthenticatedUser();
     }
 
     @Override

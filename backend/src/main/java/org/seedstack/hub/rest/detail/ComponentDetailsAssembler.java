@@ -7,67 +7,68 @@
  */
 package org.seedstack.hub.rest.detail;
 
-import org.seedstack.business.assembler.BaseAssembler;
 import org.seedstack.hub.domain.model.component.Component;
-import org.seedstack.hub.domain.model.component.Version;
+import org.seedstack.hub.domain.model.component.Description;
+import org.seedstack.hub.domain.model.component.Release;
 import org.seedstack.hub.domain.model.document.DocumentId;
 import org.seedstack.hub.domain.model.user.UserId;
+import org.seedstack.hub.rest.AbstractComponentAssembler;
 import org.seedstack.hub.rest.Rels;
 import org.seedstack.hub.rest.shared.UriBuilder;
-import org.seedstack.seed.rest.RelRegistry;
 
-import javax.inject.Inject;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toList;
 import static org.seedstack.hub.rest.detail.ComponentResource.COMPONENT_ID;
-import static org.seedstack.hub.rest.user.UserResource.USER_ID;
 
-public class ComponentDetailsAssembler extends BaseAssembler<Component, ComponentDetails> {
-
-    @Inject
-    private RelRegistry relRegistry;
+public class ComponentDetailsAssembler extends AbstractComponentAssembler<ComponentDetails> {
 
     @Override
-    protected void doAssembleDtoFromAggregate(ComponentDetails componentDetails, Component component) {
+    protected void doAssemble(ComponentDetails componentDetails, Component component) {
         String componentId = component.getId().getName();
         componentDetails.setId(componentId);
-        componentDetails.setName(component.getEntityId().getName());
-        componentDetails.setSummary(component.getDescription().getSummary());
-        componentDetails.setIcon(documentIdToString(component.getDescription().getIcon()));
-        componentDetails.setOwner(component.getOwner().getId());
+        componentDetails.setName(component.getName());
+        componentDetails.setOwner(component.getOwner().toString());
         componentDetails.setStars(component.getStars());
         componentDetails.setState(component.getState());
 
-        List<Version> versions = component.getVersions();
-        if (!versions.isEmpty()) {
-            componentDetails.setVersion(versions.get(0).toString());
+        assembleDescription(componentDetails, component);
+        List<Release> releases = component.getReleases();
+        if (!releases.isEmpty()) {
+            componentDetails.setVersion(releases.get(0).toString());
         }
-        componentDetails.setReadme(documentIdToString(component.getDescription().getReadme()));
-        componentDetails.setImages(component.getDescription().getImages().stream().map(this::documentIdToString).collect(toList()));
+        componentDetails.setReleases(component.getReleases().stream().map(ReleaseRepresentation::new).collect(Collectors.toList()));
         componentDetails.setDocs(component.getDocs().stream().map(this::documentIdToString).collect(toList()));
         componentDetails.setMaintainers(component.getMaintainers().stream().map(UserId::getId).collect(toList()));
 
-        componentDetails.link("self", relRegistry
-                .uri(Rels.COMPONENT)
-                .set(COMPONENT_ID, componentId).expand());
+        assembleHalLinks(componentDetails, componentId);
+    }
 
-        componentDetails.link(Rels.AUTHOR_COMPONENTS, relRegistry
-                .uri(Rels.AUTHOR_COMPONENTS).set(USER_ID, component.getOwner().getId()).expand());
+    private void assembleDescription(ComponentDetails componentDetails, Component component) {
+        Description description = component.getDescription();
+        if (description != null) {
+            componentDetails.setSummary(description.getSummary());
+            componentDetails.setLicense(description.getLicense());
+            if (description.getComponentUrl() != null) {
+                componentDetails.setUrl(description.getComponentUrl().toString());
+            }
+            if (description.getIssues() != null) {
+                componentDetails.setIssues(description.getIssues().toString());
+            }
+            componentDetails.setLicense(description.getLicense());
+            componentDetails.setIcon(documentIdToString(description.getIcon()));
 
+            componentDetails.setReadme(documentIdToString(description.getReadme()));
+            componentDetails.setImages(description.getImages().stream().map(this::documentIdToString).collect(toList()));
+        }
+    }
+
+    private void assembleHalLinks(ComponentDetails componentDetails, String componentId) {
         componentDetails.link(Rels.STAR, relRegistry
                 .uri(Rels.STAR).set(COMPONENT_ID, componentId).expand());
 
         componentDetails.link(Rels.COMMENT, relRegistry
                 .uri(Rels.COMMENT).set(COMPONENT_ID, componentId).expand());
-    }
-
-    @Override
-    protected void doMergeAggregateWithDto(Component component, ComponentDetails componentDetails) {
-        throw new UnsupportedOperationException();
-    }
-
-    private String documentIdToString(DocumentId documentId) {
-        return UriBuilder.uri(Rels.COMPONENTS, documentId.getComponentId().toString(), "files", documentId.getPath());
     }
 }

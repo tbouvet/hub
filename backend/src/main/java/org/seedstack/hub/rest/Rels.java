@@ -19,4 +19,8 @@ public final class Rels {
     public static final String STAR = "star";
     public static final String USER_COMPONENTS = "user/components";
     public static final String AUTHOR_COMPONENTS = "author/components";
+    public static final String ORGANISATIONS = "organisations";
+    public static final String ORGANISATION = "organisation";
+    public static final String ORGANISATION_OWNERS = "organisation/owners";
+    public static final String ORGANISATION_MEMBERS = "organisation/members";
 }

@@ -46,7 +46,7 @@ import static org.seedstack.hub.rest.Rels.STATE;
 @Produces({"application/json", "application/hal+json"})
 public class ComponentResource {
 
-    static final String COMPONENT_ID = "componentId";
+    public static final String COMPONENT_ID = "componentId";
 
     @Inject
     private ComponentFinder componentFinder;
@@ -127,7 +127,7 @@ public class ComponentResource {
         if (component == null) {
             throw new NotFoundException();
         }
-        User user = securityService.getAuthenticatedUser().orElseThrow(AuthenticationException::new);
+        User user = securityService.getAuthenticatedUser();
         Comment comment = new Comment(user.getId().getId(), content, new Date());
         component.addComment(comment);
         componentRepository.persist(component);

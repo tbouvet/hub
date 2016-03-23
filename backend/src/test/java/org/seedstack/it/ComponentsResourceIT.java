@@ -22,7 +22,7 @@ import org.seedstack.business.domain.Repository;
 import org.seedstack.hub.domain.model.component.Component;
 import org.seedstack.hub.domain.model.component.ComponentId;
 import org.seedstack.hub.domain.model.component.State;
-import org.seedstack.hub.rest.MockBuilder;
+import org.seedstack.hub.MockBuilder;
 import org.seedstack.mongodb.morphia.MorphiaDatastore;
 import org.seedstack.seed.it.AbstractSeedWebIT;
 
@@ -101,8 +101,17 @@ public class ComponentsResourceIT extends AbstractSeedWebIT {
         assertEquals("{}", response.asString(), false);
     }
 
+    @RunAsClient
+    @Test
+    public void get_resource() throws JSONException {
+        Response response = httpGet("components/Component1");
+        assertEquals("{}", response.asString(), false);
+    }
+
     private Response httpGet(String path) {
-        return expect().statusCode(200).given()
+        return expect()
+                //.statusCode(200)
+                .given()
                 .auth().basic("adrienlauer", "password")
                 .header("Content-Type", "application/hal+json")
                 .get(baseURL.toString() + path);

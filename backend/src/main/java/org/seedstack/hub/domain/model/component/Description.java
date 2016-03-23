@@ -13,27 +13,32 @@ import org.seedstack.business.domain.BaseValueObject;
 import org.seedstack.hub.domain.model.document.DocumentId;
 
 import javax.validation.constraints.NotNull;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 @Embedded
 public class Description extends BaseValueObject {
-    public static final DocumentId DEFAULT_ICON = new DocumentId(ComponentId.DEFAULT_COMPONENT, "default:icon");
-    public static final DocumentId DEFAULT_README = new DocumentId(ComponentId.DEFAULT_COMPONENT, "default:readme");
+    private static final DocumentId DEFAULT_ICON = new DocumentId(ComponentId.DEFAULT_COMPONENT, "default:icon");
+    private static final DocumentId DEFAULT_README = new DocumentId(ComponentId.DEFAULT_COMPONENT, "default:readme");
 
     @NotBlank
     private String name;
     private String summary;
+    private String license;
+    private URL componentUrl;
+    private URL issues;
     @NotNull
     private DocumentId icon;
     @NotNull
     private DocumentId readme;
     private List<DocumentId> images = new ArrayList<>();
 
-    public Description(String name, String summary, DocumentId icon, DocumentId readme) {
+    public Description(String name, String summary, String license, DocumentId icon, DocumentId readme) {
         this.name = name;
         this.summary = summary;
+        this.license = license;
         this.icon = icon != null ? icon : DEFAULT_ICON;
         this.readme = readme != null ? readme : DEFAULT_README;
     }
@@ -45,6 +50,9 @@ public class Description extends BaseValueObject {
     private Description(Description description) {
         this.name = description.name;
         this.summary = description.summary;
+        this.license = description.license;
+        this.componentUrl = description.componentUrl;
+        this.issues = description.issues;
         this.icon = description.icon;
         this.readme = description.readme;
         this.images = new ArrayList<>(description.images);
@@ -56,6 +64,10 @@ public class Description extends BaseValueObject {
 
     public String getSummary() {
         return summary;
+    }
+
+    public String getLicense() {
+        return license;
     }
 
     public DocumentId getIcon() {
@@ -92,5 +104,21 @@ public class Description extends BaseValueObject {
         Description description = new Description(this);
         description.images = new ArrayList<>(images);
         return description;
+    }
+
+    public URL getIssues() {
+        return issues;
+    }
+
+    public void setIssues(URL issues) {
+        this.issues = issues;
+    }
+
+    public URL getComponentUrl() {
+        return componentUrl;
+    }
+
+    public void setComponentUrl(URL componentUrl) {
+        this.componentUrl = componentUrl;
     }
 }

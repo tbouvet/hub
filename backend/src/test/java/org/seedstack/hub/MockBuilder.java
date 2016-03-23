@@ -5,36 +5,42 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
-package org.seedstack.hub.rest;
+package org.seedstack.hub;
 
 import org.seedstack.hub.domain.model.component.*;
 import org.seedstack.hub.domain.model.document.DocumentId;
 import org.seedstack.hub.domain.model.user.UserId;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.time.LocalDate;
 
 public class MockBuilder {
 
     public static Component mock(int i) {
-        return mock(i, State.PUBLISHED);
+        return mock(i, State.PUBLISHED, "adrienlauer");
     }
 
     public static Component mock(int i, State state) {
-        ComponentId componentId = new ComponentId("Component" + i);
+        return mock(i, state, "adrienlauer");
+    }
 
-        UserId john = new UserId("adrienlauer");
+    public static Component mock(int i, State state, String owner) {
+        return mock("Component", i, state, owner);
+    }
+
+    public static Component mock(String name, int i, State state, String owner) {
+        ComponentId componentId = new ComponentId(name + i);
 
         DocumentId icon = new DocumentId(componentId, "/icon.png");
         DocumentId readme = new DocumentId(componentId, "/readme.md");
-        Description description = new Description(componentId.getName(), "A little summary.", icon, readme);
+        Description description = new Description(componentId.getName(), "A little summary.", "MPL2", icon, readme);
 
-        Component component = new Component(componentId, john, description);
-        Version m1 = new Version(new VersionId(1, 2, 3, "M1"));
-        component.addVersion(m1);
+        Component component = new Component(componentId, name + " " + i, new Owner(owner), description);
         changeState(component, state);
 
-        component.addVersion(mockVersion(i, 1));
-        component.addVersion(mockVersion(i, 2));
+        component.addRelease(mockVersion(i, 1));
+        component.addRelease(mockVersion(i, 2));
 
         component.addMaintainer(new UserId("pith"));
         component.addMaintainer(new UserId("kavi87"));
@@ -57,14 +63,20 @@ public class MockBuilder {
             case PENDING:
                 break;
             case ARCHIVED:
+                component.publish();
                 component.archive();
                 break;
         }
     }
 
-    private static Version mockVersion(Integer componentNumber, Integer versionNumber) {
-        Version version = new Version(new VersionId(versionNumber, versionNumber + 1, versionNumber + 2, "Version ".concat(versionNumber.toString())));
-        version.setPublicationDate(LocalDate.now().minusDays(componentNumber + versionNumber));
-        return version;
+    private static Release mockVersion(Integer componentNumber, Integer versionNumber) {
+        Release release = new Release(new Version(versionNumber, versionNumber + 1, versionNumber + 2, "M".concat(versionNumber.toString())));
+        release.setDate(LocalDate.now().minusDays(componentNumber + versionNumber));
+        try {
+            release.setUrl(new URL("http://github.com/seedstack/Component1/releases"));
+        } catch (MalformedURLException e) {
+            throw new IllegalStateException(e);
+        }
+        return release;
     }
 }

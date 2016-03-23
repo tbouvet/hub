@@ -13,7 +13,7 @@ import org.seedstack.seed.security.AuthenticationException;
 
 import javax.inject.Inject;
 
-public class DefaultStatePolicy implements StatePolicy {
+class StatePolicyDefault implements StatePolicy {
 
     @Inject
     private SecurityService securityService;
@@ -25,8 +25,6 @@ public class DefaultStatePolicy implements StatePolicy {
 
     @Override
     public boolean canArchive(Component component) {
-        UserId userId = securityService.getAuthenticatedUser()
-            .orElseThrow(AuthenticationException::new).getEntityId();
-        return securityService.isUserAdmin() || component.getOwner().equals(userId);
+        return securityService.isUserAdmin() || securityService.isOwnerOf(component);
     }
 }

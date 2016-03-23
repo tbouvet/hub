@@ -8,15 +8,20 @@
 package org.seedstack.hub.application;
 
 import org.seedstack.business.Service;
+import org.seedstack.hub.domain.model.component.Component;
 import org.seedstack.hub.domain.model.user.User;
 
 import java.util.Optional;
 
 @Service
 public interface SecurityService {
-    Optional<User> getAuthenticatedUser();
+    User getAuthenticatedUser();
 
     void checkUserIsAdmin();
 
     boolean isUserAdmin();
+
+    boolean isOwnerOf(Component component);
+
+    boolean ownerExists(String owner);
 }

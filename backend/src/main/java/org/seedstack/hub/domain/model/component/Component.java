@@ -7,26 +7,27 @@
  */
 package org.seedstack.hub.domain.model.component;
 
+import org.hibernate.validator.constraints.NotBlank;
 import org.mongodb.morphia.annotations.Entity;
 import org.mongodb.morphia.annotations.Id;
 import org.mongodb.morphia.annotations.PrePersist;
 import org.seedstack.business.domain.BaseAggregateRoot;
 import org.seedstack.hub.domain.model.document.DocumentId;
 import org.seedstack.hub.domain.model.user.UserId;
+import org.seedstack.seed.core.utils.SeedTupleUtils;
 
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 @Entity(value = "components")
 public class Component extends BaseAggregateRoot<ComponentId> {
     @Id
     @NotNull
     private ComponentId componentId;
+    private String name;
     @NotNull
-    private UserId owner;
+    private Owner owner;
     @NotNull
     private Description description;
     @NotNull
@@ -34,16 +35,17 @@ public class Component extends BaseAggregateRoot<ComponentId> {
     @NotNull
     private List<Comment> comments = new ArrayList<>();
     @NotNull
-    private List<Version> versions = new ArrayList<>();
+    private List<Release> releases = new ArrayList<>();
     @NotNull
     private List<DocumentId> docs = new ArrayList<>();
     @Min(0)
     private int stars = 0;
-    private List<UserId> maintainers = new ArrayList<>();
+    private Set<UserId> maintainers = new HashSet<>();
 
 
-    public Component(ComponentId componentId, UserId owner, Description description) {
+    public Component(ComponentId componentId, String name, Owner owner, Description description) {
         this.componentId = componentId;
+        this.name = name;
         this.owner = owner;
         this.description = description;
     }
@@ -59,6 +61,14 @@ public class Component extends BaseAggregateRoot<ComponentId> {
 
     public ComponentId getId() {
         return componentId;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public Description getDescription() {
@@ -102,13 +112,13 @@ public class Component extends BaseAggregateRoot<ComponentId> {
         comments.add(comment);
     }
 
-    public List<Version> getVersions() {
-        return Collections.unmodifiableList(versions);
+    public List<Release> getReleases() {
+        return Collections.unmodifiableList(releases);
     }
 
-    public void addVersion(Version version) {
-        versions.add(version);
-        Collections.sort(versions);
+    public void addRelease(Release release) {
+        releases.add(release);
+        Collections.reverse(releases);
     }
 
     public void addDoc(DocumentId documentId) {
@@ -123,7 +133,7 @@ public class Component extends BaseAggregateRoot<ComponentId> {
         return Collections.unmodifiableList(docs);
     }
 
-    public UserId getOwner() {
+    public Owner getOwner() {
         return owner;
     }
 
@@ -141,8 +151,8 @@ public class Component extends BaseAggregateRoot<ComponentId> {
         return stars;
     }
 
-    public List<UserId> getMaintainers() {
-        return Collections.unmodifiableList(maintainers);
+    public Set<UserId> getMaintainers() {
+        return Collections.unmodifiableSet(maintainers);
     }
 
     public void addMaintainer(UserId maintainer) {

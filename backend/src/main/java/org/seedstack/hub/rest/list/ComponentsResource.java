@@ -8,6 +8,7 @@
 package org.seedstack.hub.rest.list;
 
 import io.swagger.annotations.Api;
+import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotBlank;
 import org.seedstack.business.assembler.FluentAssembler;
 import org.seedstack.business.finder.Result;
@@ -59,7 +60,10 @@ public class ComponentsResource {
     @POST
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     @Path("/components")
-    public Response post(@FormParam("vcs") @NotBlank String vcs, @FormParam("url") @NotBlank String sourceUrl) throws URISyntaxException {
+    public Response post(
+            @FormParam("vcs") @NotBlank @Length(max = 10) String vcs,
+            @FormParam("url") @org.hibernate.validator.constraints.URL @NotBlank String sourceUrl
+    ) throws URISyntaxException {
         VCSType vcsType;
         try {
             vcsType = VCSType.valueOf(vcs.toUpperCase());
@@ -87,8 +91,11 @@ public class ComponentsResource {
     @GET
     @Path("/components")
     @Rel(value = COMPONENTS, home = true)
-    public PaginatedHal<ComponentCard> list(@QueryParam("search") String searchName, @BeanParam PageInfo pageInfo,
-                                  @QueryParam("sort") String sort) {
+    public PaginatedHal<ComponentCard> list(
+            @QueryParam("search") @Length(max = 64) String searchName,
+            @BeanParam PageInfo pageInfo,
+            @QueryParam("sort") @Length(max = 64) String sort) {
+
         PaginatedView<ComponentCard> paginatedView = componentFinder.findCards(pageInfo.page(), searchName, sort);
         updateUrls(paginatedView);
         Link self = relRegistry.uri(COMPONENTS);
