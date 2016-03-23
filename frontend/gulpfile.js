@@ -87,22 +87,40 @@ gulp.task('remove-manifest', ['optimize'], function () {
 gulp.task('build', ['clean', 'bower', 'copy', 'ts-compile', 'less-compile', 'test', 'optimize', 'replace-index', 'remove-manifest']);
 gulp.task('default', ['build']);
 
-// Development
+// Development (seedstack backend)
 
-gulp.task('clean-debug', function () {
+gulp.task('clean-dev', function () {
     return del('../backend/src/main/resources/META-INF/resources/**/*');
 });
 
-gulp.task('copy-debug', ['bower', 'clean', 'ts-compile', 'less-compile'], function () {
+gulp.task('copy-dev', ['bower', 'clean'], function () {
     return gulp.src([
-            'bower_components/**/*',
-            'hub/**/*',
-            '!w20.app.json'],
+        'bower_components/**/*',
+        'src/**/*',
+        '!src/**/*.ts',
+        '!src/**/*.less',
+        '!w20.app.json',
+        '!index.html'],
         { base : './' })
         .pipe(gulp.dest('../backend/src/main/resources/META-INF/resources'));
 });
 
-gulp.task('replace-index-debug', ['copy'], function() {
+gulp.task('less-compile-dev', ['copy-dev'], function () {
+    return gulp.src('src/style/**/*.less')
+        .pipe(less())
+        .pipe(gulp.dest('../backend/src/main/resources/META-INF/resources/style'));
+});
+
+gulp.task('ts-compile-dev', ['copy-dev'], function () {
+    return gulp
+        .src(tscConfig.files)
+        .pipe(sourcemaps.init())
+        .pipe(typescript(tscConfig.compilerOptions))
+        .pipe(sourcemaps.write('.'))
+        .pipe(gulp.dest('../backend/src/main/resources/META-INF/resources/src/'));
+});
+
+gulp.task('replace-index-dev', ['copy'], function() {
     gulp.src('index.html')
         .pipe(htmlreplace({
             replaceLoader: {
@@ -126,15 +144,27 @@ gulp.task('replace-index-debug', ['copy'], function() {
         .pipe(gulp.dest('../backend/src/main/resources/META-INF/resources'));
 });
 
-gulp.task('watch-ts', ['ts-compile'], function () {
-    gulp.watch(['hub/**/*.ts'], ['ts-compile']);
+gulp.task('watch-dev', [], function () {
+    gulp.watch(['src/**/*'], ['ts-compile-dev', 'less-compile-dev']);
 });
 
-gulp.task('watch-copy', ['copy-debug'], function () {
-    gulp.watch(['hub/**/*'], ['copy-debug']);
+
+gulp.task('build-dev', ['clean-dev', 'bower', 'copy-dev', 'ts-compile-dev', 'less-compile-dev', 'replace-index-dev']);
+
+// Development (node mock backend)
+
+gulp.task('copy-node', ['bower', 'clean'], function () {
+    return gulp.src([
+            'bower_components/**/*',
+            'src/**/*',
+            'w20.app.json',
+            'index.html'],
+        { base : './' })
+        .pipe(gulp.dest('dist'));
 });
 
-gulp.task('build-debug', ['clean-debug', 'bower', 'ts-compile', 'less-compile', 'copy-debug', 'replace-index-debug', 'watch-copy']);
+gulp.task('build-node', ['clean', 'bower', 'copy-node', 'ts-compile', 'less-compile']);
 
-
-
+gulp.task('watch-node', [], function () {
+    gulp.watch(['src/**/*'], ['ts-compile', 'less-compile']);
+});
