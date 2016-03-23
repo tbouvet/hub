@@ -10,11 +10,9 @@ package org.seedstack.hub.rest.detail;
 import org.seedstack.hub.domain.model.component.Component;
 import org.seedstack.hub.domain.model.component.Description;
 import org.seedstack.hub.domain.model.component.Release;
-import org.seedstack.hub.domain.model.document.DocumentId;
 import org.seedstack.hub.domain.model.user.UserId;
 import org.seedstack.hub.rest.AbstractComponentAssembler;
 import org.seedstack.hub.rest.Rels;
-import org.seedstack.hub.rest.shared.UriBuilder;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -58,7 +56,6 @@ public class ComponentDetailsAssembler extends AbstractComponentAssembler<Compon
             }
             componentDetails.setLicense(description.getLicense());
             componentDetails.setIcon(documentIdToString(description.getIcon()));
-
             componentDetails.setReadme(documentIdToString(description.getReadme()));
             componentDetails.setImages(description.getImages().stream().map(this::documentIdToString).collect(toList()));
         }

@@ -21,6 +21,7 @@ import org.seedstack.hub.application.fetch.Manifest;
 import org.seedstack.hub.application.fetch.ReleaseDTO;
 import org.seedstack.hub.domain.model.component.*;
 import org.seedstack.hub.domain.model.document.DocumentId;
+import org.seedstack.hub.domain.model.document.DocumentScope;
 import org.seedstack.hub.domain.model.organisation.Organisation;
 import org.seedstack.hub.domain.model.organisation.OrganisationId;
 import org.seedstack.hub.domain.model.user.User;
@@ -114,13 +115,13 @@ public class ComponentFactoryImplTest {
 
         assertThat(component.getDescription().getSummary()).isEqualTo("Some component description");
         assertThat(component.getDescription().getLicense()).isEqualTo("MPL 2");
-        assertThat(component.getDescription().getReadme()).isEqualTo(new DocumentId(new ComponentId("component1"), "README.md"));
-        assertThat(component.getDescription().getIcon()).isEqualTo(new DocumentId(new ComponentId("component1"), "icon.png"));
+        assertThat(component.getDescription().getReadme()).isEqualTo(new DocumentId(new ComponentId("component1"), DocumentScope.FILE, "README.md"));
+        assertThat(component.getDescription().getIcon()).isEqualTo(new DocumentId(new ComponentId("component1"), DocumentScope.FILE, "icon.png"));
         assertThat(component.getDescription().getIssues()).isEqualTo(new URL("https://github.com/seedstack/hub/issues"));
         assertThat(component.getDescription().getComponentUrl()).isEqualTo(new URL("https://github.com/seedstack/hub"));
-        assertThat(component.getDescription().getImages().get(0)).isEqualTo(new DocumentId(new ComponentId("component1"), "image.gif"));
+        assertThat(component.getDescription().getImages().get(0)).isEqualTo(new DocumentId(new ComponentId("component1"), DocumentScope.FILE, "image.gif"));
 
-        assertThat(component.getDocs().get(0)).isEqualTo(new DocumentId(new ComponentId("component1"), "doc/index.md"));
+        assertThat(component.getDocs().get(0)).isEqualTo(new DocumentId(new ComponentId("component1"), DocumentScope.FILE, "doc/index.md"));
 
     }
 

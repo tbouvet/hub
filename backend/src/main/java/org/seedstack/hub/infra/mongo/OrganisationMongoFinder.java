@@ -20,7 +20,7 @@ import org.seedstack.mongodb.morphia.MorphiaDatastore;
 import javax.inject.Inject;
 import java.util.List;
 
-public class OrganisationMongoFinder extends AbstractMongoFinder implements OrganisationFinder {
+class OrganisationMongoFinder extends AbstractMongoFinder implements OrganisationFinder {
 
     @Inject
     @MorphiaDatastore(clientName = "main", dbName = "hub")

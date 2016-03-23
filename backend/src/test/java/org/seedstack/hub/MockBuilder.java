@@ -9,6 +9,7 @@ package org.seedstack.hub;
 
 import org.seedstack.hub.domain.model.component.*;
 import org.seedstack.hub.domain.model.document.DocumentId;
+import org.seedstack.hub.domain.model.document.DocumentScope;
 import org.seedstack.hub.domain.model.user.UserId;
 
 import java.net.MalformedURLException;
@@ -32,8 +33,8 @@ public class MockBuilder {
     public static Component mock(String name, int i, State state, String owner) {
         ComponentId componentId = new ComponentId(name + i);
 
-        DocumentId icon = new DocumentId(componentId, "/icon.png");
-        DocumentId readme = new DocumentId(componentId, "/readme.md");
+        DocumentId icon = new DocumentId(componentId, DocumentScope.FILE, "/icon.png");
+        DocumentId readme = new DocumentId(componentId, DocumentScope.FILE, "/readme.md");
         Description description = new Description(componentId.getName(), "A little summary.", "MPL2", icon, readme);
 
         Component component = new Component(componentId, name + " " + i, new Owner(owner), description);

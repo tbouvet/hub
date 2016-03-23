@@ -18,6 +18,7 @@ import org.seedstack.hub.domain.model.document.Document;
 import org.seedstack.hub.domain.model.document.DocumentFactory;
 import org.seedstack.hub.domain.model.document.DocumentId;
 import org.seedstack.hub.application.fetch.Manifest;
+import org.seedstack.hub.domain.model.document.DocumentScope;
 import org.seedstack.seed.it.SeedITRunner;
 import org.seedstack.seed.security.WithUser;
 
@@ -78,6 +79,6 @@ public class DocumentIT {
     }
 
     private DocumentId buildDocumentId(String componentId, String path) {
-        return new DocumentId(new ComponentId(componentId), path);
+        return new DocumentId(new ComponentId(componentId), DocumentScope.FILE, path);
     }
 }

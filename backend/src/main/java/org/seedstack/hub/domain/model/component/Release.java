@@ -7,6 +7,7 @@
  */
 package org.seedstack.hub.domain.model.component;
 
+import org.mongodb.morphia.annotations.Embedded;
 import org.seedstack.business.domain.BaseEntity;
 
 import javax.validation.constraints.NotNull;
@@ -19,6 +20,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.Date;
 
+@Embedded
 public class Release extends BaseEntity<Version> implements Comparable<Release> {
     @NotNull
     private Version version;

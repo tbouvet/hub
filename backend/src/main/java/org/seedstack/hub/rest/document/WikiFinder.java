@@ -5,13 +5,16 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
-package org.seedstack.hub.domain.model.component;
+package org.seedstack.hub.rest.document;
 
-import org.mongodb.morphia.annotations.Embedded;
+import org.seedstack.business.finder.Finder;
+import org.seedstack.hub.domain.model.component.ComponentId;
 
-@Embedded
-public enum State {
-    PENDING,
-    PUBLISHED,
-    ARCHIVED
+import java.util.List;
+
+@Finder
+public interface WikiFinder {
+
+    List<WikiPage> findComponentPages(ComponentId componentId);
+
 }

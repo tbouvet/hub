@@ -7,10 +7,12 @@
  */
 package org.seedstack.hub.domain.model.component;
 
+import org.mongodb.morphia.annotations.Embedded;
 import org.seedstack.business.domain.BaseValueObject;
 
 import java.util.Date;
 
+@Embedded
 public class Comment extends BaseValueObject {
     private String author;
     private String text;

@@ -30,21 +30,17 @@ kavi87 = password, admin
 enabled = true
 property.supportedMethods= GET\\, POST\\, HEAD\\, OPTIONS\\, PUT\\, DELETE
 
-[org.seedstack.mongodb.client.main<PROD>]
-hosts = ${sys:dbHost}
-
-[http]
-proxy = ${env:HTTP_PROXY}
-
 [org.seedstack.mongodb.client.main]
 hosts = localhost
 databases = hub
 
 [org.seedstack.hub.domain.model.*]
+# Sets Morphia as the default repository for all aggregates...
 default-repository = org.seedstack.mongodb.morphia.Morphia
 morphia.clientName = main
 morphia.dbName = hub
 
 [org.seedstack.hub.domain.model.user.User]
+# ... except for User which has its own custom repository
 default-repository =
 

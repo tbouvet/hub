@@ -7,12 +7,14 @@
  */
 package org.seedstack.hub.domain.model.component;
 
+import org.mongodb.morphia.annotations.Embedded;
 import org.seedstack.business.domain.BaseValueObject;
 import org.seedstack.hub.domain.model.organisation.OrganisationId;
 import org.seedstack.hub.domain.model.user.UserId;
 
 import java.util.Optional;
 
+@Embedded
 public class Owner extends BaseValueObject {
     private UserId userId;
     private OrganisationId organisationId;

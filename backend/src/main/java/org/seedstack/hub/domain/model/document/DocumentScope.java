@@ -5,13 +5,9 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
-package org.seedstack.hub.domain.model.component;
+package org.seedstack.hub.domain.model.document;
 
-import org.mongodb.morphia.annotations.Embedded;
-
-@Embedded
-public enum State {
-    PENDING,
-    PUBLISHED,
-    ARCHIVED
+public enum DocumentScope {
+    FILE,
+    WIKI
 }

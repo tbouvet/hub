@@ -10,12 +10,14 @@
  */
 package org.seedstack.hub.domain.model.component;
 
+import org.mongodb.morphia.annotations.Embedded;
 import org.seedstack.business.domain.BaseValueObject;
 
 import javax.validation.constraints.NotNull;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+@Embedded
 public class Version extends BaseValueObject implements Comparable<Version> {
     private static final Pattern VERSION_PATTERN = Pattern.compile("(\\d+)(\\.(\\d+))?(\\.(\\d+))?(-(\\w+))?");
 

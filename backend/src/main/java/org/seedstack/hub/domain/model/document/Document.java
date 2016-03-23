@@ -18,6 +18,9 @@ import javax.activation.MimeType;
 import javax.activation.MimeTypeParseException;
 import javax.validation.constraints.NotNull;
 
+/**
+ * A base class for all document types.
+ */
 @Entity("documents")
 public abstract class Document extends BaseAggregateRoot<DocumentId> {
     @Id
@@ -26,6 +29,12 @@ public abstract class Document extends BaseAggregateRoot<DocumentId> {
     @NotNull
     private String contentType;
 
+    /**
+     * Creates a document from an identifier and a content type.
+     *
+     * @param documentId  the document identifier.
+     * @param contentType the content type.
+     */
     protected Document(DocumentId documentId, String contentType) {
         this.documentId = documentId;
         try {
@@ -44,10 +53,16 @@ public abstract class Document extends BaseAggregateRoot<DocumentId> {
         return documentId;
     }
 
+    /**
+     * @return the document identifier.
+     */
     public DocumentId getId() {
         return documentId;
     }
 
+    /**
+     * @return the content type.
+     */
     public String getContentType() {
         return contentType;
     }

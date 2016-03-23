@@ -51,6 +51,10 @@ public abstract class AbstractComponentAssembler<T extends HalRepresentation> ex
     protected abstract void doAssemble(T t, Component component);
 
     protected String documentIdToString(DocumentId documentId) {
+        if (documentId == null) {
+            return null;
+        }
+
         return UriBuilder.uri(Rels.COMPONENTS, documentId.getComponentId().toString(), "files", documentId.getPath());
     }
 

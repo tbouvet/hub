@@ -18,7 +18,8 @@ backend/pom.xml.versionsBackup
 backend/pom.xml.next
 backend/release.properties
 backend/src/main/resources/META-INF/resources/
-backend/src/main/resources/META-INF/configuration/proxy.props
+backend/**/proxy.props
+backend/**/docker.override.props
 
 # Frontend
 frontend/bower_components/

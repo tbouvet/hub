@@ -10,7 +10,15 @@ package org.seedstack.hub.infra.file;
 import org.seedstack.business.domain.BaseFactory;
 import org.seedstack.hub.domain.model.component.Component;
 import org.seedstack.hub.domain.model.component.Description;
-import org.seedstack.hub.domain.model.document.*;
+import org.seedstack.hub.domain.model.document.BinaryDocument;
+import org.seedstack.hub.domain.model.document.Document;
+import org.seedstack.hub.domain.model.document.DocumentException;
+import org.seedstack.hub.domain.model.document.DocumentFactory;
+import org.seedstack.hub.domain.model.document.DocumentId;
+import org.seedstack.hub.domain.model.document.TextDocument;
+import org.seedstack.hub.domain.model.document.TextFormat;
+import org.seedstack.hub.domain.model.document.WikiDocument;
+import org.seedstack.hub.domain.model.user.UserId;
 import org.seedstack.hub.domain.services.text.TextService;
 
 import javax.activation.MimetypesFileTypeMap;
@@ -54,7 +62,7 @@ class DocumentFactoryImpl extends BaseFactory<Document> implements DocumentFacto
     }
 
     @Override
-    public Document createTextDocument(DocumentId documentId, TextFormat textFormat, File file) {
+    public TextDocument createTextDocument(DocumentId documentId, TextFormat textFormat, File file) {
         TextDocument textDocument = new TextDocument(documentId, textFormat, TEXT_CHARSET);
         try {
             textDocument.setText(new String(Files.readAllBytes(file.toPath()), TEXT_CHARSET));
@@ -65,10 +73,17 @@ class DocumentFactoryImpl extends BaseFactory<Document> implements DocumentFacto
     }
 
     @Override
-    public Document createTextDocument(DocumentId documentId, TextFormat textFormat, String body) {
+    public TextDocument createTextDocument(DocumentId documentId, TextFormat textFormat, String body) {
         TextDocument textDocument = new TextDocument(documentId, textFormat, TEXT_CHARSET);
         textDocument.setText(body);
         return textDocument;
+    }
+
+    @Override
+    public WikiDocument createWikiDocument(DocumentId documentId, String body, UserId author, String message) {
+        WikiDocument wikiDocument = new WikiDocument(documentId);
+        wikiDocument.addRevision(body, author, message);
+        return wikiDocument;
     }
 
     @Override
