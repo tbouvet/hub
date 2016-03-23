@@ -1,0 +1,78 @@
+<main layout-padding layout="column" id="user">
+    <header layout="column">
+        <h3 class="md-title muted">User name</h3>
+    </header>
+    <section layout="row" layout-wrap layout-xs="column" layout-align="center center">
+        <md-content class="md-whiteframe-1dp" flex>
+            <md-toolbar>
+                <div class="md-toolbar-tools">
+                    <h2>
+                        Components
+                    </h2>
+                </div>
+            </md-toolbar>
+            <md-tabs md-dynamic-height md-border-bottom>
+                <md-tab label="Mine">
+                    <md-content class="md-padding">
+                        <md-list flex>
+                            <md-subheader class="md-no-sticky">10 components
+                                <div style="float: right; height: 20px">
+                                    <md-checkbox md-no-ink aria-label="Checkbox No Ink"
+                                                 ng-model="$ctrl.pendingOnly"
+                                                 class="md-primary">
+                                        Pending only
+                                    </md-checkbox>
+                                </div>
+                            </md-subheader>
+                            <md-divider></md-divider>
+                            <md-list-item ng-repeat-start="userComponent in $ctrl.userComponents | filter:($ctrl.pendingOnly || '') && {state: 'PENDING'}"
+                                          ng-click="$ctrl.view(userComponent)" class="md-3-line">
+                                <img ng-src="{{ userComponent.icon }}" class="md-avatar" alt="Component icon"/>
+                                <div class="md-list-item-text" layout="column" flex>
+                                        <h3>{{ userComponent.name }} </h3>
+                                        <h4>{{ userComponent.summary }}</h4>
+                                        <span show-xs hide-gt-xs>{{ userComponent.state }}</span>
+                                </div>
+                                <div flex hide-xs hide-sm></div>
+                                <div layout="row" hide-xs>
+                                    <md-icon md-font-set="material-icons" style="margin:5px 10px">change_history</md-icon> {{ userComponent.version }}
+                                </div>
+                                <div flex hide-xs hide-sm></div>
+                                <div layout="row" hide-xs>
+                                    <md-icon md-font-set="material-icons" style="margin:5px 10px">star_rate</md-icon> {{ userComponent.stars }}
+                                </div>
+                                <div flex hide-xs hide-sm></div>
+                                <div class="md-list-item-text" layout="row" hide-xs flex layout-align="end center" hide-xs>
+                                    <md-progress-circular ng-if="userComponent.state === 'PENDING'"
+                                                          md-mode="indeterminate"
+                                                          class="md-primary">
+                                    </md-progress-circular>
+                                    <md-icon ng-if="userComponent.state === 'PUBLISHED'" md-font-set="material-icons" style="margin:10px">verified_user</md-icon>
+                                    <md-icon ng-if="userComponent.state === 'ARCHIVED'" md-font-set="material-icons" style="margin:10px">archive</md-icon>
+                                    <span>{{ userComponent.state }}</span>
+                                </div>
+                            </md-list-item>
+                            <md-divider ng-repeat-end ng-if="!$last"></md-divider>
+                        </md-list>
+                    </md-content>
+                </md-tab>
+                <md-tab label="Favorites">
+                    <md-content class="md-padding">
+                        <md-list flex>
+                            <md-subheader class="md-no-sticky">10 components</md-subheader>
+                            <md-list-item ng-repeat="favoriteComponent in $ctrl.favoriteComponents"
+                                          ng-click="$ctrl.view(favoriteComponent)" class="md-3-line">
+                                <img ng-src="{{ favoriteComponent.icon }}" class="md-avatar" alt="Component icon"/>
+                                <div class="md-list-item-text" layout="column">
+                                    <h3>{{ favoriteComponent.name }}</h3>
+                                    <h4>{{ favoriteComponent.summary }}</h4>
+                                    <p>{{ favoriteComponent.version }}</p>
+                                </div>
+                            </md-list-item>
+                        </md-list>
+                    </md-content>
+                </md-tab>
+            </md-tabs>
+        </md-content>
+    </section>
+</main>

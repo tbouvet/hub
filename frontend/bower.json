@@ -2,10 +2,14 @@
   "name": "Hub",
   "version": "0.1.0",
   "dependencies": {
-    "w20-material": "https://github.com/kavi87/w20-material.git#update-w20-angular-1.5",
+    "w20-material": "#master",
     "smoothscroll-for-websites": "~1.4.4"
   },
   "devDependencies": {
-    "angular-mocks": "^1.5.0"
+    "angular-mocks": "^1.4.8"
+  },
+  "resolutions": {
+    "w20": "#master",
+    "angular": "^1.4.8"
   }
 }

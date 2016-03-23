@@ -10,18 +10,17 @@ module.exports = function(config) {
     'use strict';
 
     config.set({
+        basePath: './',
         frameworks: [ 'jasmine', 'requirejs', 'phantomjs-shim' ],
         files: [
             'test-main.js',
-
-            { pattern: 'w20.app.json', served: true, included: false },
-
-            { pattern: 'hub/**/*.js', included: false },
-            { pattern: 'hub/**/*.html', included: false },
-            { pattern: 'bower_components/**/*', included: false }
+            { pattern: 'dist/w20.app.json', served: true, included: false },
+            { pattern: 'dist/**/*.js', included: false },
+            { pattern: 'dist/**/*.html', included: false },
+            { pattern: 'dist/bower_components/**/*', included: false }
         ],
         preprocessors: {
-            'hub/modules/*.js': 'coverage'
+            'src/modules/*.js': 'coverage'
         },
         reporters: ['dots' ],
         port: 9876,

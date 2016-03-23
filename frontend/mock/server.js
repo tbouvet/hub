@@ -15,6 +15,7 @@ const fs = require('fs');
 var home = require('./home');
 var cards = require('./components-card');
 var component = require('./component');
+var userComponent = require('./user-components');
 
 function is(req, mimeType) {
     return req.headers.accept === mimeType;
@@ -101,6 +102,14 @@ app.get('/components/*/files/README.md', (req, res, next) => {
     var readme = fs.readFileSync('../hub/frontend/mock/docs/readme.html');
     res.writeHead(200, {'Content-Type': 'text/html' });
     res.end(readme);
+});
+
+app.get('/user/components', (req, res) => {
+    sendCards(userComponent, req.query.pageIndex, req.query.pageSize, res);
+});
+
+app.get('/user/stars', (req, res) => {
+    sendCards(userComponent, req.query.pageIndex, req.query.pageSize, res);
 });
 
 if (dist === 'dist') {

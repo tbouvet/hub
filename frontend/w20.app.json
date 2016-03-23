@@ -1,5 +1,5 @@
 {
-    "hub/hub.w20.json": {},
+    "src/hub.w20.json": {},
 
     "bower_components/w20/w20-core.w20.json": {
         "modules": {
