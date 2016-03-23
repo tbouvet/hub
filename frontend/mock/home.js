@@ -29,6 +29,24 @@ var home = {
         },
         "recent": {
             "href": "/recent"
+        },
+        "user/components": {
+            "href-template": "/user/components{?search,sort,pageIndex,pageSize}",
+            "href-vars": {
+                "search": "/doc/components/param/search",
+                "sort": "/doc/components/param/sort",
+                "page": "/doc/components/param/page",
+                "show": "/doc/components/param/show"
+            }
+        },
+        "stars": {
+            "href-template": "/user/stars{?search,sort,pageIndex,pageSize}",
+            "href-vars": {
+                "search": "/doc/components/param/search",
+                "sort": "/doc/components/param/sort",
+                "page": "/doc/components/param/page",
+                "show": "/doc/components/param/show"
+            }
         }
     }
 };

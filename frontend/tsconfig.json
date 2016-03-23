@@ -1,6 +1,6 @@
 {
   "files": [
-    "hub/**/*.ts",
+    "src/**/*.ts",
     "typings/browser.d.ts"
   ],
   "compilerOptions": {

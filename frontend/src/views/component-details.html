@@ -3,7 +3,7 @@
         <div flex="none">
             <md-button class="md-accent" ng-href="/#!/">
                 <md-icon md-font-set="material-icons">keyboard_backspace</md-icon>
-                Back
+                Home
             </md-button>
         </div>
         <div flex layout="row" layout-align="end center" layout-align-xs="center center" layout-wrap>
@@ -15,25 +15,25 @@
         </div>
     </div>
     <div id="component-detail-header" layout="row" layout-xs="column" layout-wrap>
-        <div layout="row" flex-gt-xs="20" layout-align="center center" layout-align-xs="center">
-            <img style="max-width: 100%; height: auto" ng-src="{{$ctrl.component.icon}}" alt="Component logo">
+        <div layout="row" layout-align="center center" layout-align-xs="center">
+            <img class="component-icon" ng-src="{{$ctrl.component.icon}}" alt="Component logo">
         </div>
-        <div layout-xs="column" layout-align-xs="center center" flex id="component-detail-title">
+        <div flex layout-xs="column" layout-align-xs="center center" id="component-detail-title">
             <div layout="column" layout-align="center" layout-align-xs="center center" class="md-list-item-text"
                  style="margin-left: 20px;">
                 <h1 class="md-display-1">
                     {{ $ctrl.component.name }}
                 </h1>
                 <h2 style="margin-top: 0;" class="md-subhead muted">
-                    Owned by {{ $ctrl.component.owner }}
+                    Owned by {{ $ctrl.component.owner }} <span ng-if="$ctrl.component.state === 'PENDING'">(PENDING)</span>
                 </h2>
             </div>
         </div>
         <div id="component-detail-actions" layout-xs="row" layout-align-xs="center" style="margin-top: 20px">
-            <md-button ng-show="$ctrl.component.isStarred" ng-click="$ctrl.rateComponent($ctrl.component)" aria-label="Star" layout="row" layout-align="start center" title="unstar this component">
-                    <md-icon md-font-set="material-icons">star_rate</md-icon> {{ $ctrl.component.stars }}
+            <md-button ng-if="$ctrl.component.isStarred" ng-click="$ctrl.rateComponent($ctrl.component)" aria-label="Star" title="unstar this component">
+                <md-icon md-font-set="material-icons">star_rate</md-icon> {{ $ctrl.component.stars }}
             </md-button>
-            <md-button ng-show="!$ctrl.component.isStarred" ng-click="$ctrl.rateComponent($ctrl.component)" aria-label="Star" layout="row" layout-align="start center" title="star this component">
+            <md-button ng-if="!$ctrl.component.isStarred" ng-click="$ctrl.rateComponent($ctrl.component)" aria-label="Star" title="star this component">
                 <md-icon md-font-set="material-icons">star_border</md-icon> {{ $ctrl.component.stars }}
             </md-button>
             <md-button class="md-raised">Manage</md-button>
@@ -41,15 +41,15 @@
         </div>
     </div>
     <div id="component-detail-info" layout-padding layout="row" layout-xs="column" style="margin-top: 20px;">
-        <div id="component-detail-readme" flex="75" flex-xs="100" flex-order-xs="2">
+        <div id="component-detail-readme" flex="70" flex-xs="100" flex-order-xs="2">
             <md-content class="md-whiteframe-1dp" flex layout-padding>
                 <div class="markdown-body" ng-include="$ctrl.component.readme"></div>
             </md-content>
         </div>
-        <div flex="25" flex-xs="100" layout-align="end center" layout-align-xs="center" flex-order-xs="1">
+        <div flex="30" flex-xs="100" layout-align="end center" layout-align-xs="center" flex-order-xs="1">
             <aside id="component-detail-meta" layout="column" flex-xs="100">
-                <section id="component-detail-meta-usage" class="md-whiteframe-1dp">
-                    <md-content style="overflow: hidden">
+                <section id="component-detail-meta-usage" class="md-whiteframe-0dp">
+                    <md-content style="overflow: hidden; background-color: inherit">
                         <md-list>
                             <md-list-item>
                                 <md-icon md-font-set="material-icons">change_history</md-icon>
@@ -63,9 +63,9 @@
                     </md-content>
                 </section>
                 <div class="spacer"></div>
-                <section id="component-detail-meta-general" class="md-whiteframe-1dp">
-                    <md-content style="overflow: hidden">
-                        <md-subheader class="md-no-sticky">Used in 12 projects</md-subheader>
+                <section id="component-detail-meta-general" class="md-whiteframe-0dp">
+                    <md-content style="overflow: hidden; background-color: inherit">
+                        <md-subheader class="md-no-sticky" style="background-color: inherit">Used in 12 projects</md-subheader>
                         <md-list>
                             <md-list-item>
                                 <md-icon md-font-set="material-icons">important_devices</md-icon>

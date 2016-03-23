@@ -29,7 +29,10 @@ interface ICommentScope extends ng.IScope {
     loadNewComments(criterias):void;
     comments: Comment[];
     component: any;
+    commentForm: ng.IFormController;
+    clearForm: Function
 }
+
 class HubComment implements ng.IDirective {
     static $inject = ['HomeService', '$resource'];
     constructor(private api, private $resource) {};
@@ -46,13 +49,20 @@ class HubComment implements ng.IDirective {
             pageSize: 10
         };
 
+        var clearForm = () => {
+            scope.commentForm.$setPristine();
+            scope.commentForm.$setUntouched();
+            scope.newCommentText = '';
+        };
+
         scope.submitComment = (text: string) => {
           scope.component.$links('comment').save(text).$promise.then((comment: IComment) => {
-              scope.newCommentText = '';
+              clearForm();
               scope.comments.push(comment);
           }, (reject) => { throw new Error(reject); });
         };
 
+        // issue with links : pagination is present the second time
         scope.loadNewComments = () => {
             scope.component.$links('comment', scope.paginationCriterias).get((results: any) => {
                 if (results.$embedded('comment').view.length) {

@@ -50,6 +50,10 @@
     "smooth-scroll": {
       "path": "{smooth-scroll}/SmoothScroll",
       "autoload": true
+    },
+    "user": {
+      "path": "{hub}/modules/controllers/user",
+      "autoload": true
     }
   },
 
@@ -70,6 +74,10 @@
     "/component/:id": {
       "templateUrl":"{hub}/views/component-details.html",
       "controller":"ComponentDetailsController as $ctrl"
+    },
+    "/user": {
+      "templateUrl":"{hub}/views/user.html",
+      "controller":"UserController as $ctrl"
     }
   },
 

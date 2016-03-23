@@ -28,7 +28,7 @@ class HomeController {
     }
 
     public view(card: Card): void {
-        this.location.path('hub/component/' + card.name);
+        this.location.path('hub/component/' + card.id);
     }
 }
 

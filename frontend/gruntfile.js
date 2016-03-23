@@ -19,6 +19,7 @@ module.exports = function (grunt) {
             optimize: {
                 options: {
                     buildConfig: {
+                        baseUrl: 'dist/',
                         out: 'dist/hub.min.js'
                     }
                 }
