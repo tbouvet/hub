@@ -1,6 +1,6 @@
 /**
  * Copyright (c) 2015-2016, The SeedStack authors <http://seedstack.org>
- *
+ * <p>
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
@@ -9,13 +9,8 @@ package org.seedstack.hub.infra.file;
 
 import org.seedstack.business.domain.BaseFactory;
 import org.seedstack.hub.domain.model.component.Component;
-import org.seedstack.hub.domain.model.document.BinaryDocument;
-import org.seedstack.hub.domain.model.document.Document;
-import org.seedstack.hub.domain.model.document.DocumentException;
-import org.seedstack.hub.domain.model.document.DocumentFactory;
-import org.seedstack.hub.domain.model.document.DocumentId;
-import org.seedstack.hub.domain.model.document.TextDocument;
-import org.seedstack.hub.domain.model.document.TextFormat;
+import org.seedstack.hub.domain.model.component.Description;
+import org.seedstack.hub.domain.model.document.*;
 import org.seedstack.hub.domain.services.text.TextService;
 
 import javax.activation.MimetypesFileTypeMap;
@@ -31,8 +26,8 @@ import java.util.function.Function;
 import java.util.stream.Stream;
 
 class DocumentFactoryImpl extends BaseFactory<Document> implements DocumentFactory {
-    public static final Charset TEXT_CHARSET = Charset.forName("UTF-8");
-    public static final int MAX_DOCUMENT_SIZE = 2 * 1024 * 1024;
+    private static final Charset TEXT_CHARSET = Charset.forName("UTF-8");
+    private static final int MAX_DOCUMENT_SIZE = 2 * 1024 * 1024;
 
     private final MimetypesFileTypeMap mimetypesFileTypeMap = new MimetypesFileTypeMap();
     @Inject
@@ -88,12 +83,28 @@ class DocumentFactoryImpl extends BaseFactory<Document> implements DocumentFacto
     }
 
     @Override
+    public BinaryDocument createBinaryDocument(DocumentId documentId, String fileName, byte[] content) {
+        BinaryDocument binaryDocument = new BinaryDocument(documentId, detectContentType(fileName));
+        binaryDocument.setData(content);
+        return binaryDocument;
+    }
+
+    @Override
     public Stream<Document> createDocuments(Component component, File directory) {
         Set<DocumentId> documents = new HashSet<>();
 
-        documents.add(component.getDescription().getReadme());
-        documents.add(component.getDescription().getIcon());
-        documents.addAll(component.getDescription().getImages());
+        Description description = component.getDescription();
+        if (description != null) {
+            if (description.getReadme() != null) {
+                documents.add(description.getReadme());
+            }
+            if (description.getIcon() != null) {
+            documents.add(description.getIcon());
+            }
+            if (description.getImages() != null) {
+                documents.addAll(description.getImages());
+            }
+        }
         documents.addAll(component.getDocs());
 
         return documents.stream()
@@ -127,6 +138,11 @@ class DocumentFactoryImpl extends BaseFactory<Document> implements DocumentFacto
 
     private String detectContentType(File file) {
         String contentType = mimetypesFileTypeMap.getContentType(file);
+        return contentType == null || contentType.isEmpty() ? "application/octet-stream" : contentType;
+    }
+
+    private String detectContentType(String fileName) {
+        String contentType = mimetypesFileTypeMap.getContentType(fileName);
         return contentType == null || contentType.isEmpty() ? "application/octet-stream" : contentType;
     }
 }

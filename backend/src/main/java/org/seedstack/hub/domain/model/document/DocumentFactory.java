@@ -22,5 +22,7 @@ public interface DocumentFactory extends GenericFactory<Document> {
 
     BinaryDocument createBinaryDocument(DocumentId documentId, File file);
 
+    BinaryDocument createBinaryDocument(DocumentId documentId, String fileName, byte[] content);
+
     Stream<Document> createDocuments(Component component, File directory);
 }

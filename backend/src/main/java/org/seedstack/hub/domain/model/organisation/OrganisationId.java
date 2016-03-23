@@ -7,10 +7,14 @@
  */
 package org.seedstack.hub.domain.model.organisation;
 
+import org.hibernate.validator.constraints.NotBlank;
+import org.mongodb.morphia.annotations.Embedded;
 import org.seedstack.business.domain.BaseValueObject;
 
+@Embedded
 public class OrganisationId extends BaseValueObject {
 
+    @NotBlank
     private String id;
 
     public OrganisationId(String id) {

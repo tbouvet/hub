@@ -7,9 +7,7 @@
  */
 package org.seedstack.hub.infra.file;
 
-import java.util.Date;
-
-class ReleaseDTO {
+public class ReleaseDTO {
     private String version;
     private String url;
     private String date;

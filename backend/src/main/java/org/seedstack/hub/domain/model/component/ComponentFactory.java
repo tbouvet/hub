@@ -8,9 +8,9 @@
 package org.seedstack.hub.domain.model.component;
 
 import org.seedstack.business.domain.GenericFactory;
-
-import java.io.File;
+import org.seedstack.hub.infra.file.Manifest;
 
 public interface ComponentFactory extends GenericFactory<Component> {
-    Component createComponent(File directory);
+
+    Component createComponent(Manifest manifest);
 }

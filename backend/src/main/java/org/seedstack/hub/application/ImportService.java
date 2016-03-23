@@ -9,11 +9,9 @@ package org.seedstack.hub.application;
 
 import org.seedstack.business.Service;
 import org.seedstack.hub.domain.model.component.Component;
-import org.seedstack.hub.domain.services.fetch.VCSType;
-
-import java.net.URL;
+import org.seedstack.hub.domain.model.component.Source;
 
 @Service
 public interface ImportService {
-    Component importComponent(VCSType vcsType, URL url);
+    Component importComponent(Source source);
 }

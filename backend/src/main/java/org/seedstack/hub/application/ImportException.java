@@ -11,4 +11,12 @@ public class ImportException extends RuntimeException {
     public ImportException(String message, Throwable throwable) {
         super(message, throwable);
     }
+
+    public ImportException(String message) {
+        super(message);
+    }
+
+    public ImportException(Throwable e) {
+        super(e);
+    }
 }

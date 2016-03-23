@@ -9,22 +9,22 @@ package org.seedstack.hub.application;
 
 import org.seedstack.business.domain.DomainRegistry;
 import org.seedstack.business.domain.Repository;
-import org.seedstack.hub.domain.model.component.Component;
-import org.seedstack.hub.domain.model.component.ComponentException;
-import org.seedstack.hub.domain.model.component.ComponentFactory;
-import org.seedstack.hub.domain.model.component.ComponentId;
+import org.seedstack.hub.domain.model.component.*;
 import org.seedstack.hub.domain.model.document.Document;
 import org.seedstack.hub.domain.model.document.DocumentFactory;
 import org.seedstack.hub.domain.model.document.DocumentId;
 import org.seedstack.hub.domain.model.user.UserId;
 import org.seedstack.hub.domain.services.fetch.FetchService;
-import org.seedstack.hub.domain.services.fetch.VCSType;
+import org.seedstack.hub.domain.services.text.TextService;
+import org.seedstack.hub.infra.file.Manifest;
+import org.seedstack.hub.infra.file.ManifestParser;
 import org.seedstack.seed.Logging;
 import org.slf4j.Logger;
 
 import javax.inject.Inject;
 import java.io.File;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
@@ -33,6 +33,11 @@ import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
 
 class ImportServiceImpl implements ImportService {
+
+    @Inject
+    private ManifestParser manifestParser;
+    @Inject
+    private TextService textService;
     @Inject
     private DomainRegistry domainRegistry;
     @Inject
@@ -49,13 +54,20 @@ class ImportServiceImpl implements ImportService {
     private Logger logger;
 
     @Override
-    public Component importComponent(VCSType vcsType, URL url) {
+    public Component importComponent(Source source) {
         File directory = getWorkingDirectory();
         Component component;
 
         try {
-            domainRegistry.getService(FetchService.class, vcsType.qualifier()).fetchRepository(url, directory);
-            component = componentFactory.createComponent(directory);
+            FetchService service = domainRegistry.getService(FetchService.class, source.getVcsType().qualifier());
+            try {
+                service.fetchRepository(new URL(source.getUrl()), directory);
+            } catch (MalformedURLException e) {
+                throw new ImportException("Invalid URL: " + source.getUrl());
+            }
+
+            Manifest manifest = manifestParser.parseManifest(directory);
+            component = componentFactory.createComponent(manifest);
             // FIXME checkCurrentUserIs(component.getOwner());
             componentRepository.persist(component);
             documentFactory.createDocuments(component, directory).forEach(documentRepository::persist);

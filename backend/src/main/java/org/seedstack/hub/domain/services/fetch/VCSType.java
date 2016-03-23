@@ -9,7 +9,8 @@ package org.seedstack.hub.domain.services.fetch;
 
 public enum VCSType {
     GIT,
-    SVN;
+    SVN,
+    GITHUB;
 
     public String qualifier() {
         return this.name().toLowerCase();
