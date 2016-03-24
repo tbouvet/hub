@@ -18,6 +18,8 @@ public interface DocumentFactory extends GenericFactory<Document> {
 
     Document createTextDocument(DocumentId documentId, TextFormat textFormat, File file);
 
+    Document createTextDocument(DocumentId documentId, TextFormat textFormat, String body);
+
     BinaryDocument createBinaryDocument(DocumentId documentId, File file);
 
     Stream<Document> createDocuments(Component component, File directory);
