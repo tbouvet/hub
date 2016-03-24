@@ -9,16 +9,22 @@
 import module = require('../module');
 import angular = require('{angular}/angular');
 import sidebarTemplate = require('[text]!{hub}/modules/directives/sidebar/sidebar.html')
+import HubUserService = require("../../services/user-service");
 
 interface IHubSidebarScope extends ng.IScope {
     route(path: string): void;
+    userPrincipals: { subjectId: string };
 }
 class HubSidebar implements ng.IDirective {
-    static $inject = ['$mdSidenav', '$location'];
-    constructor(private $mdSidenav, private $location: ng.ILocationService) {}
-
+    static $inject = ['$mdSidenav', '$location', 'EventService', 'AuthenticationService'];
+    constructor(private $mdSidenav, private $location: ng.ILocationService, private eventService, private authService) {}
     template = sidebarTemplate;
     link: ng.IDirectiveLinkFn = (scope: IHubSidebarScope) => {
+
+        this.eventService.on('w20.security.authenticated', () => {
+            scope.userPrincipals = this.authService.subjectPrincipals();
+        });
+
         scope.route = (path: string) => {
             this.$mdSidenav('sidebar').close().then(() => {
                 this.$location.path(path);
