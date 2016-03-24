@@ -10,11 +10,18 @@
 <md-toolbar class="md-tall">
     <h1 class="md-toolbar-tools">Hub</h1>
     <div layout="row">
-        <md-icon md-font-set="material-icons">person_pin</md-icon>
-        <p class="md-subhead">Username here</p>
+        <md-icon class="user-icon" md-font-set="material-icons" class>person_pin_circle</md-icon>
+        <h3 class="md-subhead" style="margin-top: 30px;">{{ userPrincipals.userId }}</h3>
     </div>
 </md-toolbar>
 <md-list id="sidebar">
+    <span class="subheader">{{ userPrincipals.userId }}</span>
+    <md-list-item>
+        <md-button flex ng-click="route('/hub/user')">
+            <md-icon md-font-set="material-icons">person</md-icon>
+            <span>My components</span>
+        </md-button>
+    </md-list-item>
     <span class="subheader">General</span>
     <md-list-item>
         <md-button flex ng-click="route('/')">
@@ -26,13 +33,6 @@
         <md-button flex ng-click="route('/hub/components')">
             <md-icon md-font-set="material-icons">extension</md-icon>
             <span>All components</span>
-        </md-button>
-    </md-list-item>
-    <span class="subheader">Personal</span>
-    <md-list-item>
-        <md-button flex ng-click="route('/hub/user')">
-            <md-icon md-font-set="material-icons">person</md-icon>
-            <span>User</span>
         </md-button>
     </md-list-item>
 </md-list>

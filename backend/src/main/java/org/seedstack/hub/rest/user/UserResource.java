@@ -74,7 +74,7 @@ public class UserResource {
                         .expand());
     }
 
-    @Rel(STARS)
+    @Rel(value = STARS, home = true)
     @GET
     @Path("/stars")
     @Produces({"application/json", "application/hal+json"})

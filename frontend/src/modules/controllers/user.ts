@@ -4,16 +4,19 @@ import IResource = angular.resource.IResource;
 
 class UserController {
     public userComponents: Component[] = [];
-    public userStarredComponents: Component[] = [];
+    public favoriteComponents: Component[] = [];
+    public userPrincipals: { userId: string };
 
-    static $inject = ['HomeService', '$location'];
-    constructor (private api, private $location) {
+    static $inject = ['HomeService', '$location', 'AuthenticationService', 'EventService'];
+    constructor (private api, private $location, private authService, private eventService) {
+        this.userPrincipals = this.authService.subjectPrincipals();
+
         this.getUserComponents().$promise.then((components: any) => {
             this.userComponents = components.$embedded('components');
         });
 
         this.getUserStarredComponents().$promise.then((components: any) => {
-            this.userStarredComponents = components.$embedded('components');
+            this.favoriteComponents = components.$embedded('components');
         });
     };
 
