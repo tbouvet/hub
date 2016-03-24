@@ -81,7 +81,7 @@ public class ComponentsResourceIT extends AbstractSeedWebIT {
     @RunAsClient
     @Test
     public void get_by_state() throws JSONException {
-        componentRepository.save(MockBuilder.mock(99, State.PENDING));
+        componentRepository.persist(MockBuilder.mock(99, State.PENDING));
         Response response = httpGet("pending");
         assertEquals("{}", response.asString(), false);
         componentRepository.delete(new ComponentId("Component99"));
