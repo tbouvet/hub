@@ -62,7 +62,7 @@ public class OrganisationResource {
     public Response createOrganisation(@Valid OrganisationCard organisationCard) throws URISyntaxException {
         HashSet<UserId> owners = Sets.newHashSet(securityService.getAuthenticatedUser().getEntityId());
         Organisation organisation = new Organisation(new OrganisationId(organisationCard.getId()), organisationCard.getName(), owners);
-        organisationRepository.save(organisation);
+        organisationRepository.persist(organisation);
         return Response.created(new URI(relRegistry.uri(Rels.ORGANISATION).set(ORGANISATION_ID, organisationCard.getId()).expand()))
                 .entity(getOrganisationCards(organisationCard.getId())).build();
     }

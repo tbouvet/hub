@@ -34,7 +34,7 @@ class OrganisationServiceImpl implements OrganisationService {
         Organisation organisation = loadOrganisation(id);
         checkIfAuthenticatedUserIsOwner(id, organisation);
         updateFunction.accept(organisation);
-        repository.save(organisation);
+        repository.persist(organisation);
     }
 
     private void checkIfAuthenticatedUserIsOwner(OrganisationId id, Organisation organisation) {

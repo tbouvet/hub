@@ -50,7 +50,7 @@ public class ComponentMongoFinderIT {
 
     @Before
     public void setUp() throws Exception {
-        mockedComponents.forEach(componentRepository::save);
+        mockedComponents.forEach(componentRepository::persist);
     }
 
     @Test
@@ -90,7 +90,7 @@ public class ComponentMongoFinderIT {
 
     @Test
     public void testFindOnlyPublishedRecent() {
-        componentRepository.save(MockBuilder.mock("archived", 0, State.ARCHIVED, "zzz"));
+        componentRepository.persist(MockBuilder.mock("archived", 0, State.ARCHIVED, "zzz"));
 
         Result<ComponentCard> componentCards = componentFinder.findRecentCards(new Range(0,6));
 
@@ -104,8 +104,8 @@ public class ComponentMongoFinderIT {
 
     @Test
     public void testFindCardsByState() {
-        componentRepository.save(MockBuilder.mock("archived", 0, State.ARCHIVED, "zzz"));
-        componentRepository.save(MockBuilder.mock("pending", 0, State.PENDING, "zzz"));
+        componentRepository.persist(MockBuilder.mock("archived", 0, State.ARCHIVED, "zzz"));
+        componentRepository.persist(MockBuilder.mock("pending", 0, State.PENDING, "zzz"));
 
         PaginatedView<ComponentCard> archived = componentFinder.findCardsByState(new Page(0,10), State.ARCHIVED);
         assertThat(archived.getView()).hasSize(1);
@@ -140,7 +140,7 @@ public class ComponentMongoFinderIT {
     @Test
     public void test_findUserCards_retrieve_archived_component() {
         Component mock = MockBuilder.mock("Archived", 0, State.ARCHIVED, "pith");
-        componentRepository.save(mock);
+        componentRepository.persist(mock);
 
         PaginatedView<ComponentCard> archived = componentFinder.findUserCards(new UserId("pith"), new Page(0,10));
         assertThat(archived.getView()).hasSize(10);
@@ -152,7 +152,7 @@ public class ComponentMongoFinderIT {
     @Test
     public void test_findUserCards_include_organisation() {
         Component component = MockBuilder.mock(888, State.PENDING, "@seedstack");
-        componentRepository.save(component);
+        componentRepository.persist(component);
 
         PaginatedView<ComponentCard> archived = componentFinder.findUserCards(new UserId("admin"), new Page(0,10));
         assertThat(archived.getView()).hasSize(1);

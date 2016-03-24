@@ -20,7 +20,6 @@ import org.seedstack.hub.domain.model.user.UserId;
 import org.seedstack.hub.domain.services.fetch.FetchService;
 import org.seedstack.hub.domain.services.fetch.VCSType;
 import org.seedstack.seed.Logging;
-import org.seedstack.seed.security.AuthenticationException;
 import org.slf4j.Logger;
 
 import javax.inject.Inject;
@@ -58,7 +57,10 @@ class ImportServiceImpl implements ImportService {
             domainRegistry.getService(FetchService.class, vcsType.qualifier()).fetchRepository(url, directory);
             component = componentFactory.createComponent(directory);
             // FIXME checkCurrentUserIs(component.getOwner());
-            componentRepository.save(component);
+            if (componentRepository.load(component.getId()) != null) {
+                throw new ComponentException("Component " + component.getId() + " already exists.");
+            }
+            componentRepository.persist(component);
             documentFactory.createDocuments(component, directory).forEach(documentRepository::save);
         } finally {
             deleteWorkingDirectory(directory);

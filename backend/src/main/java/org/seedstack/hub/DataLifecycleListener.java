@@ -17,7 +17,6 @@ import org.seedstack.hub.domain.model.user.UserRepository;
 import org.seedstack.seed.LifecycleListener;
 
 import javax.inject.Inject;
-import java.util.HashSet;
 import java.util.Set;
 
 public class DataLifecycleListener implements LifecycleListener {
@@ -38,7 +37,7 @@ public class DataLifecycleListener implements LifecycleListener {
         Set<UserId> owners = Sets.newHashSet(new UserId("adrienlauer"));
         Organisation organisation = new Organisation(new OrganisationId("@seedstack"), "SeedStack", owners);
         organisation.addMember(new UserId("admin"));
-        organisationRepository.save(organisation);
+        organisationRepository.persist(organisation);
 
     }
 

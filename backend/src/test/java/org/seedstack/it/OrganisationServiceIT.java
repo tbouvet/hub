@@ -53,12 +53,12 @@ public class OrganisationServiceIT {
         seedStack = new OrganisationId("@seedstack");
         component0 = new ComponentId("Component0");
 
-        userRepository.save(new User(admin, "john@gmail.com"));
-        userRepository.save(new User(john, "john@gmail.com"));
+        userRepository.persist(new User(admin, "john@gmail.com"));
+        userRepository.persist(new User(john, "john@gmail.com"));
 
-        componentRepository.save(MockBuilder.mock(0));
+        componentRepository.persist(MockBuilder.mock(0));
 
-        organisationRepository.save(new Organisation(seedStack, "SeedStack", Sets.newHashSet(admin)));
+        organisationRepository.persist(new Organisation(seedStack, "SeedStack", Sets.newHashSet(admin)));
     }
 
     @WithUser(id = "admin", password = "password")
