@@ -70,6 +70,13 @@ class DocumentFactoryImpl extends BaseFactory<Document> implements DocumentFacto
     }
 
     @Override
+    public Document createTextDocument(DocumentId documentId, TextFormat textFormat, String body) {
+        TextDocument textDocument = new TextDocument(documentId, textFormat, TEXT_CHARSET);
+        textDocument.setText(body);
+        return textDocument;
+    }
+
+    @Override
     public BinaryDocument createBinaryDocument(DocumentId documentId, File file) {
         BinaryDocument binaryDocument = new BinaryDocument(documentId, detectContentType(file));
         try {
