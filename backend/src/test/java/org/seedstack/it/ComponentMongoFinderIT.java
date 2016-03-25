@@ -66,8 +66,8 @@ public class ComponentMongoFinderIT {
     public void testFindListWithPagination() {
         Result<ComponentCard> componentCards = componentFinder.findCards(new Range(0, 10), "", "date");
         assertThat(componentCards.getResult()).hasSize(10);
-        assertThat(componentCards.getFullSize()).isEqualTo(3);
-        componentCards = componentFinder.findCards(new Range(2, 10), "", "date");
+        assertThat(componentCards.getFullSize()).isEqualTo(23);
+        componentCards = componentFinder.findCards(new Range(20, 10), "", "date");
         assertThat(componentCards.getResult()).hasSize(3);
     }
 
@@ -141,7 +141,7 @@ public class ComponentMongoFinderIT {
         component.addComment(new Comment("adrienlauer", "Thanks for this component", getDate(LocalDate.of(2016, 4, 8))));
         componentRepository.persist(component);
 
-        List<Comment> comments = componentFinder.findComments(c1, new Range(1,2)).getResult();
+        List<Comment> comments = componentFinder.findComments(c1, new Range(2,2)).getResult();
 
         // Expecting to find the last comment, i.e the first published comment
         assertThat(comments).hasSize(1);

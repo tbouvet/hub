@@ -108,10 +108,18 @@ public class Description extends BaseValueObject {
     }
 
     public URL getIssues() {
-        try {
-            return new URL(issues);
-        } catch (MalformedURLException e) {
-            throw new IllegalArgumentException();
+        return stringToUrl(issues);
+    }
+
+    private URL stringToUrl(String url) {
+        if (url != null && !"".equals(url)) {
+            try {
+                return new URL(url);
+            } catch (MalformedURLException e) {
+                throw new IllegalArgumentException();
+            }
+        } else {
+            return null;
         }
     }
 
@@ -120,11 +128,7 @@ public class Description extends BaseValueObject {
     }
 
     public URL getComponentUrl() {
-        try {
-            return new URL(componentUrl);
-        } catch (MalformedURLException e) {
-            throw new IllegalArgumentException();
-        }
+        return stringToUrl(componentUrl);
     }
 
     public void setComponentUrl(URL componentUrl) {

@@ -28,6 +28,13 @@ public class ResultHal<T> extends HalRepresentation {
                 .set(RangeInfo.OFFSET, result.getOffset())
                 .set(RangeInfo.SIZE, result.getSize())
                 .expand());
+
+        if (result.getOffset() + result.getSize() < result.getFullSize()) {
+            link("next", selfBuilder
+                    .set(RangeInfo.OFFSET, result.getOffset() + result.getSize())
+                    .set(RangeInfo.SIZE, result.getSize())
+                    .expand());
+        }
     }
 
     public long getResultSize() {
