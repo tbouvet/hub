@@ -37,7 +37,7 @@ class HubSpeedDial implements ng.IDirective {
             });
 
             promise.then(resolvedComponent => {
-                this.$location.path('/hub/component/' + resolvedComponent.name);
+                this.$location.path('/hub/component/' + resolvedComponent.id);
             });
         };
     };

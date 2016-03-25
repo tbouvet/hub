@@ -57,11 +57,8 @@ class ImportServiceImpl implements ImportService {
             domainRegistry.getService(FetchService.class, vcsType.qualifier()).fetchRepository(url, directory);
             component = componentFactory.createComponent(directory);
             // FIXME checkCurrentUserIs(component.getOwner());
-            if (componentRepository.load(component.getId()) != null) {
-                throw new ComponentException("Component " + component.getId() + " already exists.");
-            }
             componentRepository.persist(component);
-            documentFactory.createDocuments(component, directory).forEach(documentRepository::save);
+            documentFactory.createDocuments(component, directory).forEach(documentRepository::persist);
         } finally {
             deleteWorkingDirectory(directory);
         }
