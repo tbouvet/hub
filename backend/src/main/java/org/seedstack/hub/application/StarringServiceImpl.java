@@ -30,11 +30,6 @@ class StarringServiceImpl implements StarringService {
     }
 
     @Override
-    public Stream<Component> starredComponents() {
-        return getUser().getStarred().stream().map(componentRepository::load);
-    }
-
-    @Override
     public void star(ComponentId componentId) {
         Component component = componentRepository.load(componentId);
         User user = getUser();

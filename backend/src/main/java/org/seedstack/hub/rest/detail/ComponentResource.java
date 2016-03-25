@@ -11,6 +11,7 @@ import io.swagger.annotations.Api;
 import org.hibernate.validator.constraints.Length;
 import org.seedstack.business.assembler.FluentAssembler;
 import org.seedstack.business.domain.Repository;
+import org.seedstack.business.finder.Result;
 import org.seedstack.business.view.PaginatedView;
 import org.seedstack.hub.application.SecurityService;
 import org.seedstack.hub.application.StatePolicy;
@@ -22,6 +23,8 @@ import org.seedstack.hub.domain.model.user.User;
 import org.seedstack.hub.rest.Rels;
 import org.seedstack.hub.rest.list.ComponentFinder;
 import org.seedstack.hub.rest.shared.PageInfo;
+import org.seedstack.hub.rest.shared.RangeInfo;
+import org.seedstack.hub.rest.shared.ResultHal;
 import org.seedstack.hub.rest.shared.UriBuilder;
 import org.seedstack.seed.rest.Rel;
 import org.seedstack.seed.rest.RelRegistry;
@@ -107,16 +110,9 @@ public class ComponentResource {
     @GET
     @Path("/comments")
     @Rel(value = Rels.COMMENT)
-    public HalRepresentation getComments(@BeanParam PageInfo pageInfo) {
-        HalRepresentation halRepresentation = new HalRepresentation();
-        PaginatedView<Comment> comments = componentFinder.findComments(new ComponentId(componentId), pageInfo.page());
-        halRepresentation.embedded(Rels.COMMENT, comments);
-        halRepresentation.link("self", relRegistry.uri(Rels.COMMENT)
-                .set(COMPONENT_ID, componentId)
-                .set("pageIndex", pageInfo.getPageIndex())
-                .set("pageSize", pageInfo.getPageSize())
-                .expand());
-        return halRepresentation;
+    public ResultHal<Comment> getComments(@BeanParam RangeInfo rangeInfo) {
+        Result<Comment> comments = componentFinder.findComments(new ComponentId(componentId), rangeInfo.range());
+        return new ResultHal<>(Rels.COMMENT,comments,relRegistry.uri(Rels.COMMENT));
     }
 
     @POST
