@@ -69,6 +69,6 @@ public class ComponentDetailsAssembler extends AbstractComponentAssembler<Compon
                 .uri(Rels.STAR).set(COMPONENT_ID, componentId).expand());
 
         componentDetails.link(Rels.COMMENT, relRegistry
-                .uri(Rels.COMMENT).set(COMPONENT_ID, componentId).expand());
+                .uri(Rels.COMMENT).set(COMPONENT_ID, componentId).templated());
     }
 }

@@ -25,7 +25,7 @@ interface PaginationCriteria {
 interface ICommentScope extends ng.IScope {
     submitComment(comment: string): void;
     newCommentText: string;
-    paginationCriterias: PaginationCriteria;
+    criterias: PaginationCriteria;
     loadNewComments(criterias):void;
     comments: Comment[];
     component: any;
@@ -44,7 +44,7 @@ class HubComment implements ng.IDirective {
         scope.comments = [];
         scope.newCommentText = '';
 
-        scope.paginationCriterias = {
+        var criterias = {
             pageIndex: 0,
             pageSize: 10
         };
@@ -56,20 +56,24 @@ class HubComment implements ng.IDirective {
         };
 
         scope.submitComment = (text: string) => {
-          scope.component.$links('comment').save(text).$promise.then((comment: IComment) => {
-              clearForm();
-              scope.comments.push(comment);
-          }, (reject) => { throw new Error(reject); });
+            if (scope.component) {
+                scope.component.$links('comment', { componentId: scope.component.id }).save(text).$promise.then((comment: IComment) => {
+                    clearForm();
+                    scope.comments.push(comment);
+                }, (reject) => { throw new Error(reject); });
+            }
         };
 
-        // issue with links : pagination is present the second time
         scope.loadNewComments = () => {
-            scope.component.$links('comment', scope.paginationCriterias).get((results: any) => {
-                if (results.$embedded('comment').view.length) {
-                    scope.comments = <Comment[]> scope.comments.concat(results.$embedded('comment').view);
-                    scope.paginationCriterias.pageIndex++;
-                }
-            }, (reject) => { throw new Error(reject); });
+            if (scope.component) {
+                angular.extend(criterias, { componentId: scope.component.id });
+                scope.component.$links('comment', criterias).get((results: any) => {
+                    if (results.$embedded('comment').view.length) {
+                        scope.comments = <Comment[]> scope.comments.concat(results.$embedded('comment').view);
+                        criterias.pageIndex++;
+                    }
+                }, (reject) => { throw new Error(reject); });
+            }
         };
     }
 }

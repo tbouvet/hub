@@ -104,6 +104,12 @@ app.get('/components/*/files/README.md', (req, res, next) => {
     res.end(readme);
 });
 
+app.get('/components/*/files/README.md', (req, res, next) => {
+    var readme = fs.readFileSync('../hub/frontend/mock/docs/readme.html');
+    res.writeHead(200, {'Content-Type': 'text/html' });
+    res.end(readme);
+});
+
 app.get('/user/components', (req, res) => {
     sendCards(userComponent, req.query.pageIndex, req.query.pageSize, res);
 });

@@ -111,7 +111,7 @@ public class ComponentResource {
         HalRepresentation halRepresentation = new HalRepresentation();
         PaginatedView<Comment> comments = componentFinder.findComments(new ComponentId(componentId), pageInfo.page());
         halRepresentation.embedded(Rels.COMMENT, comments);
-        halRepresentation.link("self", relRegistry.uri(Rels.COMMENT)
+        halRepresentation.self(relRegistry.uri(Rels.COMMENT)
                 .set(COMPONENT_ID, componentId)
                 .set("pageIndex", pageInfo.getPageIndex())
                 .set("pageSize", pageInfo.getPageSize())
