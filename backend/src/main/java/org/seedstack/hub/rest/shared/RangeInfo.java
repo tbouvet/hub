@@ -15,10 +15,10 @@ import javax.ws.rs.QueryParam;
 
 public class RangeInfo {
 
-    public static final String DEFAULT_OFFSET = "0";
-    public static final String DEFAULT_SIZE = "6";
-    public static final String OFFSET = "offset";
-    public static final String SIZE = "size";
+    private static final String DEFAULT_OFFSET = "0";
+    private static final String DEFAULT_SIZE = "12";
+    static final String OFFSET = "offset";
+    static final String SIZE = "size";
 
     @Min(0)
     @QueryParam(OFFSET)

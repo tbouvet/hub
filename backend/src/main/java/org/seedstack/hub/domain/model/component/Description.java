@@ -13,6 +13,7 @@ import org.seedstack.business.domain.BaseValueObject;
 import org.seedstack.hub.domain.model.document.DocumentId;
 
 import javax.validation.constraints.NotNull;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -27,8 +28,8 @@ public class Description extends BaseValueObject {
     private String name;
     private String summary;
     private String license;
-    private URL componentUrl;
-    private URL issues;
+    private String componentUrl;
+    private String issues;
     @NotNull
     private DocumentId icon;
     @NotNull
@@ -107,18 +108,30 @@ public class Description extends BaseValueObject {
     }
 
     public URL getIssues() {
-        return issues;
+        return stringToUrl(issues);
+    }
+
+    private URL stringToUrl(String url) {
+        if (url != null && !"".equals(url)) {
+            try {
+                return new URL(url);
+            } catch (MalformedURLException e) {
+                throw new IllegalArgumentException();
+            }
+        } else {
+            return null;
+        }
     }
 
     public void setIssues(URL issues) {
-        this.issues = issues;
+        this.issues = issues.toString();
     }
 
     public URL getComponentUrl() {
-        return componentUrl;
+        return stringToUrl(componentUrl);
     }
 
     public void setComponentUrl(URL componentUrl) {
-        this.componentUrl = componentUrl;
+        this.componentUrl = componentUrl.toString();
     }
 }

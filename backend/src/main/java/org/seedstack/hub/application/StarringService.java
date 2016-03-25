@@ -16,8 +16,6 @@ import java.util.stream.Stream;
 @Service
 public interface StarringService {
 
-    Stream<Component> starredComponents();
-
     void star(ComponentId componentId);
 
     void unstar(ComponentId componentId);

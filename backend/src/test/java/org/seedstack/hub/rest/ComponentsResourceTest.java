@@ -15,12 +15,13 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.seedstack.business.assembler.FluentAssembler;
+import org.seedstack.business.finder.Result;
 import org.seedstack.business.view.PaginatedView;
 import org.seedstack.hub.application.ImportService;
 import org.seedstack.hub.rest.list.ComponentCard;
 import org.seedstack.hub.rest.list.ComponentFinder;
 import org.seedstack.hub.rest.list.ComponentsResource;
-import org.seedstack.hub.rest.shared.PageInfo;
+import org.seedstack.hub.rest.shared.RangeInfo;
 import org.seedstack.seed.rest.RelRegistry;
 import org.seedstack.seed.rest.hal.HalRepresentation;
 
@@ -50,9 +51,9 @@ public class ComponentsResourceTest {
 
     private String searchName = "foo";
     private String sort = "publishedData";
-    private int pageIndex = 0;
-    private int pageSize = 10;
-    private PageInfo pageInfo = new PageInfo(pageIndex, pageSize);
+    private int offset = 0;
+    private int size = 10;
+    private RangeInfo rangeInfo = new RangeInfo(offset, size);
     private List<ComponentCard> componentCards = IntStream.range(0, 10)
             .mapToObj(i -> new ComponentCard("Component" + i))
             .collect(toList());
@@ -60,14 +61,14 @@ public class ComponentsResourceTest {
     @Before
     public void setUp() throws Exception {
         new Expectations() {{
-            componentFinder.findCards(withAny(pageInfo.page()), searchName, sort);
-            result = new PaginatedView<>(componentCards, pageSize, pageIndex);
+            componentFinder.findCards(withAny(rangeInfo.range()), searchName, sort);
+            result = new Result<>(componentCards, size, offset);
         }};
     }
 
     @Test
     public void testGetHasEmbeddedComponents() {
-        HalRepresentation halRepresentation = undertest.list(searchName, new PageInfo(pageIndex, pageSize), sort);
+        HalRepresentation halRepresentation = undertest.list(searchName, new RangeInfo(offset, size), sort);
 
         assertThat(halRepresentation).isNotNull();
         assertThat(halRepresentation.getEmbedded().get(Rels.COMPONENTS)).isEqualTo(componentCards);

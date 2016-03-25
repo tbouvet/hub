@@ -91,28 +91,28 @@ public class ComponentsResource {
     @GET
     @Path("/components")
     @Rel(value = COMPONENTS, home = true)
-    public PaginatedHal<ComponentCard> list(
+    public ResultHal<ComponentCard> list(
             @QueryParam("search") @Length(max = 64) String searchName,
-            @BeanParam PageInfo pageInfo,
+            @BeanParam RangeInfo rangeInfo,
             @QueryParam("sort") @Length(max = 64) String sort) {
 
-        PaginatedView<ComponentCard> paginatedView = componentFinder.findCards(pageInfo.page(), searchName, sort);
-        updateUrls(paginatedView);
+        Result<ComponentCard> result = componentFinder.findCards(rangeInfo.range(), searchName, sort);
+        updateUrls(result);
         Link self = relRegistry.uri(COMPONENTS);
         if (searchName != null && !searchName.equals("")) {
             self.set("search", searchName);
         }
-        return new PaginatedHal<>(COMPONENTS, paginatedView, self);
+        return new ResultHal<>(COMPONENTS, result, self);
     }
 
     @RequiresRoles("admin")
     @GET
     @Path("/pending")
     @Rel(value = PENDING, home = true)
-    public HalRepresentation list(@BeanParam PageInfo pageInfo) {
-        PaginatedView<ComponentCard> paginatedView = componentFinder.findCardsByState(pageInfo.page(), State.PENDING);
-        updateUrls(paginatedView);
-        return new PaginatedHal<>(COMPONENTS, paginatedView, relRegistry.uri(PENDING));
+    public ResultHal list(@BeanParam RangeInfo rangeInfo) {
+        Result<ComponentCard> result = componentFinder.findCardsByState(rangeInfo.range(), State.PENDING);
+        updateUrls(result);
+        return new ResultHal<>(COMPONENTS, result, relRegistry.uri(PENDING));
     }
 
     @GET
