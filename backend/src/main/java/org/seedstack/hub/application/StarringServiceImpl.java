@@ -33,7 +33,7 @@ class StarringServiceImpl implements StarringService {
     public void star(ComponentId componentId) {
         Component component = componentRepository.load(componentId);
         User user = getUser();
-        if (user != null && component != null) {
+        if (user != null && component != null  && !user.hasStarred(componentId)) {
             component.star();
             user.star(componentId);
             componentRepository.persist(component);

@@ -31,6 +31,7 @@ public class DataLifecycleListener implements LifecycleListener {
         userRepository.persist(new User(new UserId("adrienlauer"), "adrien.lauer@mpsa.com"));
         userRepository.persist(new User(new UserId("pith"), "pierre.thirouin@ext.mpsa.com"));
         userRepository.persist(new User(new UserId("kavi87"), "kavi.ramyead@ext.mpsa.com"));
+        userRepository.persist(new User(new UserId("simple"), "simple@ext.mpsa.com"));
 
         userRepository.persist(new User(new UserId("admin"), "admin@ext.mpsa.com"));
 

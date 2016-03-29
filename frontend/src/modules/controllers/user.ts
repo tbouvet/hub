@@ -5,6 +5,8 @@ import IResource = angular.resource.IResource;
 class UserController {
     public userComponents: Component[] = [];
     public favoriteComponents: Component[] = [];
+    public userComponentsCount: number;
+    public favoriteComponentsCount: number;
     public userPrincipals: { userId: string };
 
     static $inject = ['HomeService', '$location', 'AuthenticationService', 'EventService'];
@@ -13,10 +15,12 @@ class UserController {
 
         this.getUserComponents().$promise.then((components: any) => {
             this.userComponents = components.$embedded('components');
+            this.userComponentsCount = components.resultSize;
         });
 
         this.getUserStarredComponents().$promise.then((components: any) => {
             this.favoriteComponents = components.$embedded('components');
+            this.favoriteComponentsCount = components.resultSize;
         });
     };
 

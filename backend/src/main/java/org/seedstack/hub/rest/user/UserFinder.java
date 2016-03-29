@@ -16,7 +16,7 @@ import org.seedstack.hub.rest.list.ComponentCard;
 @Finder
 public interface UserFinder {
 
-    Result<ComponentCard> findStarred(Range range);
+    Result<ComponentCard> findStarred(UserId user, Range range);
 
     Result<ComponentCard> findUserCards(UserId user, Range range);
 }

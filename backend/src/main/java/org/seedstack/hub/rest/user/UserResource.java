@@ -52,7 +52,7 @@ public class UserResource {
     public ResultHal getComponents(@BeanParam RangeInfo rangeInfo) {
         UserId userId = securityService.getAuthenticatedUser().getEntityId();
         Result<ComponentCard> userComponents = userFinder.findUserCards(userId, rangeInfo.range());
-        return new ResultHal<>(COMPONENT, userComponents, relRegistry.uri(USER_COMPONENTS));
+        return new ResultHal<>(COMPONENTS, userComponents, relRegistry.uri(USER_COMPONENTS));
     }
 
     @Rel(AUTHOR_COMPONENTS)
@@ -61,7 +61,7 @@ public class UserResource {
     @Produces({"application/json", "application/hal+json"})
     public HalRepresentation getComponents(@PathParam(USER_ID) String userId, @BeanParam RangeInfo rangeInfo) {
         Result<ComponentCard> userComponents = userFinder.findUserCards(new UserId(userId), rangeInfo.range());
-        return new ResultHal<>(COMPONENT, userComponents, relRegistry.uri(AUTHOR_COMPONENTS).set("userId", userId));
+        return new ResultHal<>(COMPONENTS, userComponents, relRegistry.uri(AUTHOR_COMPONENTS).set("userId", userId));
     }
 
     @Rel(value = STARS, home = true)
@@ -69,7 +69,8 @@ public class UserResource {
     @Path("/stars")
     @Produces({"application/json", "application/hal+json"})
     public HalRepresentation getStars(@BeanParam RangeInfo rangeInfo) {
-        return new ResultHal<>(COMPONENT, userFinder.findStarred(rangeInfo.range()), relRegistry.uri(STARS));
+        UserId userId = securityService.getAuthenticatedUser().getEntityId();
+        return new ResultHal<>(COMPONENTS, userFinder.findStarred(userId, rangeInfo.range()), relRegistry.uri(STARS));
     }
 
     @Rel(STAR)

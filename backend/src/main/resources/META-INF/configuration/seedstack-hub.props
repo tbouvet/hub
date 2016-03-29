@@ -22,6 +22,7 @@ release = 1.0.0
 /swagger.json = anon
 
 [org.seedstack.seed.security.users]
+simple = password
 adrienlauer = password, admin
 pith = password
 kavi87 = password, admin

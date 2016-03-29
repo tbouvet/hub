@@ -103,6 +103,7 @@ public class ComponentResource {
             default:
                 throw new BadRequestException();
         }
+        componentRepository.save(component);
     }
 
     @GET

@@ -19,6 +19,7 @@ import org.seedstack.hub.domain.model.component.Component;
 import org.seedstack.hub.domain.model.component.ComponentId;
 import org.seedstack.hub.domain.model.component.State;
 import org.seedstack.hub.domain.model.organisation.Organisation;
+import org.seedstack.hub.domain.model.user.User;
 import org.seedstack.hub.domain.model.user.UserId;
 import org.seedstack.hub.rest.list.ComponentCard;
 import org.seedstack.hub.rest.list.ComponentFinder;
@@ -48,6 +49,14 @@ class UserMongoFinder extends AbstractMongoFinder implements UserFinder {
         addCriteriaForOrganisation(user.getId(), query, criteria);
         query.or(criteria.toArray(new Criteria[criteria.size()]));
 
+        return findComponentCards(query, range);
+    }
+
+    @Override
+    public Result<ComponentCard> findStarred(UserId userId, Range range) {
+        User user  = datastore.get(User.class, userId);
+        List<String> componentNames = user.getStarred().stream().map(ComponentId::getName).collect(toList());
+        Query<Component> query = datastore.find(Component.class, "_id.name in", componentNames).order("name");
         return findComponentCards(query, range);
     }
 
@@ -84,10 +93,5 @@ class UserMongoFinder extends AbstractMongoFinder implements UserFinder {
         List<Component> list = paginateQuery(query, range);
         List<ComponentCard> cards = fluentAssembler.assemble(list).to(ComponentCard.class);
         return new Result<>(cards, range.getOffset(), query.countAll());
-    }
-
-    @Override
-    public Result<ComponentCard> findStarred(Range range) {
-        return null;
     }
 }
