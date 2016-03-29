@@ -1,0 +1,49 @@
+<div id="component-detail-info" layout-padding layout="row" layout-xs="column" style="padding: 0">
+    <div id="component-detail-readme" flex="70" flex-xs="100" flex-order-xs="2">
+        <md-content class="md-whiteframe-1dp inherit-background" flex layout-padding style="padding: 0">
+            <div class="markdown-body" ng-include="$ctrl.component.readme"></div>
+        </md-content>
+    </div>
+    <div flex="30" flex-xs="100" layout-align="end center" layout-align-xs="center" flex-order-xs="1">
+        <aside id="component-detail-meta" layout="column" flex-xs="100">
+            <section id="component-detail-meta-usage" class="md-whiteframe-0dp">
+                <md-content style="overflow: hidden; background-color: inherit">
+                    <md-list>
+                        <md-list-item>
+                            <md-icon md-font-set="material-icons">change_history</md-icon>
+                            <p> Latest: {{ $ctrl.component.version }} </p>
+                        </md-list-item>
+                        <md-list-item>
+                            <md-icon md-font-set="material-icons">gavel</md-icon>
+                            <p> License:{{ $ctrl.component.license }} </p>
+                        </md-list-item>
+                    </md-list>
+                </md-content>
+            </section>
+            <div class="spacer"></div>
+            <section id="component-detail-meta-general" class="md-whiteframe-0dp">
+                <md-content style="overflow: hidden; background-color: inherit">
+                    <md-subheader class="md-no-sticky" style="background-color: inherit">Used in 12 projects
+                    </md-subheader>
+                    <md-list>
+                        <md-list-item>
+                            <md-icon md-font-set="material-icons">important_devices</md-icon>
+                            <p> Project 1 </p>
+                        </md-list-item>
+                        <md-list-item>
+                            <md-icon md-font-set="material-icons">important_devices</md-icon>
+                            <p> Project 1 </p>
+                        </md-list-item>
+                        <md-list-item>
+                            <md-icon md-font-set="material-icons">important_devices</md-icon>
+                            <p> Project 1 </p>
+                        </md-list-item>
+                    </md-list>
+                </md-content>
+            </section>
+        </aside>
+    </div>
+</div>
+<div id="component-detail-comment" layout="column" layout-padding layout="row" layout-xs="column" style="margin-top: 20px;">
+    <div hub-comment component="$ctrl.component"></div>
+</div>

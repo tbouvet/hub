@@ -51,7 +51,7 @@ class SecurityServiceImpl implements SecurityService {
 
     @Override
     public boolean isUserAdmin() {
-        return !securitySupport.hasRole("admin");
+        return securitySupport.hasRole("admin");
     }
 
     @Override

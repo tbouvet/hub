@@ -24,7 +24,7 @@ release = 1.0.0
 [org.seedstack.seed.security.users]
 adrienlauer = password, admin
 pith = password
-kavi87 = password
+kavi87 = password, admin
 
 [org.seedstack.seed.web.cors]
 enabled = true

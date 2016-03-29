@@ -1,0 +1,9 @@
+<md-content id="component-detail-docs" class="md-whiteframe-1dp">
+    <md-tabs md-dynamic-height md-border-bottom md-swipe-content style="background-color: #F6F6F6">
+        <md-tab ng-repeat="doc in $ctrl.component.docs" label="{{ doc | displayDocName }}">
+            <md-content class="md-padding" style="background-color: #fafafa">
+                <div class="markdown-body" ng-include="doc"></div>
+            </md-content>
+        </md-tab>
+    </md-tabs>
+</md-content>

@@ -9,13 +9,20 @@ class HomeController {
     static $inject = ['HomeService', '$location'];
     constructor(private api: any, private location: ng.ILocationService) {
 
-        this.getPopularCards().$promise.then((components: any) => {
-            this.popularComponents = components.$embedded('components');
-        });
+        this.popularComponents = [];
+        this.recentComponents = [];
 
-        this.getRecentCards().$promise.then((components: any) => {
-            this.recentComponents = components.$embedded('components');
-        });
+        this.getPopularCards()
+            .$promise
+            .then((components: any) => {
+                this.popularComponents = components.$embedded('components');
+            }).catch(HomeController.promiseRejected);
+
+        this.getRecentCards()
+            .$promise
+            .then((components: any) => {
+                this.recentComponents = components.$embedded('components');
+            }).catch(HomeController.promiseRejected);
 
     }
 
@@ -25,6 +32,10 @@ class HomeController {
 
     public getRecentCards(): IResource {
         return this.api('home').enter('recent').get();
+    }
+
+    private static promiseRejected(reason): void {
+        throw new Error(reason)
     }
 
     public view(card: Card): void {

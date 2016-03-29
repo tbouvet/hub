@@ -30,7 +30,9 @@ import org.seedstack.seed.security.AuthorizationException;
 
 import javax.inject.Inject;
 import javax.servlet.ServletContext;
+import javax.validation.constraints.NotNull;
 import javax.ws.rs.*;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.net.URI;
 import java.util.Date;
@@ -81,9 +83,9 @@ public class ComponentResource {
     @PUT
     @Path("/state")
     @Rel(value = STATE)
-    public void changeState(State state) {
+    public void changeState(@NotNull String state) {
         Component component = componentRepository.load(new ComponentId(componentId));
-        switch (state) {
+        switch (State.valueOf(state)) {
             case PUBLISHED:
                 if (statePolicy.canPublish(component)) {
                     component.publish();

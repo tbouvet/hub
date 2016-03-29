@@ -16,6 +16,12 @@
 </md-toolbar>
 <md-list id="sidebar">
     <span class="subheader">{{ userPrincipals.userId }}</span>
+    <md-list-item data-ng-if="authorizationService.hasRole('seed-w20', ['admin'])">
+        <md-button flex ng-click="route('/hub/admin')">
+            <md-icon md-font-set="material-icons">security</md-icon>
+            <span>Administration</span>
+        </md-button>
+    </md-list-item>
     <md-list-item>
         <md-button flex ng-click="route('/hub/user')">
             <md-icon md-font-set="material-icons">person</md-icon>

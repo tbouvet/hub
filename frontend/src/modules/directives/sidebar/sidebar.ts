@@ -13,17 +13,20 @@ import HubUserService = require("../../services/user-service");
 
 interface IHubSidebarScope extends ng.IScope {
     route(path: string): void;
+    authorizationService: { hasRole: (realm, role, attributes) => {} };
     userPrincipals: { subjectId: string };
 }
 class HubSidebar implements ng.IDirective {
-    static $inject = ['$mdSidenav', '$location', 'EventService', 'AuthenticationService'];
-    constructor(private $mdSidenav, private $location: ng.ILocationService, private eventService, private authService) {}
+    static $inject = ['$mdSidenav', '$location', 'EventService', 'AuthenticationService', 'AuthorizationService'];
+    constructor(private $mdSidenav, private $location: ng.ILocationService, private eventService, private authService, private authorizationService) {}
     template = sidebarTemplate;
     link: ng.IDirectiveLinkFn = (scope: IHubSidebarScope) => {
 
         this.eventService.on('w20.security.authenticated', () => {
             scope.userPrincipals = this.authService.subjectPrincipals();
         });
+
+        scope.authorizationService = this.authorizationService;
 
         scope.route = (path: string) => {
             this.$mdSidenav('sidebar').close().then(() => {

@@ -54,6 +54,10 @@
     "user": {
       "path": "{hub}/modules/controllers/user",
       "autoload": true
+    },
+    "administration": {
+      "path": "{hub}/modules/controllers/administration",
+      "autoload": true
     }
   },
 
@@ -78,6 +82,11 @@
     "/user": {
       "templateUrl":"{hub}/views/user.html",
       "controller":"UserController as $ctrl"
+    },
+    "/admin": {
+      "templateUrl":"{hub}/views/administration.html",
+      "controller":"AdminController as $ctrl",
+      "security": "hasRole('seed-w20', ['admin'])"
     }
   },
 

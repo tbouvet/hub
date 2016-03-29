@@ -111,24 +111,23 @@ public class Description extends BaseValueObject {
         return stringToUrl(issues);
     }
 
-    private URL stringToUrl(String url) {
-        if (url != null && !"".equals(url)) {
-            try {
-                return new URL(url);
-            } catch (MalformedURLException e) {
-                throw new IllegalArgumentException();
-            }
-        } else {
-            return null;
-        }
-    }
-
     public void setIssues(URL issues) {
         this.issues = issues.toString();
     }
 
     public URL getComponentUrl() {
         return stringToUrl(componentUrl);
+    }
+
+    private URL stringToUrl(String url) {
+        if (url != null) {
+            try {
+                return new URL(url);
+            } catch (MalformedURLException e) {
+                throw new IllegalArgumentException();
+            }
+        }
+        return null;
     }
 
     public void setComponentUrl(URL componentUrl) {
