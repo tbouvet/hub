@@ -10,23 +10,18 @@ package org.seedstack.hub.rest.list;
 import org.seedstack.business.finder.Finder;
 import org.seedstack.business.finder.Range;
 import org.seedstack.business.finder.Result;
-import org.seedstack.business.view.Page;
-import org.seedstack.business.view.PaginatedView;
 import org.seedstack.hub.domain.model.component.Comment;
 import org.seedstack.hub.domain.model.component.ComponentId;
 import org.seedstack.hub.domain.model.component.State;
-import org.seedstack.hub.domain.model.user.UserId;
 
 @Finder
 public interface ComponentFinder {
 
-    PaginatedView<ComponentCard> findCards(Page page, String searchName, String sort);
+    Result<ComponentCard> findCards(Range range, String searchName, String sort);
 
-    PaginatedView<ComponentCard> findUserCards(UserId user, Page page);
+    Result<ComponentCard> findCardsByState(Range range, State state);
 
-    PaginatedView<ComponentCard> findCardsByState(Page page, State state);
-
-    PaginatedView<Comment> findComments(ComponentId componentId, Page page);
+    Result<Comment> findComments(ComponentId componentId, Range range);
 
     Result<ComponentCard> findRecentCards(Range range);
 

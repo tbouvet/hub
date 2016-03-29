@@ -9,14 +9,14 @@ package org.seedstack.hub.rest.user;
 
 import io.swagger.annotations.Api;
 import org.seedstack.business.assembler.FluentAssembler;
-import org.seedstack.business.view.PaginatedView;
+import org.seedstack.business.finder.Result;
 import org.seedstack.hub.application.SecurityService;
 import org.seedstack.hub.application.StarringService;
 import org.seedstack.hub.domain.model.component.ComponentId;
 import org.seedstack.hub.domain.model.user.UserId;
 import org.seedstack.hub.rest.list.ComponentCard;
-import org.seedstack.hub.rest.list.ComponentFinder;
-import org.seedstack.hub.rest.shared.PageInfo;
+import org.seedstack.hub.rest.shared.RangeInfo;
+import org.seedstack.hub.rest.shared.ResultHal;
 import org.seedstack.seed.rest.Rel;
 import org.seedstack.seed.rest.RelRegistry;
 import org.seedstack.seed.rest.hal.HalRepresentation;
@@ -37,7 +37,7 @@ public class UserResource {
     @Inject
     private StarringService starringService;
     @Inject
-    private ComponentFinder componentFinder;
+    private UserFinder userFinder;
     @Inject
     private FluentAssembler fluentAssembler;
     @Inject
@@ -49,42 +49,27 @@ public class UserResource {
     @GET
     @Path("/components")
     @Produces({"application/json", "application/hal+json"})
-    public HalRepresentation getComponents(@BeanParam PageInfo pageInfo) {
+    public ResultHal getComponents(@BeanParam RangeInfo rangeInfo) {
         UserId userId = securityService.getAuthenticatedUser().getEntityId();
-        PaginatedView<ComponentCard> userComponents = componentFinder.findUserCards(userId, pageInfo.page());
-        return new HalRepresentation()
-                .embedded("components", userComponents)
-                .link("self", relRegistry.uri(USER_COMPONENTS)
-                        .set("pageIndex", pageInfo.getPageIndex())
-                        .set("pageSize", pageInfo.getPageSize())
-                        .expand());
+        Result<ComponentCard> userComponents = userFinder.findUserCards(userId, rangeInfo.range());
+        return new ResultHal<>(COMPONENT, userComponents, relRegistry.uri(USER_COMPONENTS));
     }
 
     @Rel(AUTHOR_COMPONENTS)
     @GET
     @Path("{userId}/components")
     @Produces({"application/json", "application/hal+json"})
-    public HalRepresentation getComponents(@PathParam(USER_ID) String userId, @BeanParam PageInfo pageInfo) {
-        PaginatedView<ComponentCard> userComponents = componentFinder.findUserCards(new UserId(userId), pageInfo.page());
-        return new HalRepresentation()
-                .embedded("components", userComponents)
-                .link("self", relRegistry.uri(USER_COMPONENTS)
-                        .set("pageIndex", pageInfo.getPageIndex())
-                        .set("pageSize", pageInfo.getPageSize())
-                        .expand());
+    public HalRepresentation getComponents(@PathParam(USER_ID) String userId, @BeanParam RangeInfo rangeInfo) {
+        Result<ComponentCard> userComponents = userFinder.findUserCards(new UserId(userId), rangeInfo.range());
+        return new ResultHal<>(COMPONENT, userComponents, relRegistry.uri(AUTHOR_COMPONENTS).set("userId", userId));
     }
 
     @Rel(value = STARS, home = true)
     @GET
     @Path("/stars")
     @Produces({"application/json", "application/hal+json"})
-    public HalRepresentation getStars() {
-        return new HalRepresentation()
-                .embedded("components",
-                        starringService.starredComponents()
-                                .map(c -> fluentAssembler.assemble(c).to(ComponentCard.class))
-                                .collect(toList()))
-                .link("self", relRegistry.uri(STARS).expand());
+    public HalRepresentation getStars(@BeanParam RangeInfo rangeInfo) {
+        return new ResultHal<>(COMPONENT, userFinder.findStarred(rangeInfo.range()), relRegistry.uri(STARS));
     }
 
     @Rel(STAR)

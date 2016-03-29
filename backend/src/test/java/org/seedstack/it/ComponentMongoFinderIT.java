@@ -14,14 +14,11 @@ import org.junit.runner.RunWith;
 import org.seedstack.business.domain.Repository;
 import org.seedstack.business.finder.Range;
 import org.seedstack.business.finder.Result;
-import org.seedstack.business.view.Page;
-import org.seedstack.business.view.PaginatedView;
+import org.seedstack.hub.MockBuilder;
 import org.seedstack.hub.domain.model.component.Comment;
 import org.seedstack.hub.domain.model.component.Component;
 import org.seedstack.hub.domain.model.component.ComponentId;
 import org.seedstack.hub.domain.model.component.State;
-import org.seedstack.hub.domain.model.user.UserId;
-import org.seedstack.hub.MockBuilder;
 import org.seedstack.hub.rest.list.ComponentCard;
 import org.seedstack.hub.rest.list.ComponentFinder;
 import org.seedstack.seed.it.SeedITRunner;
@@ -61,23 +58,23 @@ public class ComponentMongoFinderIT {
     @Test
     public void testFindNotNull() {
         mockedComponents.forEach(componentRepository::delete); // clean the repo to test without data
-        PaginatedView<ComponentCard> componentCards = componentFinder.findCards(new Page(0, 10), null, null);
+        Result<ComponentCard> componentCards = componentFinder.findCards(new Range(0, 10), null, null);
         assertThat(componentCards).isNotNull();
     }
 
     @Test
     public void testFindListWithPagination() {
-        PaginatedView<ComponentCard> componentCards = componentFinder.findCards(new Page(0, 10), "", "date");
-        assertThat(componentCards.getView()).hasSize(10);
-        assertThat(componentCards.getPagesCount()).isEqualTo(3);
-        componentCards = componentFinder.findCards(new Page(2, 10), "", "date");
-        assertThat(componentCards.getView()).hasSize(3);
+        Result<ComponentCard> componentCards = componentFinder.findCards(new Range(0, 10), "", "date");
+        assertThat(componentCards.getResult()).hasSize(10);
+        assertThat(componentCards.getFullSize()).isEqualTo(23);
+        componentCards = componentFinder.findCards(new Range(20, 10), "", "date");
+        assertThat(componentCards.getResult()).hasSize(3);
     }
 
     @Test
     public void testFindListWithSearchCriteria() {
-        PaginatedView<ComponentCard> componentCards = componentFinder.findCards(new Page(0, 20), "ponent1", "date");
-        assertThat(componentCards.getView()).hasSize(11);
+        Result<ComponentCard> componentCards = componentFinder.findCards(new Range(0, 20), "ponent1", "date");
+        assertThat(componentCards.getResult()).hasSize(11);
     }
 
     @Test
@@ -107,58 +104,20 @@ public class ComponentMongoFinderIT {
         componentRepository.persist(MockBuilder.mock("archived", 0, State.ARCHIVED, "zzz"));
         componentRepository.persist(MockBuilder.mock("pending", 0, State.PENDING, "zzz"));
 
-        PaginatedView<ComponentCard> archived = componentFinder.findCardsByState(new Page(0,10), State.ARCHIVED);
-        assertThat(archived.getView()).hasSize(1);
-        assertThat(archived.getView().get(0).getId()).isEqualTo("archived0");
+        Result<ComponentCard> archived = componentFinder.findCardsByState(new Range(0,10), State.ARCHIVED);
+        assertThat(archived.getResult()).hasSize(1);
+        assertThat(archived.getResult().get(0).getId()).isEqualTo("archived0");
 
-        PaginatedView<ComponentCard> pending = componentFinder.findCardsByState(new Page(0,10), State.PENDING);
-        assertThat(pending.getView()).hasSize(1);
-        assertThat(pending.getView().get(0).getId()).isEqualTo("pending0");
+        Result<ComponentCard> pending = componentFinder.findCardsByState(new Range(0,10), State.PENDING);
+        assertThat(pending.getResult()).hasSize(1);
+        assertThat(pending.getResult().get(0).getId()).isEqualTo("pending0");
 
-        PaginatedView<ComponentCard> published = componentFinder.findCardsByState(new Page(0,10), State.PUBLISHED);
-        assertThat(published.getView()).hasSize(10);
-        assertThat(published.getView().get(0).getId()).isEqualTo("Component0");
+        Result<ComponentCard> published = componentFinder.findCardsByState(new Range(0,10), State.PUBLISHED);
+        assertThat(published.getResult()).hasSize(10);
+        assertThat(published.getResult().get(0).getId()).isEqualTo("Component0");
 
         componentRepository.delete(new ComponentId("archived0"));
         componentRepository.delete(new ComponentId("pending0"));
-    }
-
-    @Test
-    public void test_findUserCards_for_owner() {
-        PaginatedView<ComponentCard> archived = componentFinder.findUserCards(new UserId("adrienlauer"), new Page(0,10));
-        assertThat(archived.getView()).hasSize(10);
-        assertThat(archived.getView().get(0).getId()).isEqualTo("Component0");
-    }
-
-    @Test
-    public void test_findUserCards_for_maintainer() {
-        PaginatedView<ComponentCard> archived = componentFinder.findUserCards(new UserId("pith"), new Page(0,10));
-        assertThat(archived.getView()).hasSize(10);
-        assertThat(archived.getView().get(0).getId()).isEqualTo("Component0");
-    }
-
-    @Test
-    public void test_findUserCards_retrieve_archived_component() {
-        Component mock = MockBuilder.mock("Archived", 0, State.ARCHIVED, "pith");
-        componentRepository.persist(mock);
-
-        PaginatedView<ComponentCard> archived = componentFinder.findUserCards(new UserId("pith"), new Page(0,10));
-        assertThat(archived.getView()).hasSize(10);
-        assertThat(archived.getView().get(0).getId()).isEqualTo("Archived0");
-
-        componentRepository.delete(mock);
-    }
-
-    @Test
-    public void test_findUserCards_include_organisation() {
-        Component component = MockBuilder.mock(888, State.PENDING, "@seedstack");
-        componentRepository.persist(component);
-
-        PaginatedView<ComponentCard> archived = componentFinder.findUserCards(new UserId("admin"), new Page(0,10));
-        assertThat(archived.getView()).hasSize(1);
-        assertThat(archived.getView().get(0).getId()).isEqualTo("Component888");
-
-        componentRepository.delete(component);
     }
 
     @Test
@@ -182,14 +141,13 @@ public class ComponentMongoFinderIT {
         component.addComment(new Comment("adrienlauer", "Thanks for this component", getDate(LocalDate.of(2016, 4, 8))));
         componentRepository.persist(component);
 
-        PaginatedView<Comment> componentCards = componentFinder.findComments(c1, new Page(1,2));
+        List<Comment> comments = componentFinder.findComments(c1, new Range(2,2)).getResult();
 
         // Expecting to find the last comment, i.e the first published comment
-        List<Comment> popular = componentCards.getView();
-        assertThat(popular).hasSize(1);
-        assertThat(popular.get(0).getAuthor()).isEqualTo("pith");
-        assertThat(popular.get(0).getText()).isEqualTo("So cool this component");
-        assertThat(popular.get(0).getPublicationDate()).isEqualTo(getDate(LocalDate.of(2015, 10, 11)));
+        assertThat(comments).hasSize(1);
+        assertThat(comments.get(0).getAuthor()).isEqualTo("pith");
+        assertThat(comments.get(0).getText()).isEqualTo("So cool this component");
+        assertThat(comments.get(0).getPublicationDate()).isEqualTo(getDate(LocalDate.of(2015, 10, 11)));
     }
 
     public Date getDate(LocalDate localDate) {
