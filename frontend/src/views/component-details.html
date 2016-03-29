@@ -6,13 +6,6 @@
                 Back
             </md-button>
         </div>
-        <div flex layout="row" layout-align="end center" layout-align-xs="center center" layout-wrap>
-            <md-button class="md-accent" ng-href="">Docs</md-button>
-            <md-button class="md-accent" ng-href="">Wiki</md-button>
-            <md-button class="md-accent" ng-href="">Source</md-button>
-            <md-button class="md-accent" ng-href="">Issues</md-button>
-            <md-button class="md-accent" ng-href="">Help</md-button>
-        </div>
     </div>
     <div id="component-detail-header" layout="row" layout-xs="column" layout-wrap>
         <div layout="row" layout-align="center center" layout-align-xs="center">
@@ -25,7 +18,8 @@
                     {{ $ctrl.component.name }}
                 </h1>
                 <h2 style="margin-top: 0;" class="md-subhead muted">
-                    Owned by {{ $ctrl.component.owner }} <span ng-if="$ctrl.component.state === 'PENDING'">(PENDING)</span>
+                    <md-icon md-font-set="material-icons">person_pin</md-icon>
+                    {{ $ctrl.component.owner }} <span ng-if="$ctrl.component.state === 'PENDING'">(PENDING)</span>
                 </h2>
             </div>
         </div>
@@ -40,52 +34,20 @@
             <md-button class="md-raised md-primary">Install</md-button>
         </div>
     </div>
-    <div id="component-detail-info" layout-padding layout="row" layout-xs="column" style="margin-top: 20px;">
-        <div id="component-detail-readme" flex="70" flex-xs="100" flex-order-xs="2">
-            <md-content class="md-whiteframe-1dp" flex layout-padding>
-                <div class="markdown-body" ng-include="$ctrl.component.readme"></div>
-            </md-content>
-        </div>
-        <div flex="30" flex-xs="100" layout-align="end center" layout-align-xs="center" flex-order-xs="1">
-            <aside id="component-detail-meta" layout="column" flex-xs="100">
-                <section id="component-detail-meta-usage" class="md-whiteframe-0dp">
-                    <md-content style="overflow: hidden; background-color: inherit">
-                        <md-list>
-                            <md-list-item>
-                                <md-icon md-font-set="material-icons">change_history</md-icon>
-                                <p> Latest: {{ $ctrl.component.version }} </p>
-                            </md-list-item>
-                            <md-list-item>
-                                <md-icon md-font-set="material-icons">gavel</md-icon>
-                                <p> License:{{ $ctrl.component.license }} </p>
-                            </md-list-item>
-                        </md-list>
-                    </md-content>
-                </section>
-                <div class="spacer"></div>
-                <section id="component-detail-meta-general" class="md-whiteframe-0dp">
-                    <md-content style="overflow: hidden; background-color: inherit">
-                        <md-subheader class="md-no-sticky" style="background-color: inherit">Used in 12 projects</md-subheader>
-                        <md-list>
-                            <md-list-item>
-                                <md-icon md-font-set="material-icons">important_devices</md-icon>
-                                <p> Project 1 </p>
-                            </md-list-item>
-                            <md-list-item>
-                                <md-icon md-font-set="material-icons">important_devices</md-icon>
-                                <p> Project 1 </p>
-                            </md-list-item>
-                            <md-list-item>
-                                <md-icon md-font-set="material-icons">important_devices</md-icon>
-                                <p> Project 1 </p>
-                            </md-list-item>
-                        </md-list>
-                    </md-content>
-                </section>
-            </aside>
-        </div>
+    <div flex layout="row" layout-align="start center" layout-align-xs="center center" layout-wrap>
+        <md-button ng-class="$ctrl.detailsView === 'identity' ? 'md-primary' : 'md-accent'" ng-click="$ctrl.detailsView = 'identity'">Info</md-button>
+        <md-button ng-class="$ctrl.detailsView === 'docs' ? 'md-primary' : 'md-accent'" ng-click="$ctrl.detailsView = 'docs'">Docs</md-button>
+        <md-button ng-class="$ctrl.detailsView === 'wiki' ? 'md-primary' : 'md-accent'" ng-click="$ctrl.detailsView = 'wiki'">Wiki</md-button>
+        <md-button ng-class="$ctrl.detailsView === 'source' ? 'md-primary' : 'md-accent'" ng-click="$ctrl.detailsView = 'sources'">Source</md-button>
+        <md-button ng-class="$ctrl.detailsView === 'issues' ? 'md-primary' : 'md-accent'" ng-click="$ctrl.detailsView = 'issues'">Issues</md-button>
+        <md-button ng-class="$ctrl.detailsView === 'help' ? 'md-primary' : 'md-accent'" ng-click="$ctrl.detailsView = 'help'">Help</md-button>
     </div>
-    <div id="component-detail-comment" layout="column" layout-padding layout="row" layout-xs="column" style="margin-top: 20px;">
-        <div hub-comment component="$ctrl.component"></div>
-    </div>
+    <section ng-switch="$ctrl.detailsView">
+        <div ng-switch-when="identity">
+            <div ng-include="'src/views/details/identity.tpl.html'"></div>
+        </div>
+        <div ng-switch-when="docs">
+            <div ng-include="'src/views/details/docs.tpl.html'"></div>
+        </div>
+    </section>
 </div>

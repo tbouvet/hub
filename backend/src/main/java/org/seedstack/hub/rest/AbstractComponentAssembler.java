@@ -30,9 +30,10 @@ public abstract class AbstractComponentAssembler<T extends HalRepresentation> ex
     @Override
     protected final void doAssembleDtoFromAggregate(T t, Component component) {
         doAssemble(t, component);
+        String id = component.getEntityId().getName();
         t.self(relRegistry
                 .uri(Rels.COMPONENT)
-                .set(COMPONENT_ID, component.getEntityId().getName()).expand());
+                .set(COMPONENT_ID, id).expand());
 
         String owner = component.getOwner().toString();
         if (component.getOwner().isUser()) {
@@ -42,6 +43,9 @@ public abstract class AbstractComponentAssembler<T extends HalRepresentation> ex
             t.link(ORGANISATION, relRegistry
                     .uri(ORGANISATION).set(ORGANISATION_ID, owner).expand());
         }
+        // TODO filter the following link when useful e.g. pending for admin, archived for owner
+        t.link(Rels.STATE, relRegistry
+                .uri(Rels.STATE).set(COMPONENT_ID, id).expand());
     }
 
     protected abstract void doAssemble(T t, Component component);
