@@ -9,8 +9,8 @@ package org.seedstack.it;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.seedstack.hub.infra.file.Manifest;
-import org.seedstack.hub.infra.file.ManifestParser;
+import org.seedstack.hub.application.fetch.Manifest;
+import org.seedstack.hub.application.fetch.ManifestParser;
 import org.seedstack.seed.it.SeedITRunner;
 
 import javax.inject.Inject;

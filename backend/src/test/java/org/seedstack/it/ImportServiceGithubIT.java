@@ -7,6 +7,7 @@
  */
 package org.seedstack.it;
 
+import mockit.Mocked;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -16,22 +17,30 @@ import org.seedstack.hub.domain.model.component.ComponentId;
 import org.seedstack.hub.domain.model.component.Source;
 import org.seedstack.hub.domain.services.fetch.VCSType;
 import org.seedstack.seed.it.SeedITRunner;
+import org.slf4j.Logger;
 
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.ws.rs.client.Client;
 import java.net.URL;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 @Ignore
 @RunWith(SeedITRunner.class)
-public class SeedStackServiceIT {
+public class ImportServiceGithubIT {
+
+    @Inject
+    private Logger log;
 
     @Inject @Named("GITHUB")
     private ImportService importService;
+    @Mocked
+    private Client client;
 
     @Test
     public void testGithubAPICall() throws Exception {
+        log.warn("Calling GITHUB API !!");
         Component component = importService.importComponent(new Source(VCSType.GITHUB, "seedstack/mongodb-addon"));
         assertThat(component).isNotNull();
         assertThat(component.getId()).isEqualTo(new ComponentId("mongodb-addon"));
