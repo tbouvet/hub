@@ -12,7 +12,7 @@ import io.swagger.annotations.Api;
 import org.seedstack.business.domain.Repository;
 import org.seedstack.business.finder.Result;
 import org.seedstack.hub.application.OrganisationService;
-import org.seedstack.hub.application.SecurityService;
+import org.seedstack.hub.application.security.SecurityService;
 import org.seedstack.hub.domain.model.organisation.Organisation;
 import org.seedstack.hub.domain.model.organisation.OrganisationId;
 import org.seedstack.hub.domain.model.user.UserId;

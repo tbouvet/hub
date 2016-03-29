@@ -5,10 +5,11 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
-package org.seedstack.hub.application;
+package org.seedstack.hub.application.fetch;
 
 import org.seedstack.business.domain.DomainRegistry;
 import org.seedstack.business.domain.Repository;
+import org.seedstack.hub.application.security.SecurityService;
 import org.seedstack.hub.domain.model.component.*;
 import org.seedstack.hub.domain.model.document.Document;
 import org.seedstack.hub.domain.model.document.DocumentFactory;

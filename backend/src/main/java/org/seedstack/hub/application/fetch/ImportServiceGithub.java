@@ -1,4 +1,11 @@
-package org.seedstack.hub.application;
+/**
+ * Copyright (c) 2015-2016, The SeedStack authors <http://seedstack.org>
+ *
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ */
+package org.seedstack.hub.application.fetch;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -30,7 +37,7 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 
 @Named("GITHUB")
-public class ImportServiceGithub implements SeedStackImportService, ImportService {
+public class ImportServiceGithub implements ImportService {
 
     private static final String GITHUB_API = "https://api.github.com";
     private static final String REPO_PATH = "/repos/{org}/{name}";
@@ -59,8 +66,7 @@ public class ImportServiceGithub implements SeedStackImportService, ImportServic
         return importFromGithub(parts[0], parts[1]);
     }
 
-    @Override
-    public Component importFromGithub(String organisationName, String componentName) {
+    private Component importFromGithub(String organisationName, String componentName) {
         Component component = importComponentFromGithub(organisationName, componentName);
         importReadme(organisationName, componentName, component);
         componentRepository.persist(component);

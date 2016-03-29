@@ -8,6 +8,7 @@
 package org.seedstack.hub.application;
 
 import org.seedstack.business.domain.Repository;
+import org.seedstack.hub.application.security.SecurityService;
 import org.seedstack.hub.domain.model.component.ComponentId;
 import org.seedstack.hub.domain.model.organisation.Organisation;
 import org.seedstack.hub.domain.model.organisation.OrganisationId;

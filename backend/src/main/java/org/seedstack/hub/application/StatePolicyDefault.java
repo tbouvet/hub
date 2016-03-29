@@ -7,9 +7,8 @@
  */
 package org.seedstack.hub.application;
 
+import org.seedstack.hub.application.security.SecurityService;
 import org.seedstack.hub.domain.model.component.Component;
-import org.seedstack.hub.domain.model.user.UserId;
-import org.seedstack.seed.security.AuthenticationException;
 
 import javax.inject.Inject;
 

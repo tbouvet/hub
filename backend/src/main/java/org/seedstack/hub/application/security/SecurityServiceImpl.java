@@ -5,7 +5,7 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
-package org.seedstack.hub.application;
+package org.seedstack.hub.application.security;
 
 import org.seedstack.business.domain.Repository;
 import org.seedstack.hub.domain.model.component.Component;
@@ -36,10 +36,18 @@ class SecurityServiceImpl implements SecurityService {
     public User getAuthenticatedUser() {
         SimplePrincipalProvider simplePrincipalByName = securitySupport.getSimplePrincipalByName(Principals.IDENTITY);
         if (simplePrincipalByName != null) {
-            return userRepository.load(new UserId(simplePrincipalByName.getValue()));
+            return loadOrCreate(simplePrincipalByName.getValue());
         } else {
             throw new AuthenticationException();
         }
+    }
+
+    private User loadOrCreate(String userName) {
+        User user = userRepository.load(new UserId(userName));
+        if (user == null) {
+            userRepository.persist(new User(new UserId(userName)));
+            user = userRepository.load(new UserId(userName));
+        } return user;
     }
 
     @Override

@@ -13,7 +13,7 @@ import org.hibernate.validator.constraints.NotBlank;
 import org.seedstack.business.assembler.FluentAssembler;
 import org.seedstack.business.finder.Result;
 import org.seedstack.business.view.PaginatedView;
-import org.seedstack.hub.application.ImportService;
+import org.seedstack.hub.application.fetch.ImportService;
 import org.seedstack.hub.domain.model.component.Component;
 import org.seedstack.hub.domain.model.component.Source;
 import org.seedstack.hub.domain.model.component.State;
