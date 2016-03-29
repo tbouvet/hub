@@ -23,15 +23,37 @@
                 </h2>
             </div>
         </div>
-        <div id="component-detail-actions" layout-xs="row" layout-align-xs="center" style="margin-top: 20px">
+        <div id="component-detail-actions" flex layout-wrap layout-xs="row" layout-align-xs="center center" style="margin-top: 20px">
             <md-button ng-if="$ctrl.component.isStarred" ng-click="$ctrl.rateComponent($ctrl.component)" aria-label="Star" title="unstar this component">
                 <md-icon md-font-set="material-icons">star_rate</md-icon> {{ $ctrl.component.stars }}
             </md-button>
             <md-button ng-if="!$ctrl.component.isStarred" ng-click="$ctrl.rateComponent($ctrl.component)" aria-label="Star" title="star this component">
                 <md-icon md-font-set="material-icons">star_border</md-icon> {{ $ctrl.component.stars }}
             </md-button>
-            <md-button class="md-raised">Manage</md-button>
+            <md-menu>
+                <md-button aria-label="Manage component" ng-click="$mdOpenMenu($event)">
+                    <md-icon md-font-set="material-icons">more_vert</md-icon> Manage
+                </md-button>
+                <md-menu-content width="4">
+                    <md-menu-item>
+                        <md-button ng-click="ctrl.archive($ctrl.component)">
+                            <md-icon md-font-set="material-icons">archive</md-icon> Archive
+                        </md-button>
+                    </md-menu-item>
+                    <md-menu-item>
+                        <md-button ng-click="ctrl.delete($ctrl.component)">
+                            <md-icon md-font-set="material-icons">delete_forever</md-icon> Delete
+                        </md-button>
+                    </md-menu-item>
+                </md-menu-content>
+            </md-menu>
             <md-button class="md-raised md-primary">Install</md-button>
+            <md-button class="md-fab md-mini" aria-label="Resync component">
+                <md-tooltip md-direction="bottom">
+                    Resync
+                </md-tooltip>
+                <md-icon md-font-set="material-icons">refresh</md-icon>
+            </md-button>
         </div>
     </div>
     <div flex layout="row" layout-align="start center" layout-align-xs="center center" layout-wrap>

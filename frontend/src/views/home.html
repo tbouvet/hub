@@ -1,4 +1,15 @@
 <main layout-padding layout="column" id="home">
+    <section layout="column">
+        <div layout="column" layout-align="center start">
+            <h1 class="md-display-2" style="margin-bottom: 10px;"> SeedStack </h1>
+            <h2 class="md-display-4" style="margin-top: 0; margin-bottom: 20px">
+                <md-icon style="width: auto; line-height: 0; font-size: 112px" aria-label="Menu" md-font-set="material-icons">device_hub</md-icon>
+                <span class="muted">HUB</span>
+            </h2>
+        </div>
+        <md-divider></md-divider>
+        <p class="md-headline">For developers to share components</p>
+    </section>
     <section ng-if="$ctrl.popularComponents.length > 0 && $ctrl.recentComponents.length > 0">
         <header layout="column">
             <div layout="row">
@@ -11,13 +22,13 @@
                 </a>
             </div>
         </header>
-        <section layout="row" layout-wrap layout-xs="column" layout-align="center center">
+        <section layout="row" layout-wrap layout-xs="column" layout-align="start center">
             <hub-card ng-repeat="card in $ctrl.popularComponents" card="card" on-click="$ctrl.view(card)"></hub-card>
         </section>
         <header layout="column">
             <h3 class="md-title muted">Recent</h3>
         </header>
-        <section layout="row" layout-wrap layout-xs="column" layout-align="center center">
+        <section layout="row" layout-wrap layout-xs="column" layout-align="start center">
             <hub-card ng-repeat="card in $ctrl.recentComponents" card="card" on-click="$ctrl.view(card)"></hub-card>
         </section>
     </section>

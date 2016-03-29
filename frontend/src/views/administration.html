@@ -27,8 +27,7 @@
                             <h3>{{ pendingComponent.name }}</h3>
                             <h4>{{ pendingComponent.summary }}</h4>
                             <p>{{ pendingComponent.version }}</p>
-                            <md-switch ng-hide="publishing" class="md-secondary" ng-model="state" ng-change="publishing = true; $ctrl.publishComponent(pendingComponent)"></md-switch>
-                            <md-progress-circular ng-show="publishing" md-mode="indeterminate"></md-progress-circular>
+                            <md-button class="md-secondary md-raised" ng-disabled="publishing" ng-click="publishing = true; $ctrl.publishComponent(pendingComponent)">Publish</md-button>
                         </div>
                     </md-list-item>
                 </md-list>
