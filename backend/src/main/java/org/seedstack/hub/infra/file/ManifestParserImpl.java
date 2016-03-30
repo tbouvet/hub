@@ -9,13 +9,15 @@ package org.seedstack.hub.infra.file;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
+import org.seedstack.hub.application.fetch.Manifest;
+import org.seedstack.hub.application.fetch.ManifestParser;
 import org.seedstack.hub.domain.model.component.ComponentException;
 
 import javax.inject.Inject;
 import javax.validation.Validator;
 import java.io.File;
 
-public class ManifestParserImpl implements ManifestParser {
+class ManifestParserImpl implements ManifestParser {
     private static final String FULL_MANIFEST_PATTERN = "seedstack-component.%s";
     private static final String SHORT_MANIFEST_PATTERN = "component.%s";
     @Inject

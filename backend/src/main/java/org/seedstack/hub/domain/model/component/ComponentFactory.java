@@ -8,7 +8,7 @@
 package org.seedstack.hub.domain.model.component;
 
 import org.seedstack.business.domain.GenericFactory;
-import org.seedstack.hub.infra.file.Manifest;
+import org.seedstack.hub.application.fetch.Manifest;
 
 public interface ComponentFactory extends GenericFactory<Component> {
 

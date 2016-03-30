@@ -17,6 +17,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.seedstack.business.domain.Repository;
+import org.seedstack.hub.application.fetch.Manifest;
+import org.seedstack.hub.application.fetch.ReleaseDTO;
 import org.seedstack.hub.domain.model.component.*;
 import org.seedstack.hub.domain.model.document.DocumentId;
 import org.seedstack.hub.domain.model.organisation.Organisation;

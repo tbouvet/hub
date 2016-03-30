@@ -13,6 +13,7 @@ import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 import org.seedstack.hub.domain.services.fetch.FetchService;
 import org.seedstack.seed.it.AbstractSeedIT;
+import org.slf4j.Logger;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -22,6 +23,9 @@ import java.net.URL;
 @Ignore
 public class FetchIT extends AbstractSeedIT {
     @Inject
+    private Logger log;
+
+    @Inject
     @Named("git")
     private FetchService fetchService;
 
@@ -30,6 +34,7 @@ public class FetchIT extends AbstractSeedIT {
 
     @Test
     public void fetching_from_github() throws Exception {
+        log.warn("Calling GITHUB API !!");
         File target = temporaryFolder.newFolder();
         fetchService.fetchRepository(new URL("https://github.com/seedstack/mongodb-addon"), target);
     }

@@ -17,8 +17,6 @@ import org.seedstack.hub.domain.model.document.DocumentId;
 import org.seedstack.hub.domain.model.user.UserId;
 import org.seedstack.hub.domain.services.fetch.FetchService;
 import org.seedstack.hub.domain.services.text.TextService;
-import org.seedstack.hub.infra.file.Manifest;
-import org.seedstack.hub.infra.file.ManifestParser;
 import org.seedstack.seed.Logging;
 import org.slf4j.Logger;
 

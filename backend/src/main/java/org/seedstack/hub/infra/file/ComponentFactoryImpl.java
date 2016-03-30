@@ -9,6 +9,7 @@ package org.seedstack.hub.infra.file;
 
 import org.seedstack.business.domain.BaseFactory;
 import org.seedstack.business.domain.Repository;
+import org.seedstack.hub.application.fetch.Manifest;
 import org.seedstack.hub.domain.model.component.*;
 import org.seedstack.hub.domain.model.document.DocumentId;
 import org.seedstack.hub.domain.model.organisation.Organisation;

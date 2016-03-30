@@ -78,6 +78,12 @@ public class Description extends BaseValueObject {
         return Collections.unmodifiableList(images);
     }
 
+    public Description changeIcon(DocumentId documentId) {
+        Description description = new Description(this);
+        description.icon = documentId;
+        return description;
+    }
+
     public Description setReadme(DocumentId documentId) {
         Description description = new Description(this);
         description.readme = documentId;
