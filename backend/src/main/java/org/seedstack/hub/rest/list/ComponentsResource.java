@@ -13,8 +13,9 @@ import org.hibernate.validator.constraints.NotBlank;
 import org.seedstack.business.assembler.FluentAssembler;
 import org.seedstack.business.finder.Result;
 import org.seedstack.business.view.PaginatedView;
-import org.seedstack.hub.application.ImportService;
+import org.seedstack.hub.application.fetch.ImportService;
 import org.seedstack.hub.domain.model.component.Component;
+import org.seedstack.hub.domain.model.component.Source;
 import org.seedstack.hub.domain.model.component.State;
 import org.seedstack.hub.domain.services.fetch.VCSType;
 import org.seedstack.hub.rest.shared.*;
@@ -73,7 +74,7 @@ public class ComponentsResource {
 
         Component component;
         try {
-            component = importService.importComponent(vcsType, new URL(sourceUrl));
+            component = importService.importComponent(new Source(vcsType, new URL(sourceUrl)));
         } catch (MalformedURLException e) {
             throw new BadRequestException("Malformed URL " + sourceUrl);
         } catch (AuthenticationException | AuthorizationException e) {

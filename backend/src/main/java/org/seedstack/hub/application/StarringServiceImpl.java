@@ -8,14 +8,13 @@
 package org.seedstack.hub.application;
 
 import org.seedstack.business.domain.Repository;
+import org.seedstack.hub.application.security.SecurityService;
 import org.seedstack.hub.domain.model.component.Component;
 import org.seedstack.hub.domain.model.component.ComponentId;
 import org.seedstack.hub.domain.model.user.User;
 import org.seedstack.hub.domain.model.user.UserRepository;
-import org.seedstack.seed.security.AuthenticationException;
 
 import javax.inject.Inject;
-import java.util.stream.Stream;
 
 class StarringServiceImpl implements StarringService {
     @Inject

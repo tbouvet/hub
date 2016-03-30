@@ -22,7 +22,6 @@ public class User extends BaseAggregateRoot<UserId> {
     @NotNull
     @Id
     private UserId userId;
-    @NotNull
     @Email
     private String email;
 
@@ -31,6 +30,9 @@ public class User extends BaseAggregateRoot<UserId> {
     public User(UserId userId, String email) {
         this.userId = userId;
         this.email = email;
+    }
+    public User(UserId userId) {
+        this(userId, null);
     }
 
     private User() {

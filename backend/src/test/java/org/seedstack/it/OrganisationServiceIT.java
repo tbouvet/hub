@@ -12,6 +12,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.seedstack.business.domain.Repository;
+import org.seedstack.hub.MockBuilder;
 import org.seedstack.hub.application.OrganisationService;
 import org.seedstack.hub.domain.model.component.Component;
 import org.seedstack.hub.domain.model.component.ComponentId;
@@ -20,7 +21,6 @@ import org.seedstack.hub.domain.model.organisation.OrganisationId;
 import org.seedstack.hub.domain.model.user.User;
 import org.seedstack.hub.domain.model.user.UserId;
 import org.seedstack.hub.domain.model.user.UserRepository;
-import org.seedstack.hub.MockBuilder;
 import org.seedstack.seed.it.SeedITRunner;
 import org.seedstack.seed.security.AuthorizationException;
 import org.seedstack.seed.security.WithUser;
@@ -58,7 +58,7 @@ public class OrganisationServiceIT {
 
         componentRepository.persist(MockBuilder.mock(0));
 
-        organisationRepository.persist(new Organisation(seedStack, "SeedStack", Sets.newHashSet(admin)));
+        organisationRepository.persist(new Organisation(new OrganisationId("@seedstack"), "SeedStack", Sets.newHashSet(admin)));
     }
 
     @WithUser(id = "admin", password = "password")

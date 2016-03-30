@@ -39,7 +39,6 @@ public class DataLifecycleListener implements LifecycleListener {
         Organisation organisation = new Organisation(new OrganisationId("@seedstack"), "SeedStack", owners);
         organisation.addMember(new UserId("admin"));
         organisationRepository.persist(organisation);
-
     }
 
     @Override

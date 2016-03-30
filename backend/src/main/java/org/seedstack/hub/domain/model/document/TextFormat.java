@@ -8,6 +8,7 @@
 package org.seedstack.hub.domain.model.document;
 
 public enum TextFormat {
+    PLAIN("text/plain", "txt"),
     MARKDOWN("text/markdown", "md"),
     ASCIIDOC("text/asciidoc", "adoc", "asciidoc"),
     HTML("text/html", "htm", "html");
@@ -30,5 +31,15 @@ public enum TextFormat {
 
     public String qualifier() {
         return this.name().toLowerCase();
+    }
+
+    public static TextFormat of(String textFormat) {
+        for (TextFormat format : values()) {
+            if (format.contentType().equals("text/" + textFormat)) {
+                return format;
+            }
+        }
+
+        throw new IllegalArgumentException("Unsupported text format " + textFormat);
     }
 }

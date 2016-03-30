@@ -5,14 +5,13 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
-package org.seedstack.hub.domain.services.fetch;
+package org.seedstack.hub.infra.file;
 
-public enum VCSType {
-    GIT,
-    SVN,
-    GITHUB;
+import org.seedstack.business.Service;
 
-    public String qualifier() {
-        return this.name().toLowerCase();
-    }
+import java.io.File;
+
+@Service
+public interface ManifestParser {
+    Manifest parseManifest(File repositoryDirectory);
 }

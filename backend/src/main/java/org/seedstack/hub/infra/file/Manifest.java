@@ -9,15 +9,14 @@ package org.seedstack.hub.infra.file;
 
 import org.hibernate.validator.constraints.NotBlank;
 
+import java.util.ArrayList;
 import java.util.List;
 
-class Manifest {
+public class Manifest {
     @NotBlank
     private String id;
     private String name;
-    @NotBlank
-    private String version;
-    private List<ReleaseDTO> releases;
+    private List<ReleaseDTO> releases = new ArrayList<>();
     @NotBlank
     private String owner;
     private String url;
@@ -28,108 +27,112 @@ class Manifest {
     private List<String> images;
     private List<String> maintainers;
     private List<String> docs;
+    private String readme;
 
-    String getId() {
+    public String getId() {
         return id;
     }
 
-    void setId(String id) {
+    public void setId(String id) {
         this.id = id;
     }
 
-    String getName() {
+    public String getName() {
         return name;
     }
 
-    void setName(String name) {
+    public void setName(String name) {
         this.name = name;
     }
 
-    String getVersion() {
-        return version;
-    }
-
-    void setVersion(String version) {
-        this.version = version;
-    }
-
-    List<ReleaseDTO> getReleases() {
+    public List<ReleaseDTO> getReleases() {
         return releases;
     }
 
-    void setReleases(List<ReleaseDTO> releases) {
+    public void setReleases(List<ReleaseDTO> releases) {
         this.releases = releases;
     }
+    public void addRelease(ReleaseDTO release) {
+        this.releases.add(release);
+    }
 
-    String getOwner() {
+    public String getOwner() {
         return owner;
     }
 
-    void setOwner(String owner) {
+    public void setOwner(String owner) {
         this.owner = owner;
     }
 
-    String getUrl() {
+    public String getUrl() {
         return url;
     }
 
-    void setUrl(String url) {
+    public void setUrl(String url) {
         this.url = url;
     }
 
-    String getIssues() {
+    public String getIssues() {
         return issues;
     }
 
-    void setIssues(String issues) {
+    public void setIssues(String issues) {
         this.issues = issues;
     }
 
-    String getSummary() {
+    public String getSummary() {
         return summary;
     }
 
-    void setSummary(String summary) {
+    public void setSummary(String summary) {
         this.summary = summary;
     }
 
-    String getLicense() {
+    public String getLicense() {
         return license;
     }
 
-    void setLicense(String license) {
+    public void setLicense(String license) {
         this.license = license;
     }
 
-    String getIcon() {
+    public String getIcon() {
         return icon;
     }
 
-    void setIcon(String icon) {
+    public void setIcon(String icon) {
         this.icon = icon;
     }
 
-    List<String> getImages() {
+    public List<String> getImages() {
         return images;
     }
 
-    void setImages(List<String> images) {
+    public void setImages(List<String> images) {
         this.images = images;
     }
 
-    List<String> getMaintainers() {
+    public List<String> getMaintainers() {
         return maintainers;
     }
 
-    void setMaintainers(List<String> maintainers) {
+    public void setMaintainers(List<String> maintainers) {
         this.maintainers = maintainers;
     }
 
-    List<String> getDocs() {
+    public List<String> getDocs() {
         return docs;
     }
 
-    void setDocs(List<String> docs) {
+    public void setDocs(List<String> docs) {
         this.docs = docs;
+    }
+
+    public String getReadme() {
+        return readme;
+    }
+
+    public void setReadme(String readme) {
+        this.readme = readme;
     }
 }

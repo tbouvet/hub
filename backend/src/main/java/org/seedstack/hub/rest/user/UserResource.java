@@ -10,7 +10,7 @@ package org.seedstack.hub.rest.user;
 import io.swagger.annotations.Api;
 import org.seedstack.business.assembler.FluentAssembler;
 import org.seedstack.business.finder.Result;
-import org.seedstack.hub.application.SecurityService;
+import org.seedstack.hub.application.security.SecurityService;
 import org.seedstack.hub.application.StarringService;
 import org.seedstack.hub.domain.model.component.ComponentId;
 import org.seedstack.hub.domain.model.user.UserId;
@@ -27,7 +27,6 @@ import javax.ws.rs.core.Response;
 import java.net.URI;
 import java.net.URISyntaxException;
 
-import static java.util.stream.Collectors.toList;
 import static org.seedstack.hub.rest.Rels.*;
 
 @Api
