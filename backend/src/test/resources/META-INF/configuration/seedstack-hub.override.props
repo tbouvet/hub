@@ -11,3 +11,7 @@ org.seedstack.seed.security.realms = ConfigurationRealm
 [org.seedstack.seed.security.users]
 admin = password, admin
 john = password
+
+[org.seedstack.mongodb.client.main]
+databases = hub-test
+alias.hub-test = hub
