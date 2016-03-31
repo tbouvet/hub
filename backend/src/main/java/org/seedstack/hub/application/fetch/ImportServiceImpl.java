@@ -14,7 +14,6 @@ import org.seedstack.hub.domain.model.component.*;
 import org.seedstack.hub.domain.model.document.Document;
 import org.seedstack.hub.domain.model.document.DocumentFactory;
 import org.seedstack.hub.domain.model.document.DocumentId;
-import org.seedstack.hub.domain.model.user.UserId;
 import org.seedstack.hub.domain.services.fetch.FetchService;
 import org.seedstack.hub.domain.services.text.TextService;
 import org.seedstack.seed.Logging;
@@ -54,32 +53,36 @@ class ImportServiceImpl implements ImportService {
 
     @Override
     public Component importComponent(Source source) {
-        File directory = getWorkingDirectory();
-        Component component;
-
+        File tempDir = getWorkingDirectory();
         try {
-            FetchService service = domainRegistry.getService(FetchService.class, source.getVcsType().qualifier());
-            try {
-                service.fetchRepository(new URL(source.getUrl()), directory);
-            } catch (MalformedURLException e) {
-                throw new ImportException("Invalid URL: " + source.getUrl());
-            }
+            fetchFromVCS(source, tempDir);
 
-            Manifest manifest = manifestParser.parseManifest(directory);
-            component = componentFactory.createComponent(manifest);
-            // FIXME checkCurrentUserIs(component.getOwner());
+            Manifest manifest = manifestParser.parseManifest(tempDir);
+            Component component = componentFactory.createComponent(manifest);
+            checkCurrentUserOwns(component);
             componentRepository.persist(component);
-            documentFactory.createDocuments(component, directory).forEach(documentRepository::persist);
-        } finally {
-            deleteWorkingDirectory(directory);
-        }
 
-        return component;
+            documentFactory.createDocuments(component, tempDir)
+                    .forEach(documentRepository::persist);
+
+            return component;
+        } finally {
+            deleteWorkingDirectory(tempDir);
+        }
     }
 
-    private void checkCurrentUserIs(UserId owner) {
-        if (!owner.equals(securityService.getAuthenticatedUser().getId())) {
-            throw new ComponentException("Authenticated user is not the owner of component");
+    private void fetchFromVCS(Source source, File tempDir) {
+        FetchService service = domainRegistry.getService(FetchService.class, source.getVcsType().qualifier());
+        try {
+            service.fetchRepository(new URL(source.getUrl()), tempDir);
+        } catch (MalformedURLException e) {
+            throw new ImportException("Invalid URL: " + source.getUrl());
+        }
+    }
+
+    private void checkCurrentUserOwns(Component component) {
+        if (!securityService.isOwnerOf(component)) {
+            throw new ImportException("Authenticated user is not the owner of component");
         }
     }
 

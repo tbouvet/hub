@@ -7,13 +7,16 @@
  */
 package org.seedstack.hub.rest.detail;
 
+import org.seedstack.hub.application.StarringService;
 import org.seedstack.hub.domain.model.component.Component;
+import org.seedstack.hub.domain.model.component.ComponentId;
 import org.seedstack.hub.domain.model.component.Description;
 import org.seedstack.hub.domain.model.component.Release;
 import org.seedstack.hub.domain.model.user.UserId;
 import org.seedstack.hub.rest.AbstractComponentAssembler;
 import org.seedstack.hub.rest.Rels;
 
+import javax.inject.Inject;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -21,6 +24,9 @@ import static java.util.stream.Collectors.toList;
 import static org.seedstack.hub.rest.detail.ComponentResource.COMPONENT_ID;
 
 public class ComponentDetailsAssembler extends AbstractComponentAssembler<ComponentDetails> {
+
+    @Inject
+    private StarringService starringService;
 
     @Override
     protected void doAssemble(ComponentDetails componentDetails, Component component) {
@@ -62,10 +68,16 @@ public class ComponentDetailsAssembler extends AbstractComponentAssembler<Compon
     }
 
     private void assembleHalLinks(ComponentDetails componentDetails, String componentId) {
-        componentDetails.link(Rels.STAR, relRegistry
-                .uri(Rels.STAR).set(COMPONENT_ID, componentId).expand());
+        addStarLinkIfNotStarred(componentDetails, componentId);
 
         componentDetails.link(Rels.COMMENT, relRegistry
                 .uri(Rels.COMMENT).set(COMPONENT_ID, componentId).templated());
+    }
+
+    private void addStarLinkIfNotStarred(ComponentDetails componentDetails, String componentId) {
+        if (!starringService.hasStarred(new ComponentId(componentId))) {
+            componentDetails.link(Rels.STAR, relRegistry
+                    .uri(Rels.STAR).set(COMPONENT_ID, componentId).expand());
+        }
     }
 }
