@@ -8,7 +8,9 @@
 package org.seedstack.hub.rest;
 
 import org.seedstack.business.assembler.BaseAssembler;
+import org.seedstack.hub.application.StatePolicy;
 import org.seedstack.hub.domain.model.component.Component;
+import org.seedstack.hub.domain.model.component.State;
 import org.seedstack.hub.domain.model.document.DocumentId;
 import org.seedstack.hub.rest.shared.UriBuilder;
 import org.seedstack.seed.rest.RelRegistry;
@@ -26,6 +28,8 @@ public abstract class AbstractComponentAssembler<T extends HalRepresentation> ex
 
     @Inject
     protected RelRegistry relRegistry;
+    @Inject
+    private StatePolicy statePolicy;
 
     @Override
     protected final void doAssembleDtoFromAggregate(T t, Component component) {
@@ -43,9 +47,19 @@ public abstract class AbstractComponentAssembler<T extends HalRepresentation> ex
             t.link(ORGANISATION, relRegistry
                     .uri(ORGANISATION).set(ORGANISATION_ID, owner).expand());
         }
-        // TODO filter the following link when useful e.g. pending for admin, archived for owner
-        t.link(Rels.STATE, relRegistry
-                .uri(Rels.STATE).set(COMPONENT_ID, id).expand());
+
+        if (isPublishableByUser(component) || isArchivableByUser(component)) {
+            t.link(Rels.STATE, relRegistry
+                    .uri(Rels.STATE).set(COMPONENT_ID, id).expand());
+        }
+    }
+
+    private boolean isPublishableByUser(Component component) {
+        return component.getState() == State.PENDING && statePolicy.canPublish(component);
+    }
+
+    private boolean isArchivableByUser(Component component) {
+        return component.getState() == State.PUBLISHED && statePolicy.canArchive(component);
     }
 
     protected abstract void doAssemble(T t, Component component);
