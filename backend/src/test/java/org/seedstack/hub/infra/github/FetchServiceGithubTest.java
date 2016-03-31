@@ -24,9 +24,10 @@ import org.seedstack.hub.domain.model.document.Document;
 import org.seedstack.hub.domain.model.document.DocumentFactory;
 import org.seedstack.hub.domain.model.document.DocumentId;
 import org.seedstack.hub.domain.services.fetch.FetchResult;
-import org.seedstack.hub.domain.services.fetch.VCSType;
+import org.seedstack.hub.domain.services.fetch.SourceType;
 
 import java.io.IOException;
+import java.net.URI;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -53,7 +54,7 @@ public class FetchServiceGithubTest {
         givenHttpGetSuccess();
         expectManifest();
 
-        FetchResult result = underTest.fetch(new Source(VCSType.GITHUB, "seedstack/mongodb-addon"));
+        FetchResult result = underTest.fetch(new Source(SourceType.GITHUB, "seedstack/mongodb-addon"));
 
         assertThat(result).isNotNull();
         assertThat(result.getComponent().getId()).isEqualTo(new ComponentId("mongodb-addon"));
@@ -69,6 +70,11 @@ public class FetchServiceGithubTest {
             githubClient.getReadme("seedstack", "mongodb-addon");
             result = readmeValue;
         }};
+    }
+
+    @Test
+    public void testUrl() throws Exception {
+        URI.create("seedstack/seed");
     }
 
     private void expectManifest() {

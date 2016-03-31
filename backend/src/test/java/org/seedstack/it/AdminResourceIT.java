@@ -21,7 +21,7 @@ import org.junit.Test;
 import org.seedstack.business.domain.Repository;
 import org.seedstack.hub.domain.model.component.Component;
 import org.seedstack.hub.domain.model.component.ComponentId;
-import org.seedstack.hub.domain.services.fetch.VCSType;
+import org.seedstack.hub.domain.services.fetch.SourceType;
 import org.seedstack.seed.it.AbstractSeedWebIT;
 
 import javax.inject.Inject;
@@ -47,7 +47,7 @@ public class AdminResourceIT extends AbstractSeedWebIT {
     @Test
     public void get_with_pagination() throws JSONException {
         JSONObject source = new JSONObject();
-        source.put("vcsType", VCSType.GITHUB);
+        source.put("vcsType", SourceType.GITHUB);
         source.put("url", "seedstack/jdbc-addon");
         JSONArray sources = new JSONArray();
         sources.put(source);

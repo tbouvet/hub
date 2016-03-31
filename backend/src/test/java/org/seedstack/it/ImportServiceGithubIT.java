@@ -15,7 +15,7 @@ import org.seedstack.hub.application.fetch.ImportService;
 import org.seedstack.hub.domain.model.component.Component;
 import org.seedstack.hub.domain.model.component.ComponentId;
 import org.seedstack.hub.domain.model.component.Source;
-import org.seedstack.hub.domain.services.fetch.VCSType;
+import org.seedstack.hub.domain.services.fetch.SourceType;
 import org.seedstack.seed.it.SeedITRunner;
 import org.slf4j.Logger;
 
@@ -41,7 +41,7 @@ public class ImportServiceGithubIT {
     @Test
     public void testGithubAPICall() throws Exception {
         log.warn("Calling GITHUB API !!");
-        Component component = importService.importComponent(new Source(VCSType.GITHUB, "seedstack/mongodb-addon"));
+        Component component = importService.importComponent(new Source(SourceType.GITHUB, "seedstack/mongodb-addon"));
         assertThat(component).isNotNull();
         assertThat(component.getId()).isEqualTo(new ComponentId("mongodb-addon"));
         assertThat(component.getName()).isEqualTo("mongodb-addon");

@@ -24,4 +24,5 @@ public final class Rels {
     public static final String ORGANISATION_OWNERS = "organisation/owners";
     public static final String ORGANISATION_MEMBERS = "organisation/members";
     public static final String REVISIONS = "revisions";
+    public static final String SYNC = "sync";
 }

@@ -12,6 +12,7 @@ import org.hibernate.validator.constraints.Length;
 import org.seedstack.business.assembler.FluentAssembler;
 import org.seedstack.business.domain.Repository;
 import org.seedstack.business.finder.Result;
+import org.seedstack.hub.application.fetch.ImportService;
 import org.seedstack.hub.application.security.SecurityService;
 import org.seedstack.hub.application.StatePolicy;
 import org.seedstack.hub.domain.model.component.Comment;
@@ -44,10 +45,13 @@ import static org.seedstack.hub.rest.Rels.STATE;
 @Api
 @Path("/components/{componentId}")
 @Produces({"application/json", "application/hal+json"})
+@Rel(value = COMPONENT, home = true)
 public class ComponentResource {
 
     public static final String COMPONENT_ID = "componentId";
 
+    @Inject
+    private ImportService importService;
     @Inject
     private ComponentFinder componentFinder;
     @Inject
@@ -67,16 +71,24 @@ public class ComponentResource {
     private String componentId;
 
     @GET
-    @Rel(value = COMPONENT, home = true)
     public ComponentDetails details() {
         Component component = componentRepository.load(new ComponentId(componentId));
         if (component == null) {
             throw new NotFoundException("Component " + componentId + " not found");
         }
+        return assemble(component);
+    }
 
+    private ComponentDetails assemble(Component component) {
         ComponentDetails componentDetails = fluentAssembler.assemble(component).to(ComponentDetails.class);
         updateUrls(componentDetails);
         return componentDetails;
+    }
+
+    @PUT
+    public ComponentDetails sync() {
+        Component component = importService.sync(new ComponentId(componentId));
+        return assemble(component);
     }
 
     @PUT

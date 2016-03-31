@@ -21,6 +21,7 @@ import org.seedstack.seed.Logging;
 import org.slf4j.Logger;
 
 import javax.inject.Inject;
+import javax.ws.rs.NotFoundException;
 
 class ImportServiceImpl implements ImportService {
 
@@ -38,7 +39,7 @@ class ImportServiceImpl implements ImportService {
 
     @Override
     public Component importComponent(Source source) {
-        FetchService fetchService = domainRegistry.getService(FetchService.class, source.getVcsType().qualifier());
+        FetchService fetchService = domainRegistry.getService(FetchService.class, source.getSourceType().qualifier());
         FetchResult result = fetchService.fetch(source);
         try {
             checkCurrentUserOwns(result.getComponent());
@@ -48,6 +49,30 @@ class ImportServiceImpl implements ImportService {
             fetchService.clean();
         }
         return result.getComponent();
+    }
+
+    @Override
+    public Component sync(ComponentId componentId) {
+        Component currentComponent = componentRepository.load(componentId);
+        if (currentComponent == null) {
+            throw new NotFoundException("Component " + componentId.getName() + " not found.");
+        }
+        checkCurrentUserOwns(currentComponent);
+
+        Source source = currentComponent.getSource();
+        FetchService fetchService = domainRegistry.getService(FetchService.class, source.getSourceType().qualifier());
+        try {
+            FetchResult result = fetchService.fetch(source);
+
+            currentComponent.getAllDocs().forEach(documentRepository::delete);
+            currentComponent.mergeWith(result.getComponent());
+
+            result.getDocuments().forEach(documentRepository::persist);
+            componentRepository.persist(currentComponent);
+        } finally {
+            fetchService.clean();
+        }
+        return currentComponent;
     }
 
     private void checkCurrentUserOwns(Component component) {

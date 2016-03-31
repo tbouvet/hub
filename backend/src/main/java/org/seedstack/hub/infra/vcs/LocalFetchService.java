@@ -52,6 +52,7 @@ abstract class LocalFetchService implements FetchService {
         doFetch(source.getActualUrl(), target);
         Manifest manifest = manifestParser.parseManifest(target);
         Component component = componentFactory.createComponent(manifest);
+        component.setSource(source);
         Stream<Document> documents = documentFactory.createDocuments(component, target);
         return new FetchResult(component, documents);
     }

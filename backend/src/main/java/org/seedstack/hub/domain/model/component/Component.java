@@ -39,6 +39,7 @@ public class Component extends BaseAggregateRoot<ComponentId> {
     @Min(0)
     private int stars = 0;
     private Set<UserId> maintainers = new HashSet<>();
+    private Source source;
 
     public Component(ComponentId componentId, String name, Owner owner, Description description) {
         this.componentId = componentId;
@@ -134,6 +135,15 @@ public class Component extends BaseAggregateRoot<ComponentId> {
         return Collections.unmodifiableList(docs);
     }
 
+    public List<DocumentId> getAllDocs() {
+        List<DocumentId> documentIds = new ArrayList<>();
+        documentIds.addAll(docs);
+        documentIds.addAll(description.getImages());
+        documentIds.add(description.getIcon());
+        documentIds.add(description.getReadme());
+        return Collections.unmodifiableList(documentIds);
+    }
+
     public Owner getOwner() {
         return owner;
     }
@@ -190,5 +200,13 @@ public class Component extends BaseAggregateRoot<ComponentId> {
         this.releases = component.releases;
         this.docs = component.docs;
         this.maintainers = component.maintainers;
+    }
+
+    public void setSource(Source source) {
+        this.source = source;
+    }
+
+    public Source getSource() {
+        return source;
     }
 }

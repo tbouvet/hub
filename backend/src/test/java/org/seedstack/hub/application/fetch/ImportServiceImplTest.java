@@ -22,7 +22,7 @@ import org.seedstack.hub.domain.model.document.Document;
 import org.seedstack.hub.domain.model.document.DocumentId;
 import org.seedstack.hub.domain.services.fetch.FetchResult;
 import org.seedstack.hub.domain.services.fetch.FetchService;
-import org.seedstack.hub.domain.services.fetch.VCSType;
+import org.seedstack.hub.domain.services.fetch.SourceType;
 
 import java.net.URL;
 import java.util.stream.Stream;
@@ -33,7 +33,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class ImportServiceImplTest {
 
     private URL url;
-    private VCSType vcsType = VCSType.GIT;
+    private SourceType sourceType = SourceType.GIT;
     private Source source;
 
     @Tested
@@ -58,10 +58,10 @@ public class ImportServiceImplTest {
     @Before
     public void setUp() throws Exception {
         url = new URL("https://github.com/seedstack/seed.git");
-        source = new Source(vcsType, url);
+        source = new Source(sourceType, url);
 
         new Expectations() {{
-            domainRegistry.getService(FetchService.class, vcsType.qualifier());
+            domainRegistry.getService(FetchService.class, sourceType.qualifier());
             result = fetchService;
         }};
     }
@@ -102,6 +102,6 @@ public class ImportServiceImplTest {
         givenFetchResult(source);
         givenIsOwner(false);
 
-        underTest.importComponent(new Source(vcsType, url));
+        underTest.importComponent(new Source(sourceType, url));
     }
 }
