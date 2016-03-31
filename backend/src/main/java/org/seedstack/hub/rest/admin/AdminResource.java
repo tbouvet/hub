@@ -9,12 +9,13 @@ package org.seedstack.hub.rest.admin;
 
 import org.seedstack.hub.application.fetch.ImportService;
 import org.seedstack.hub.domain.model.component.Source;
-import org.seedstack.hub.domain.services.fetch.VCSType;
 import org.seedstack.seed.security.RequiresRoles;
 
 import javax.inject.Inject;
-import javax.inject.Named;
-import javax.ws.rs.*;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
 import java.util.List;
 
@@ -24,21 +25,13 @@ public class AdminResource {
 
     @Inject
     private ImportService importService;
-    @Inject @Named("GITHUB")
-    private ImportService importServiceGithub;
 
     @POST
     @RequiresRoles("admin")
     @Path("/import")
     @Consumes({"application/json"})
     public Response importList(List<Source> sources) {
-        for (Source source : sources) {
-            if (source.getVcsType() == VCSType.GITHUB) {
-                importServiceGithub.importComponent(source);
-            } else {
-                importService.importComponent(source);
-            }
-        }
+        sources.forEach(importService::importComponent);
         return Response.ok().build();
     }
 }

@@ -9,9 +9,13 @@ package org.seedstack.hub.application.fetch;
 
 import org.seedstack.business.Service;
 import org.seedstack.hub.domain.model.component.Component;
+import org.seedstack.hub.domain.model.component.ComponentId;
 import org.seedstack.hub.domain.model.component.Source;
 
 @Service
 public interface ImportService {
+
     Component importComponent(Source source);
+
+    Component sync(ComponentId componentId);
 }

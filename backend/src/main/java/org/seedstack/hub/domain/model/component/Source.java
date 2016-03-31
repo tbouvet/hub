@@ -8,31 +8,42 @@
 package org.seedstack.hub.domain.model.component;
 
 import org.seedstack.business.domain.BaseValueObject;
-import org.seedstack.hub.domain.services.fetch.VCSType;
+import org.seedstack.hub.domain.services.fetch.SourceType;
 
+import java.net.MalformedURLException;
 import java.net.URL;
 
 public class Source extends BaseValueObject {
-    private VCSType vcsType;
+    private SourceType sourceType;
     private String url;
 
-    public Source(VCSType vcsType, URL url) {
-        this.vcsType = vcsType;
+    public Source(SourceType sourceType, URL url) {
+        this.sourceType = sourceType;
         this.url = url.toString();
     }
-    public Source(VCSType vcsType, String url) {
-        this.vcsType = vcsType;
+    public Source(SourceType sourceType, String url) {
+        this.sourceType = sourceType;
         this.url = url;
     }
 
     private Source() {
     }
 
-    public VCSType getVcsType() {
-        return vcsType;
+    public SourceType getSourceType() {
+        return sourceType;
     }
 
     public String getUrl() {
         return url;
     }
+
+    public URL getActualUrl() {
+        try {
+            return new URL(url);
+        } catch (MalformedURLException e) {
+            throw new IllegalArgumentException(e.getMessage());
+        }
+    }
+
+
 }

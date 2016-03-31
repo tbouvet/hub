@@ -17,7 +17,7 @@ import org.seedstack.hub.application.fetch.ImportService;
 import org.seedstack.hub.domain.model.component.Component;
 import org.seedstack.hub.domain.model.component.Source;
 import org.seedstack.hub.domain.model.component.State;
-import org.seedstack.hub.domain.services.fetch.VCSType;
+import org.seedstack.hub.domain.services.fetch.SourceType;
 import org.seedstack.hub.rest.shared.*;
 import org.seedstack.seed.Logging;
 import org.seedstack.seed.rest.Rel;
@@ -65,16 +65,16 @@ public class ComponentsResource {
             @FormParam("vcs") @NotBlank @Length(max = 10) String vcs,
             @FormParam("url") @org.hibernate.validator.constraints.URL @NotBlank String sourceUrl
     ) throws URISyntaxException {
-        VCSType vcsType;
+        SourceType sourceType;
         try {
-            vcsType = VCSType.valueOf(vcs.toUpperCase());
+            sourceType = SourceType.valueOf(vcs.toUpperCase());
         } catch (IllegalArgumentException e) {
             throw new BadRequestException("Unsupported VCS type " + vcs);
         }
 
         Component component;
         try {
-            component = importService.importComponent(new Source(vcsType, new URL(sourceUrl)));
+            component = importService.importComponent(new Source(sourceType, new URL(sourceUrl)));
         } catch (MalformedURLException e) {
             throw new BadRequestException("Malformed URL " + sourceUrl);
         } catch (AuthenticationException | AuthorizationException e) {

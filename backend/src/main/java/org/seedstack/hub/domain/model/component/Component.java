@@ -7,14 +7,12 @@
  */
 package org.seedstack.hub.domain.model.component;
 
-import org.hibernate.validator.constraints.NotBlank;
 import org.mongodb.morphia.annotations.Entity;
 import org.mongodb.morphia.annotations.Id;
 import org.mongodb.morphia.annotations.PrePersist;
 import org.seedstack.business.domain.BaseAggregateRoot;
 import org.seedstack.hub.domain.model.document.DocumentId;
 import org.seedstack.hub.domain.model.user.UserId;
-import org.seedstack.seed.core.utils.SeedTupleUtils;
 
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
@@ -28,7 +26,7 @@ public class Component extends BaseAggregateRoot<ComponentId> {
     private String name;
     @NotNull
     private Owner owner;
-    @NotNull
+
     private Description description;
     @NotNull
     private State state = State.PENDING;
@@ -41,13 +39,17 @@ public class Component extends BaseAggregateRoot<ComponentId> {
     @Min(0)
     private int stars = 0;
     private Set<UserId> maintainers = new HashSet<>();
-
+    private Source source;
 
     public Component(ComponentId componentId, String name, Owner owner, Description description) {
         this.componentId = componentId;
         this.name = name;
         this.owner = owner;
         this.description = description;
+    }
+
+    public Component(ComponentId componentId, String name, Owner owner) {
+        this(componentId, name, owner, null);
     }
 
     private Component() {
@@ -133,6 +135,15 @@ public class Component extends BaseAggregateRoot<ComponentId> {
         return Collections.unmodifiableList(docs);
     }
 
+    public List<DocumentId> getAllDocs() {
+        List<DocumentId> documentIds = new ArrayList<>();
+        documentIds.addAll(docs);
+        documentIds.addAll(description.getImages());
+        documentIds.add(description.getIcon());
+        documentIds.add(description.getReadme());
+        return Collections.unmodifiableList(documentIds);
+    }
+
     public Owner getOwner() {
         return owner;
     }
@@ -166,5 +177,36 @@ public class Component extends BaseAggregateRoot<ComponentId> {
     public void replaceMaintainers(List<UserId> maintainers) {
         this.maintainers.clear();
         this.maintainers.addAll(maintainers);
+    }
+
+    /**
+     * Replace the actual component properties by the new ones, but keep:
+     * <ul>
+     *     <li>id</li>
+     *     <li>comments</li>
+     *     <li>stars</li>
+     *     <li>state</li>
+     * </ul>
+     *
+     * @param component the new component
+     */
+    public void mergeWith(Component component) {
+        if (!componentId.equals(component.componentId)) {
+            throw new ComponentException("Can't merge components with different ids");
+        }
+        this.name = component.name;
+        this.owner = component.owner;
+        this.description = component.description;
+        this.releases = component.releases;
+        this.docs = component.docs;
+        this.maintainers = component.maintainers;
+    }
+
+    public void setSource(Source source) {
+        this.source = source;
+    }
+
+    public Source getSource() {
+        return source;
     }
 }

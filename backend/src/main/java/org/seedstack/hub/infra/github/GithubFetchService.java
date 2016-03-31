@@ -5,20 +5,19 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
-package org.seedstack.hub.application.fetch;
+package org.seedstack.hub.infra.github;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import org.seedstack.business.domain.Repository;
+import org.seedstack.hub.application.fetch.Manifest;
+import org.seedstack.hub.application.fetch.ReleaseDTO;
 import org.seedstack.hub.domain.model.component.Component;
 import org.seedstack.hub.domain.model.component.ComponentFactory;
 import org.seedstack.hub.domain.model.component.ComponentId;
 import org.seedstack.hub.domain.model.component.Source;
-import org.seedstack.hub.domain.model.document.BinaryDocument;
-import org.seedstack.hub.domain.model.document.Document;
-import org.seedstack.hub.domain.model.document.DocumentFactory;
-import org.seedstack.hub.domain.model.document.DocumentId;
-import org.seedstack.hub.domain.model.document.DocumentScope;
-import org.seedstack.hub.domain.model.document.TextFormat;
+import org.seedstack.hub.domain.model.document.*;
+import org.seedstack.hub.domain.services.fetch.FetchException;
+import org.seedstack.hub.domain.services.fetch.FetchResult;
+import org.seedstack.hub.domain.services.fetch.FetchService;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -29,40 +28,36 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.util.stream.Stream;
 
-@Named("GITHUB")
-class ImportServiceGithub implements ImportService {
+@Named("github")
+class GithubFetchService implements FetchService {
 
-    @Inject
-    private Repository<Component, ComponentId> componentRepository;
     @Inject
     private ComponentFactory componentFactory;
     @Inject
     private DocumentFactory documentFactory;
     @Inject
-    private Repository<Document, DocumentId> documentRepository;
-    @Inject
     private GithubClient githubClient;
 
     @Override
-    public Component importComponent(Source source) {
+    public FetchResult fetch(Source source) throws FetchException {
         String[] parts = source.getUrl().split("/");
         return importFromGithub(parts[0], parts[1]);
     }
 
-    private Component importFromGithub(String organisationName, String componentName) {
+    private FetchResult importFromGithub(String organisationName, String componentName) {
         Manifest manifest = importComponentFromGithub(organisationName, componentName);
         addReleasesToManifest(manifest);
         Component component = componentFactory.createComponent(manifest);
 
-        DocumentId iconId = fetchAndSaveIcon(manifest);
-        component.setDescription(component.getDescription().changeIcon(iconId));
+        Document icon = fetchAndSaveIcon(manifest);
+        component.setDescription(component.getDescription().changeIcon(icon.getId()));
 
-        DocumentId readmeId = fetchAndSaveReadme(manifest);
-        component.setDescription(component.getDescription().setReadme(readmeId));
+        Document readme = fetchAndSaveReadme(manifest);
+        component.setDescription(component.getDescription().setReadme(readme.getId()));
 
-        componentRepository.persist(component);
-        return component;
+        return new FetchResult(component, Stream.of(icon, readme));
     }
 
     private Manifest importComponentFromGithub(String organisationName, String componentName) {
@@ -93,21 +88,17 @@ class ImportServiceGithub implements ImportService {
         return ownerName;
     }
 
-    private DocumentId fetchAndSaveReadme(Manifest manifest) {
+    private Document fetchAndSaveReadme(Manifest manifest) {
         String readmeContent = githubClient.getReadme(normalizeOrgName(manifest.getOwner()), manifest.getId());
         DocumentId readmeId = new DocumentId(new ComponentId(manifest.getId()), DocumentScope.FILE, "README.md");
-        Document readme = documentFactory.createTextDocument(readmeId, TextFormat.MARKDOWN, readmeContent);
-        documentRepository.persist(readme);
-        return readmeId;
+        return documentFactory.createTextDocument(readmeId, TextFormat.MARKDOWN, readmeContent);
     }
 
-    private DocumentId fetchAndSaveIcon(Manifest manifest) {
+    private Document fetchAndSaveIcon(Manifest manifest) {
         byte[] bytes = githubClient.getImage(URI.create(manifest.getIcon()));
         String iconName = getLastPartOfUrl(manifest.getIcon());
         DocumentId iconId = new DocumentId(new ComponentId(manifest.getId()), DocumentScope.FILE, iconName);
-        BinaryDocument icon = documentFactory.createBinaryDocument(iconId, iconName, bytes);
-        documentRepository.persist(icon);
-        return iconId;
+        return documentFactory.createBinaryDocument(iconId, iconName, bytes);
     }
 
     private String getLastPartOfUrl(String ownerIconUrl) {
@@ -149,5 +140,10 @@ class ImportServiceGithub implements ImportService {
             return name.substring(1);
         }
         return name;
+    }
+
+    @Override
+    public void clean() {
+        // nothing to do
     }
 }

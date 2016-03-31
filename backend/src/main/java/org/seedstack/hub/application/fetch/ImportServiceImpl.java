@@ -10,115 +10,74 @@ package org.seedstack.hub.application.fetch;
 import org.seedstack.business.domain.DomainRegistry;
 import org.seedstack.business.domain.Repository;
 import org.seedstack.hub.application.security.SecurityService;
-import org.seedstack.hub.domain.model.component.*;
+import org.seedstack.hub.domain.model.component.Component;
+import org.seedstack.hub.domain.model.component.ComponentId;
+import org.seedstack.hub.domain.model.component.Source;
 import org.seedstack.hub.domain.model.document.Document;
-import org.seedstack.hub.domain.model.document.DocumentFactory;
 import org.seedstack.hub.domain.model.document.DocumentId;
+import org.seedstack.hub.domain.services.fetch.FetchResult;
 import org.seedstack.hub.domain.services.fetch.FetchService;
-import org.seedstack.hub.domain.services.text.TextService;
 import org.seedstack.seed.Logging;
 import org.slf4j.Logger;
 
 import javax.inject.Inject;
-import java.io.File;
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.nio.file.FileVisitResult;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.SimpleFileVisitor;
-import java.nio.file.attribute.BasicFileAttributes;
+import javax.ws.rs.NotFoundException;
 
 class ImportServiceImpl implements ImportService {
 
-    @Inject
-    private ManifestParser manifestParser;
-    @Inject
-    private TextService textService;
+    @Logging
+    private Logger logger;
+
     @Inject
     private DomainRegistry domainRegistry;
-    @Inject
-    private ComponentFactory componentFactory;
-    @Inject
-    private DocumentFactory documentFactory;
     @Inject
     private SecurityService securityService;
     @Inject
     private Repository<Component, ComponentId> componentRepository;
     @Inject
     private Repository<Document, DocumentId> documentRepository;
-    @Logging
-    private Logger logger;
 
     @Override
     public Component importComponent(Source source) {
-        File tempDir = getWorkingDirectory();
+        FetchService fetchService = domainRegistry.getService(FetchService.class, source.getSourceType().qualifier());
+        FetchResult result = fetchService.fetch(source);
         try {
-            fetchFromVCS(source, tempDir);
-
-            Manifest manifest = manifestParser.parseManifest(tempDir);
-            Component component = componentFactory.createComponent(manifest);
-            checkCurrentUserOwns(component);
-            componentRepository.persist(component);
-
-            documentFactory.createDocuments(component, tempDir)
-                    .forEach(documentRepository::persist);
-
-            return component;
+            checkCurrentUserOwns(result.getComponent());
+            componentRepository.persist(result.getComponent());
+            result.getDocuments().forEach(documentRepository::persist);
         } finally {
-            deleteWorkingDirectory(tempDir);
+            fetchService.clean();
         }
+        return result.getComponent();
     }
 
-    private void fetchFromVCS(Source source, File tempDir) {
-        FetchService service = domainRegistry.getService(FetchService.class, source.getVcsType().qualifier());
-        try {
-            service.fetchRepository(new URL(source.getUrl()), tempDir);
-        } catch (MalformedURLException e) {
-            throw new ImportException("Invalid URL: " + source.getUrl());
+    @Override
+    public Component sync(ComponentId componentId) {
+        Component currentComponent = componentRepository.load(componentId);
+        if (currentComponent == null) {
+            throw new NotFoundException("Component " + componentId.getName() + " not found.");
         }
+        checkCurrentUserOwns(currentComponent);
+
+        Source source = currentComponent.getSource();
+        FetchService fetchService = domainRegistry.getService(FetchService.class, source.getSourceType().qualifier());
+        try {
+            FetchResult result = fetchService.fetch(source);
+
+            currentComponent.getAllDocs().forEach(documentRepository::delete);
+            currentComponent.mergeWith(result.getComponent());
+
+            result.getDocuments().forEach(documentRepository::persist);
+            componentRepository.persist(currentComponent);
+        } finally {
+            fetchService.clean();
+        }
+        return currentComponent;
     }
 
     private void checkCurrentUserOwns(Component component) {
         if (!securityService.isOwnerOf(component)) {
             throw new ImportException("Authenticated user is not the owner of component");
-        }
-    }
-
-    private File getWorkingDirectory() {
-        try {
-            return Files.createTempDirectory("tempfiles").toFile();
-        } catch (IOException e) {
-            throw new ImportException("Unable to create work directory", e);
-        }
-    }
-
-    private void deleteWorkingDirectory(File directory) {
-        try {
-            Files.walkFileTree(directory.toPath(), new SimpleFileVisitor<Path>() {
-                @Override
-                public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
-                    return safeDelete(file);
-                }
-
-                private FileVisitResult safeDelete(Path file) {
-                    try {
-                        Files.delete(file);
-                        return FileVisitResult.CONTINUE;
-                    } catch (Exception e) {
-                        logger.warn(e.getMessage());
-                        return FileVisitResult.TERMINATE;
-                    }
-                }
-
-                @Override
-                public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
-                    return safeDelete(dir);
-                }
-            });
-        } catch (IOException e) {
-            logger.warn("Unable to delete working directory " + directory.getAbsolutePath(), e);
         }
     }
 }

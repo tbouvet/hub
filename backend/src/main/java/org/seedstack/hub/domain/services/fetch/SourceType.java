@@ -7,7 +7,7 @@
  */
 package org.seedstack.hub.domain.services.fetch;
 
-public enum VCSType {
+public enum SourceType {
     GIT,
     SVN,
     GITHUB;
