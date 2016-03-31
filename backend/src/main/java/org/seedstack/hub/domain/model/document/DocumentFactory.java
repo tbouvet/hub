@@ -9,6 +9,7 @@ package org.seedstack.hub.domain.model.document;
 
 import org.seedstack.business.domain.GenericFactory;
 import org.seedstack.hub.domain.model.component.Component;
+import org.seedstack.hub.domain.model.user.UserId;
 
 import java.io.File;
 import java.util.stream.Stream;
@@ -16,9 +17,11 @@ import java.util.stream.Stream;
 public interface DocumentFactory extends GenericFactory<Document> {
     Document createDocument(DocumentId documentId, File directory);
 
-    Document createTextDocument(DocumentId documentId, TextFormat textFormat, File file);
+    TextDocument createTextDocument(DocumentId documentId, TextFormat textFormat, File file);
 
-    Document createTextDocument(DocumentId documentId, TextFormat textFormat, String body);
+    TextDocument createTextDocument(DocumentId documentId, TextFormat textFormat, String body);
+
+    WikiDocument createWikiDocument(DocumentId documentId, String body, UserId author, String message);
 
     BinaryDocument createBinaryDocument(DocumentId documentId, File file);
 

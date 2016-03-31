@@ -10,8 +10,16 @@ package org.seedstack.hub.infra.file;
 import org.seedstack.business.domain.BaseFactory;
 import org.seedstack.business.domain.Repository;
 import org.seedstack.hub.application.fetch.Manifest;
-import org.seedstack.hub.domain.model.component.*;
+import org.seedstack.hub.domain.model.component.Component;
+import org.seedstack.hub.domain.model.component.ComponentException;
+import org.seedstack.hub.domain.model.component.ComponentFactory;
+import org.seedstack.hub.domain.model.component.ComponentId;
+import org.seedstack.hub.domain.model.component.Description;
+import org.seedstack.hub.domain.model.component.Owner;
+import org.seedstack.hub.domain.model.component.Release;
+import org.seedstack.hub.domain.model.component.Version;
 import org.seedstack.hub.domain.model.document.DocumentId;
+import org.seedstack.hub.domain.model.document.DocumentScope;
 import org.seedstack.hub.domain.model.organisation.Organisation;
 import org.seedstack.hub.domain.model.organisation.OrganisationId;
 import org.seedstack.hub.domain.model.user.UserId;
@@ -45,7 +53,7 @@ class ComponentFactoryImpl extends BaseFactory<Component> implements ComponentFa
         addReleases(manifest, component);
 
         if (manifest.getDocs() != null) {
-            component.replaceDocs(manifest.getDocs().stream().map(s -> new DocumentId(componentId, s)).collect(Collectors.toList()));
+            component.replaceDocs(manifest.getDocs().stream().map(s -> new DocumentId(componentId, DocumentScope.FILE, s)).collect(Collectors.toList()));
         }
 
         if (manifest.getMaintainers() != null && !manifest.getMaintainers().isEmpty()) {
@@ -94,8 +102,8 @@ class ComponentFactoryImpl extends BaseFactory<Component> implements ComponentFa
                 componentId.getName(),
                 manifest.getSummary(),
                 manifest.getLicense(),
-                manifest.getIcon() != null ? new DocumentId(componentId, manifest.getIcon()) : null,
-                manifest.getReadme() != null ? new DocumentId(componentId, manifest.getReadme()) : null
+                manifest.getIcon() != null ? new DocumentId(componentId, DocumentScope.FILE, manifest.getIcon()) : null,
+                manifest.getReadme() != null ? new DocumentId(componentId, DocumentScope.FILE, manifest.getReadme()) : null
         );
 
         if (manifest.getUrl() != null) {
@@ -115,7 +123,7 @@ class ComponentFactoryImpl extends BaseFactory<Component> implements ComponentFa
 
         List<String> images = manifest.getImages();
         if (images != null && !images.isEmpty()) {
-            description = description.replaceImages(images.stream().map(s -> new DocumentId(componentId, s)).collect(Collectors.toList()));
+            description = description.replaceImages(images.stream().map(s -> new DocumentId(componentId, DocumentScope.FILE, s)).collect(Collectors.toList()));
         }
 
         return description;

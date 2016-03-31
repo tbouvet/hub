@@ -13,7 +13,12 @@ import org.seedstack.hub.domain.model.component.Component;
 import org.seedstack.hub.domain.model.component.ComponentFactory;
 import org.seedstack.hub.domain.model.component.ComponentId;
 import org.seedstack.hub.domain.model.component.Source;
-import org.seedstack.hub.domain.model.document.*;
+import org.seedstack.hub.domain.model.document.BinaryDocument;
+import org.seedstack.hub.domain.model.document.Document;
+import org.seedstack.hub.domain.model.document.DocumentFactory;
+import org.seedstack.hub.domain.model.document.DocumentId;
+import org.seedstack.hub.domain.model.document.DocumentScope;
+import org.seedstack.hub.domain.model.document.TextFormat;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -90,7 +95,7 @@ class ImportServiceGithub implements ImportService {
 
     private DocumentId fetchAndSaveReadme(Manifest manifest) {
         String readmeContent = githubClient.getReadme(normalizeOrgName(manifest.getOwner()), manifest.getId());
-        DocumentId readmeId = new DocumentId(new ComponentId(manifest.getId()), "README.md");
+        DocumentId readmeId = new DocumentId(new ComponentId(manifest.getId()), DocumentScope.FILE, "README.md");
         Document readme = documentFactory.createTextDocument(readmeId, TextFormat.MARKDOWN, readmeContent);
         documentRepository.persist(readme);
         return readmeId;
@@ -99,7 +104,7 @@ class ImportServiceGithub implements ImportService {
     private DocumentId fetchAndSaveIcon(Manifest manifest) {
         byte[] bytes = githubClient.getImage(URI.create(manifest.getIcon()));
         String iconName = getLastPartOfUrl(manifest.getIcon());
-        DocumentId iconId = new DocumentId(new ComponentId(manifest.getId()), iconName);
+        DocumentId iconId = new DocumentId(new ComponentId(manifest.getId()), DocumentScope.FILE, iconName);
         BinaryDocument icon = documentFactory.createBinaryDocument(iconId, iconName, bytes);
         documentRepository.persist(icon);
         return iconId;

@@ -17,18 +17,38 @@ import javax.validation.constraints.NotNull;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+/**
+ * Identifies a document globally in the hub.
+ */
 @Embedded
 public class DocumentId extends BaseValueObject {
     @NotNull
     private ComponentId componentId;
+    @NotNull
+    private DocumentScope scope;
     @NotBlank
     private String path;
 
-    public DocumentId(ComponentId componentId, String path) {
+    /**
+     * Creates a document identifier.
+     *
+     * @param componentId the component the document identified by this identifier is attached to.
+     * @param scope       the scope of the document (attached file, wiki, ...).
+     * @param path        the relative path of the document.
+     */
+    public DocumentId(ComponentId componentId, DocumentScope scope, String path) {
         this.componentId = componentId;
+        this.scope = scope;
         this.path = path;
     }
 
+    /**
+     * Creates a document identifier by concatenating the path of another document identifier. The component identifier
+     * and the scope are copied as-is.
+     *
+     * @param documentId the base document identifier.
+     * @param path       the path suffix to concatenate to the path of the base document identifier.
+     */
     public DocumentId(DocumentId documentId, String path) {
         this.componentId = documentId.componentId;
         try {
@@ -42,10 +62,23 @@ public class DocumentId extends BaseValueObject {
         // required by morphia
     }
 
+    /**
+     * @return the component identifier the document identified by this identifier is attached to.
+     */
     public ComponentId getComponentId() {
         return componentId;
     }
 
+    /**
+     * @return the document scope.
+     */
+    public DocumentScope getScope() {
+        return scope;
+    }
+
+    /**
+     * @return the relative path of the document.
+     */
     public String getPath() {
         return path;
     }

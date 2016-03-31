@@ -13,7 +13,12 @@ import org.seedstack.seed.LifecycleListener;
 
 import javax.inject.Inject;
 import java.io.IOException;
-import java.net.*;
+import java.net.Authenticator;
+import java.net.PasswordAuthentication;
+import java.net.Proxy;
+import java.net.ProxySelector;
+import java.net.SocketAddress;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -21,7 +26,6 @@ import java.util.regex.Pattern;
 
 class ProxySelectorService extends ProxySelector implements LifecycleListener {
 
-    private static final String PROXY = "proxy";
     private ProxySelector defaultProxySelector;
     private Proxy proxy;
 
@@ -98,5 +102,6 @@ class ProxySelectorService extends ProxySelector implements LifecycleListener {
     @Override
     public void stopping() {
         ProxySelector.setDefault(null);
+        Authenticator.setDefault(null);
     }
 }

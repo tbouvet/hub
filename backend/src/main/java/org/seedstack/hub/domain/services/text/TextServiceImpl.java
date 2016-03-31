@@ -10,6 +10,7 @@ package org.seedstack.hub.domain.services.text;
 import org.seedstack.business.domain.DomainRegistry;
 import org.seedstack.hub.domain.model.component.ComponentId;
 import org.seedstack.hub.domain.model.document.DocumentId;
+import org.seedstack.hub.domain.model.document.DocumentScope;
 import org.seedstack.hub.domain.model.document.TextDocument;
 import org.seedstack.hub.domain.model.document.TextFormat;
 
@@ -37,7 +38,7 @@ class TextServiceImpl implements TextService {
                     for (TextFormat textFormat : TextFormat.values()) {
                         for (String validExtension : textFormat.validExtensions()) {
                             if (String.format("%s.%s", name, validExtension).equalsIgnoreCase(file.getName())) {
-                                return new DocumentId(componentId, file.getName());
+                                return new DocumentId(componentId, DocumentScope.FILE, file.getName());
                             }
                         }
                     }
