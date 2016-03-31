@@ -5,10 +5,11 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
-package org.seedstack.hub.application.fetch;
+package org.seedstack.hub.infra.github;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.seedstack.hub.application.fetch.ImportException;
 
 import javax.ws.rs.NotFoundException;
 import javax.ws.rs.client.Client;

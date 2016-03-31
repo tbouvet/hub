@@ -13,5 +13,6 @@ import org.seedstack.hub.domain.model.component.Source;
 
 @Service
 public interface ImportService {
+
     Component importComponent(Source source);
 }

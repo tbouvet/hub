@@ -10,6 +10,7 @@ package org.seedstack.hub.domain.model.component;
 import org.seedstack.business.domain.BaseValueObject;
 import org.seedstack.hub.domain.services.fetch.VCSType;
 
+import java.net.MalformedURLException;
 import java.net.URL;
 
 public class Source extends BaseValueObject {
@@ -35,4 +36,14 @@ public class Source extends BaseValueObject {
     public String getUrl() {
         return url;
     }
+
+    public URL getActualUrl() {
+        try {
+            return new URL(url);
+        } catch (MalformedURLException e) {
+            throw new IllegalArgumentException(e.getMessage());
+        }
+    }
+
+
 }

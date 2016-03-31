@@ -21,7 +21,7 @@ import java.io.File;
 import java.net.URL;
 
 @Named("svn")
-class SvnFetchService extends AbstractFetchService {
+class SvnFetchService extends LocalFetchService {
     @Logging
     private Logger logger;
 

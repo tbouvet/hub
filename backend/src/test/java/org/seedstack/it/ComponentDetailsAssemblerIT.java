@@ -16,6 +16,7 @@ import org.seedstack.hub.rest.detail.ComponentDetails;
 import org.seedstack.hub.rest.detail.ComponentDetailsAssembler;
 import org.seedstack.seed.it.SeedITRunner;
 import org.seedstack.seed.rest.hal.Link;
+import org.seedstack.seed.security.WithUser;
 
 import javax.inject.Inject;
 
@@ -27,6 +28,7 @@ public class ComponentDetailsAssemblerIT {
     @Inject
     private ComponentDetailsAssembler assembler;
 
+    @WithUser(id = "admin", password = "password")
     @Test
     public void testAssemble() throws Exception {
         ComponentDetails detail = assembler.assembleDtoFromAggregate(MockBuilder.mock(2));

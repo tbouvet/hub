@@ -8,11 +8,11 @@
 package org.seedstack.hub.domain.services.fetch;
 
 import org.seedstack.business.Service;
-
-import java.io.File;
-import java.net.URL;
+import org.seedstack.hub.domain.model.component.Source;
 
 @Service
 public interface FetchService {
-    void fetchRepository(URL remote, File target) throws FetchException;
+    FetchResult fetch(Source remote) throws FetchException;
+
+    void clean();
 }

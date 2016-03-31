@@ -16,15 +16,13 @@ import org.seedstack.business.domain.DomainRegistry;
 import org.seedstack.business.domain.Repository;
 import org.seedstack.hub.application.security.SecurityService;
 import org.seedstack.hub.domain.model.component.Component;
-import org.seedstack.hub.domain.model.component.ComponentFactory;
 import org.seedstack.hub.domain.model.component.ComponentId;
 import org.seedstack.hub.domain.model.component.Source;
 import org.seedstack.hub.domain.model.document.Document;
-import org.seedstack.hub.domain.model.document.DocumentFactory;
 import org.seedstack.hub.domain.model.document.DocumentId;
+import org.seedstack.hub.domain.services.fetch.FetchResult;
 import org.seedstack.hub.domain.services.fetch.FetchService;
 import org.seedstack.hub.domain.services.fetch.VCSType;
-import org.seedstack.hub.domain.services.text.TextService;
 
 import java.net.URL;
 import java.util.stream.Stream;
@@ -36,20 +34,13 @@ public class ImportServiceImplTest {
 
     private URL url;
     private VCSType vcsType = VCSType.GIT;
+    private Source source;
 
     @Tested
     private ImportServiceImpl underTest;
 
     @Injectable
-    private ManifestParser manifestParser;
-    @Injectable
-    private TextService textService;
-    @Injectable
     private DomainRegistry domainRegistry;
-    @Injectable
-    private ComponentFactory componentFactory;
-    @Injectable
-    private DocumentFactory documentFactory;
     @Injectable
     private SecurityService securityService;
     @Injectable
@@ -67,6 +58,7 @@ public class ImportServiceImplTest {
     @Before
     public void setUp() throws Exception {
         url = new URL("https://github.com/seedstack/seed.git");
+        source = new Source(vcsType, url);
 
         new Expectations() {{
             domainRegistry.getService(FetchService.class, vcsType.qualifier());
@@ -76,11 +68,10 @@ public class ImportServiceImplTest {
 
     @Test
     public void testImportComponentWithDocuments() throws Exception {
-        givenComponent();
-        givenDocuments();
+        givenFetchResult(source);
         givenIsOwner(true);
 
-        Component component = underTest.importComponent(new Source(vcsType, url));
+        Component component = underTest.importComponent(source);
 
         assertThat(component).isNotNull();
 
@@ -92,17 +83,10 @@ public class ImportServiceImplTest {
         }};
     }
 
-    private void givenComponent() {
+    private void givenFetchResult(Source source) {
         new Expectations() {{
-            componentFactory.createComponent(withNotNull());
-            result = component;
-        }};
-    }
-
-    private void givenDocuments() {
-        new Expectations() {{
-            documentFactory.createDocuments(withNotNull(), withNotNull());
-            result = Stream.of(document, document);
+            fetchService.fetch(source);
+            result = new FetchResult(component, Stream.of(document, document));
         }};
     }
 
@@ -115,7 +99,7 @@ public class ImportServiceImplTest {
 
     @Test(expected = ImportException.class)
     public void testOnlyOwnerCanImport() throws Exception {
-        givenComponent();
+        givenFetchResult(source);
         givenIsOwner(false);
 
         underTest.importComponent(new Source(vcsType, url));
