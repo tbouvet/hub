@@ -7,23 +7,34 @@
  */
 
 import module =  require('../module');
+import moduleConfig =  require('module');
 import angular = require('{angular}/angular');
 import toolbarTemplate = require('[text]!{hub}/modules/directives/toolbar/toolbar.html');
 
+var config = moduleConfig && moduleConfig['config']() || {};
+
 interface ISidebarScope extends ng.IScope {
+    userPrincipals:any;
+    config: {},
     toggleSidebar(): void,
     routeToSearchView (query: string): void,
     query: string
 }
 
 class HubToolbar implements ng.IDirective {
-    static $inject = ['$mdSidenav', '$location'];
-    constructor(private $mdSidenav, private $location) {
+    static $inject = ['$mdSidenav', '$location', 'EventService', 'AuthenticationService'];
+    constructor(private $mdSidenav, private $location, private eventService, private authenticationService) {
     };
 
     template:string = toolbarTemplate;
 
     link:ng.IDirectiveLinkFn = (scope:ISidebarScope) => {
+        scope.config = config;
+
+        this.eventService.on('w20.security.authenticated', () => {
+            scope.userPrincipals = this.authenticationService.subjectPrincipals();
+        });
+
 
         scope.query = this.$location.search().search || '';
 

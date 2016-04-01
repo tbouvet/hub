@@ -12,7 +12,7 @@ import speedDialTemplate = require('[text]!{hub}/modules/directives/speed-dial/s
 import IAngularEvent = angular.IAngularEvent;
 
 interface ISpeedDialScope extends ng.IScope {
-    showAddComponent(event:IAngularEvent);
+    showImportComponent(event:IAngularEvent);
 }
 
 class HubSpeedDial implements ng.IDirective {
@@ -24,21 +24,8 @@ class HubSpeedDial implements ng.IDirective {
     template:string = speedDialTemplate;
 
     link:ng.IDirectiveLinkFn = (scope:ISpeedDialScope) => {
-        scope.showAddComponent = event => {
-            var useFullScreen = (this.$mdMedia('xs'));
-            var promise = this.$mdDialog.show({
-                controller: 'AddComponentController',
-                controllerAs: '$ctrl',
-                templateUrl: require.toUrl('{hub}/modules/directives/speed-dial/actions/templates/component.tmpl.html'),
-                parent: angular.element(document.body),
-                targetEvent: event,
-                clickOutsideToClose: false,
-                fullscreen: useFullScreen
-            });
-
-            promise.then(resolvedComponent => {
-                this.$location.path('/hub/component/' + resolvedComponent.id);
-            });
+        scope.showImportComponent = event => {
+            this.$location.path('/hub/import-component');
         };
     };
 }

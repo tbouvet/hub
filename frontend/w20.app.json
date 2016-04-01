@@ -1,5 +1,12 @@
 {
-    "src/hub.w20.json": {},
+    "src/hub.w20.json": {
+        "modules": {
+            "toolbar": {
+                "logoUrl": "http://seedstack.org/img/logos/seedstack-logo-round.svg",
+                "name": "SeedStack"
+            }
+        }
+    },
 
     "bower_components/w20/w20-core.w20.json": {
         "modules": {

@@ -18,14 +18,7 @@ html, body  {
 }
 
 #sidebar {
-    md-toolbar {
-        height: 200px !important;
-        max-height:200px !important;
-        .user-icon {
-            margin: -15px 120px 0 -15px;
-            font-size: 150px
-        }
-    }
+    margin-top: 65px;
     button {
         text-align: left !important;
     }
@@ -33,26 +26,20 @@ html, body  {
     md-sidenav&,
     md-sidenav.md-locked-open&,
     md-sidenav.md-closed.md-locked-open-add-active& {
-        min-width: 200px !important;
-        width: 300px !important;
-        max-width: 400px !important;
+        width: 200px !important;
+        max-width: 200px !important;
     }
 }
 
 #view {
     height: 100%;
     background-color: #fafafa; /* #fafafa or #EEEEEE ? */
-    padding-left: 13%;
-    padding-right: 13%;
+    padding-left: 18%;
+    padding-right: 18%;
 }
 
 #home {
     background-color: inherit;
-    md-card-content {
-        height: 49px;
-        max-height: 52px;
-        overflow: hidden;
-    }
 }
 
 #main-speed-dial {
@@ -60,6 +47,11 @@ html, body  {
     bottom: 20px;
     right: 60px;
 }
+
+md-backdrop.md-sidenav-backdrop{
+    display:none
+}
+
 
 md-card[md-ink-ripple] {
     cursor: pointer;
@@ -84,31 +76,33 @@ md-card[md-ink-ripple] {
     background-color: inherit;
 }
 
+.hub-card {
+    width: 100%;
+    md-card-content {
+        height: 49px;
+        max-height: 49px;
+        overflow: hidden;
+    }
+}
+
 .hub-card:hover {
     box-shadow:0 1px 4px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.1) inset;
 }
 
 .component-icon {
+    width: 100px;
     max-width: 100%;
     min-width: 100px;
     min-height: 100px;
     height: auto
 }
 
-/*.circular {
-    margin: 10px;
-    padding: 1px;
-    width: 100px;
-    height: 100px;
-    border: 10px solid #e1ead5;
-    border-radius: 150px;
-    -webkit-border-radius: 150px;
-    -moz-border-radius: 150px;
-}*/
-
-@media screen and (max-width: 900px) {
+@media screen and (max-width: 980px) {
     #view {
         padding: 0;
+    }
+    #sidebar {
+        margin-top: 56px;
     }
 }
 

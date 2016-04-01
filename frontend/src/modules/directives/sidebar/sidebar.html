@@ -7,15 +7,13 @@
     file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 -->
-<md-toolbar class="md-tall">
-    <h1 class="md-toolbar-tools">Hub</h1>
-    <div layout="row">
-        <md-icon class="user-icon" md-font-set="material-icons" class>person_pin_circle</md-icon>
-        <h3 class="md-subhead" style="margin-top: 30px;">{{ userPrincipals.userId }}</h3>
+<md-toolbar>
+    <div layout="row" layout-align="center center">
+        <h3 class="md-subhead" style="text-overflow: ellipsis;">{{ userPrincipals.userId }}</h3>
     </div>
 </md-toolbar>
-<md-list id="sidebar">
-    <span class="subheader">{{ userPrincipals.userId }}</span>
+<md-list id="sidebar-list">
+    <span class="subheader">User</span>
     <md-list-item data-ng-if="authorizationService.hasRole('seed-w20', ['admin'])">
         <md-button flex ng-click="route('/hub/admin')">
             <md-icon md-font-set="material-icons">security</md-icon>

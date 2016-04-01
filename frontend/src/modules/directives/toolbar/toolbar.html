@@ -20,4 +20,27 @@
                      md-min-length="2"
                      placeholder="Search components">
     </md-autocomplete>
+    <div flex></div>
+    <div id="identity">
+        <md-menu>
+            <md-button style="width: 155px" aria-label="User actions" class="md-icon-button" ng-click="$mdOpenMenu($event)">
+                <md-icon aria-label="User-Menu" md-font-set="material-icons">person</md-icon>
+                {{ userPrincipals.userId }}
+            </md-button>
+            <md-menu-content width="4">
+                <md-menu-item>
+                    <md-button ng-click="route('/hub/user')">
+                        My components
+                    </md-button>
+                </md-menu-item>
+            </md-menu-content>
+        </md-menu>
+    </div>
+    <div flex></div>
+    <div>
+         <span style="line-height: 4">
+            {{ config.name }}
+            <img style="width: 33px;" ng-src="{{ config.logoUrl }}" err-src="src/img/default-component.png">
+        </span>
+    </div>
 </div>
