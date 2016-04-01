@@ -7,8 +7,14 @@
  */
 package org.seedstack.it;
 
-import org.mongodb.morphia.Datastore;
-import org.seedstack.mongodb.morphia.MorphiaDatastore;
+import org.seedstack.business.domain.Repository;
+import org.seedstack.hub.domain.model.component.Component;
+import org.seedstack.hub.domain.model.component.ComponentId;
+import org.seedstack.hub.domain.model.document.Document;
+import org.seedstack.hub.domain.model.document.DocumentId;
+import org.seedstack.hub.domain.model.organisation.Organisation;
+import org.seedstack.hub.domain.model.organisation.OrganisationId;
+import org.seedstack.hub.domain.model.user.UserRepository;
 import org.seedstack.seed.LifecycleListener;
 
 import javax.inject.Inject;
@@ -16,8 +22,13 @@ import javax.inject.Inject;
 public class DataCleanerLifecycleListener implements LifecycleListener {
 
     @Inject
-    @MorphiaDatastore(clientName = "main", dbName = "hub")
-    private Datastore datastore;
+    private Repository<Component, ComponentId> componentRepository;
+    @Inject
+    private Repository<Document, DocumentId> documentRepository;
+    @Inject
+    private Repository<Organisation, OrganisationId> organisationRepository;
+    @Inject
+    private UserRepository userRepository;
 
     @Override
     public void started() {
@@ -25,9 +36,9 @@ public class DataCleanerLifecycleListener implements LifecycleListener {
 
     @Override
     public void stopping() {
-        datastore.getDB().getCollection("components").drop();
-        datastore.getDB().getCollection("users").drop();
-        datastore.getDB().getCollection("organisations").drop();
-        datastore.getDB().getCollection("documents").drop();
+        componentRepository.clear();
+        documentRepository.clear();
+        organisationRepository.clear();
+        userRepository.clear();
     }
 }

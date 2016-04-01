@@ -19,6 +19,7 @@ import org.seedstack.hub.domain.model.component.ComponentId;
 import org.seedstack.hub.domain.model.component.State;
 import org.seedstack.hub.rest.list.ComponentCard;
 import org.seedstack.hub.rest.list.ComponentFinder;
+import org.seedstack.hub.rest.list.SortType;
 import org.seedstack.mongodb.morphia.MorphiaDatastore;
 
 import javax.inject.Inject;
@@ -26,6 +27,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 class ComponentMongoFinder extends AbstractMongoFinder implements ComponentFinder {
+
+    private static final String RECENT_ORDER = "-releases.date";
+    private static final String STARS_ORDER = "-stars";
+    private static final String NAME_ORDER = "name";
 
     @Inject
     @MorphiaDatastore(clientName = "main", dbName = "hub")
@@ -35,17 +40,32 @@ class ComponentMongoFinder extends AbstractMongoFinder implements ComponentFinde
     private FluentAssembler fluentAssembler;
 
     @Override
-    public Result<ComponentCard> findCards(Range range, String searchName, String sort) {
-        Query<Component> query = datastore.find(Component.class).order("name");
+    public Result<ComponentCard> findPublishedCards(Range range, SortType sort, String searchName) {
+        Query<Component> query = datastore.find(Component.class);
+        addSort(sort, query);
         if (searchName != null && !"".equals(searchName)) {
             query = query.field("_id.name").containsIgnoreCase(searchName);
         }
-        return findPublishedComponentCards(query, range);
-    }
-
-    private Result<ComponentCard> findPublishedComponentCards(Query<Component> query, Range range) {
         query.field("state").equal(State.PUBLISHED);
         return findComponentCards(query, range);
+    }
+
+    private void addSort(SortType sort, Query<Component> query) {
+        if (sort != null) {
+            switch (sort) {
+                case DATE:
+                    query.order(RECENT_ORDER);
+                    break;
+                case NAME:
+                    query.order(NAME_ORDER);
+                    break;
+                case STARS:
+                    query.order(STARS_ORDER);
+                    break;
+            }
+        } else {
+            query.order(STARS_ORDER);
+        }
     }
 
     private Result<ComponentCard> findComponentCards(Query<Component> query, Range range) {
@@ -56,20 +76,8 @@ class ComponentMongoFinder extends AbstractMongoFinder implements ComponentFinde
 
     @Override
     public Result<ComponentCard> findCardsByState(Range range, State state) {
-        Query<Component> query = datastore.find(Component.class).order("name").field("state").equal(state);
+        Query<Component> query = datastore.find(Component.class).order(NAME_ORDER).field("state").equal(state);
         return findComponentCards(query, range);
-    }
-
-    @Override
-    public Result<ComponentCard> findRecentCards(Range range) {
-        Query<Component> queryComponent = datastore.find(Component.class).order("-releases.date");
-        return findPublishedComponentCards(queryComponent, range);
-    }
-
-    @Override
-    public Result<ComponentCard> findPopularCards(Range range) {
-        Query<Component> query = datastore.find(Component.class).order("-stars");
-        return findPublishedComponentCards(query, range);
     }
 
     @Override

@@ -7,6 +7,9 @@
  */
 package org.seedstack.hub.rest;
 
+import com.google.inject.ConfigurationException;
+import com.google.inject.Injector;
+import com.google.inject.ProvisionException;
 import org.seedstack.business.assembler.BaseAssembler;
 import org.seedstack.hub.application.StatePolicy;
 import org.seedstack.hub.domain.model.component.Component;
@@ -17,6 +20,7 @@ import org.seedstack.seed.rest.RelRegistry;
 import org.seedstack.seed.rest.hal.HalRepresentation;
 
 import javax.inject.Inject;
+import javax.servlet.ServletContext;
 
 import static org.seedstack.hub.rest.Rels.AUTHOR_COMPONENTS;
 import static org.seedstack.hub.rest.Rels.ORGANISATION;
@@ -30,6 +34,8 @@ public abstract class AbstractComponentAssembler<T extends HalRepresentation> ex
     protected RelRegistry relRegistry;
     @Inject
     private StatePolicy statePolicy;
+    @Inject
+    private Injector injector;
 
     @Override
     protected final void doAssembleDtoFromAggregate(T t, Component component) {
@@ -75,5 +81,14 @@ public abstract class AbstractComponentAssembler<T extends HalRepresentation> ex
     @Override
     protected final void doMergeAggregateWithDto(Component component, T t) {
         throw new UnsupportedOperationException();
+    }
+
+    protected String addContextPath(String url) {
+        try {
+            ServletContext servletContext = injector.getInstance(ServletContext.class);
+            return UriBuilder.uri(servletContext.getContextPath(), url);
+        } catch (ConfigurationException | ProvisionException e) {
+            return url;
+        }
     }
 }

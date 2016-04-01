@@ -21,7 +21,9 @@ import org.seedstack.hub.domain.model.component.ComponentId;
 import org.seedstack.hub.domain.model.component.State;
 import org.seedstack.hub.rest.list.ComponentCard;
 import org.seedstack.hub.rest.list.ComponentFinder;
+import org.seedstack.hub.rest.list.SortType;
 import org.seedstack.seed.it.SeedITRunner;
+import org.seedstack.seed.security.WithUser;
 
 import javax.inject.Inject;
 import java.time.LocalDate;
@@ -33,6 +35,7 @@ import java.util.stream.IntStream;
 import static java.util.stream.Collectors.toList;
 import static org.assertj.core.api.Assertions.assertThat;
 
+@WithUser(id = "admin", password = "password")
 @RunWith(SeedITRunner.class)
 public class ComponentMongoFinderIT {
 
@@ -58,28 +61,28 @@ public class ComponentMongoFinderIT {
     @Test
     public void testFindNotNull() {
         mockedComponents.forEach(componentRepository::delete); // clean the repo to test without data
-        Result<ComponentCard> componentCards = componentFinder.findCards(new Range(0, 10), null, null);
+        Result<ComponentCard> componentCards = componentFinder.findPublishedCards(new Range(0, 10), null, null);
         assertThat(componentCards).isNotNull();
     }
 
     @Test
     public void testFindListWithPagination() {
-        Result<ComponentCard> componentCards = componentFinder.findCards(new Range(0, 10), "", "date");
+        Result<ComponentCard> componentCards = componentFinder.findPublishedCards(new Range(0, 10), SortType.NAME, "");
         assertThat(componentCards.getResult()).hasSize(10);
         assertThat(componentCards.getFullSize()).isEqualTo(23);
-        componentCards = componentFinder.findCards(new Range(20, 10), "", "date");
+        componentCards = componentFinder.findPublishedCards(new Range(20, 10), SortType.NAME, "");
         assertThat(componentCards.getResult()).hasSize(3);
     }
 
     @Test
     public void testFindListWithSearchCriteria() {
-        Result<ComponentCard> componentCards = componentFinder.findCards(new Range(0, 20), "ponent1", "date");
+        Result<ComponentCard> componentCards = componentFinder.findPublishedCards(new Range(0, 20), SortType.NAME, "ponent1");
         assertThat(componentCards.getResult()).hasSize(11);
     }
 
     @Test
     public void testFindRecent() {
-        Result<ComponentCard> componentCards = componentFinder.findRecentCards(new Range(0,6));
+        Result<ComponentCard> componentCards = componentFinder.findPublishedCards(new Range(0,6), SortType.DATE, null);
         List<ComponentCard> recentCards = componentCards.getResult();
         assertThat(recentCards).hasSize(6);
         assertThat(recentCards.get(0).getId()).isEqualToIgnoringCase("Component0");
@@ -89,7 +92,7 @@ public class ComponentMongoFinderIT {
     public void testFindOnlyPublishedRecent() {
         componentRepository.persist(MockBuilder.mock("archived", 0, State.ARCHIVED, "zzz"));
 
-        Result<ComponentCard> componentCards = componentFinder.findRecentCards(new Range(0,6));
+        Result<ComponentCard> componentCards = componentFinder.findPublishedCards(new Range(0,6), SortType.DATE, null);
 
         // assert archived component is not returned
         List<ComponentCard> recentCards = componentCards.getResult();
@@ -122,7 +125,7 @@ public class ComponentMongoFinderIT {
 
     @Test
     public void testFindPopular() {
-        Result<ComponentCard> componentCards = componentFinder.findPopularCards(new Range(0,6));
+        Result<ComponentCard> componentCards = componentFinder.findPublishedCards(new Range(0,6), SortType.STARS, null);
         List<ComponentCard> popular = componentCards.getResult();
         assertThat(popular).hasSize(6);
         assertThat(popular.get(0).getId()).isEqualToIgnoringCase("Component22");

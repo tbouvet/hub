@@ -20,6 +20,7 @@ import org.seedstack.hub.application.fetch.ImportService;
 import org.seedstack.hub.rest.list.ComponentCard;
 import org.seedstack.hub.rest.list.ComponentFinder;
 import org.seedstack.hub.rest.list.ComponentsResource;
+import org.seedstack.hub.rest.list.SortType;
 import org.seedstack.hub.rest.shared.RangeInfo;
 import org.seedstack.seed.rest.RelRegistry;
 import org.seedstack.seed.rest.hal.HalRepresentation;
@@ -49,10 +50,10 @@ public class ComponentsResourceTest {
     private FluentAssembler fluentAssembler;
 
     private String searchName = "foo";
-    private String sort = "publishedData";
     private int offset = 0;
     private int size = 10;
     private RangeInfo rangeInfo = new RangeInfo(offset, size);
+
     private List<ComponentCard> componentCards = IntStream.range(0, 10)
             .mapToObj(i -> new ComponentCard("Component" + i))
             .collect(toList());
@@ -60,14 +61,14 @@ public class ComponentsResourceTest {
     @Before
     public void setUp() throws Exception {
         new Expectations() {{
-            componentFinder.findCards(withAny(rangeInfo.range()), searchName, sort);
+            componentFinder.findPublishedCards(withAny(rangeInfo.range()), SortType.NAME, searchName);
             result = new Result<>(componentCards, size, offset);
         }};
     }
 
     @Test
     public void testGetHasEmbeddedComponents() {
-        HalRepresentation halRepresentation = undertest.list(searchName, new RangeInfo(offset, size), sort);
+        HalRepresentation halRepresentation = undertest.list(new RangeInfo(offset, size), "name", searchName);
 
         assertThat(halRepresentation).isNotNull();
         assertThat(halRepresentation.getEmbedded().get(Rels.COMPONENTS)).isEqualTo(componentCards);

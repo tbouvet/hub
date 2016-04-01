@@ -7,6 +7,9 @@
  */
 package org.seedstack.hub.rest.detail;
 
+import com.google.inject.ConfigurationException;
+import com.google.inject.Injector;
+import com.google.inject.ProvisionException;
 import org.seedstack.hub.application.StarringService;
 import org.seedstack.hub.domain.model.component.Component;
 import org.seedstack.hub.domain.model.component.ComponentId;
@@ -15,8 +18,10 @@ import org.seedstack.hub.domain.model.component.Release;
 import org.seedstack.hub.domain.model.user.UserId;
 import org.seedstack.hub.rest.AbstractComponentAssembler;
 import org.seedstack.hub.rest.Rels;
+import org.seedstack.hub.rest.shared.UriBuilder;
 
 import javax.inject.Inject;
+import javax.servlet.ServletContext;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -47,6 +52,8 @@ public class ComponentDetailsAssembler extends AbstractComponentAssembler<Compon
         componentDetails.setMaintainers(component.getMaintainers().stream().map(UserId::getId).collect(toList()));
 
         assembleHalLinks(componentDetails, componentId);
+
+        updateUrls(componentDetails);
     }
 
     private void assembleDescription(ComponentDetails componentDetails, Component component) {
@@ -80,4 +87,16 @@ public class ComponentDetailsAssembler extends AbstractComponentAssembler<Compon
                     .uri(Rels.STAR).set(COMPONENT_ID, componentId).expand());
         }
     }
+
+    private void updateUrls(ComponentDetails componentDetails) {
+        componentDetails.setImages(addContextPath(componentDetails.getImages()));
+        componentDetails.setDocs(addContextPath(componentDetails.getDocs()));
+        componentDetails.setIcon(addContextPath(componentDetails.getIcon()));
+        componentDetails.setReadme(addContextPath(componentDetails.getReadme()));
+    }
+
+    private List<String> addContextPath(List<String> urls) {
+        return urls.stream().map(this::addContextPath).collect(toList());
+    }
+
 }

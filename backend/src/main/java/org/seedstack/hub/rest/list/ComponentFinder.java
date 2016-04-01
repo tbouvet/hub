@@ -17,13 +17,10 @@ import org.seedstack.hub.domain.model.component.State;
 @Finder
 public interface ComponentFinder {
 
-    Result<ComponentCard> findCards(Range range, String searchName, String sort);
+    Result<ComponentCard> findPublishedCards(Range range, SortType sort, String searchName);
 
     Result<ComponentCard> findCardsByState(Range range, State state);
 
     Result<Comment> findComments(ComponentId componentId, Range range);
 
-    Result<ComponentCard> findRecentCards(Range range);
-
-    Result<ComponentCard> findPopularCards(Range range);
 }
