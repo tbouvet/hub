@@ -58,8 +58,8 @@ public class ComponentsResource {
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     @Path("/components")
     public Response post(
-            @FormParam("vcs") @NotBlank @Length(max = 10) String vcs,
-            @FormParam("url") @URL @NotBlank String sourceUrl) {
+            @FormParam("sourceType") @NotBlank @Length(max = 10) String vcs,
+            @FormParam("sourceUrl") @URL @NotBlank String sourceUrl) {
         try {
             Component component = importService.importComponent(new Source(SourceType.from(vcs), sourceUrl));
 

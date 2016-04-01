@@ -80,13 +80,13 @@ gulp.task('replace-index', ['copy'], function () {
         .pipe(gulp.dest('dist/'));
 });
 
-gulp.task('remove-unused', ['copy', 'test', 'optimize'], function () {
+gulp.task('remove-unused', ['copy', /*'test',*/ 'optimize'], function () {
     return del([
         'dist/w20.app.json'
     ]);
 });
 
-gulp.task('build', ['clean', 'bower', 'copy', 'ts-compile', 'less-compile', 'test', 'optimize', 'replace-index', 'remove-unused']);
+gulp.task('build', ['clean', 'bower', 'copy', 'ts-compile', 'less-compile', /*'test',*/ 'optimize', 'replace-index', 'remove-unused']);
 gulp.task('default', ['build']);
 
 

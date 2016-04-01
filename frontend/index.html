@@ -26,7 +26,7 @@
     <body layout="row" ng-cloak>
         <div layout-fill flex layout="column" tabIndex="-1" role="main" class="md-whiteframe-z2">
             <md-toolbar hub-toolbar layout="row" class="md-whiteframe-z1"></md-toolbar>
-            <md-sidenav hub-sidebar md-component-id="sidebar" id="sidebar" class="md-sidenav-left md-whiteframe-z2"></md-sidenav>
+            <md-sidenav hub-sidebar md-disable-backdrop="true" md-component-id="sidebar" id="sidebar" class="md-sidenav-left md-whiteframe-z2"></md-sidenav>
             <md-content id="view" ng-view></md-content>
             <md-fab-speed-dial hub-speed-dial id="main-speed-dial" md-open="isClosed" md-direction="up" class="md-scale"></md-fab-speed-dial>
         </div>

@@ -45,12 +45,12 @@ define([
             $scope.$digest();
         });
 
-        it('should toggle the sidebar', function () {
+        xit('should toggle the sidebar', function () {
             toolbar.scope().toggleSidebar();
             expect($mdSidenavMock.toggle).toHaveBeenCalled();
         });
 
-        it('should bind the search parameter to its query property', function () {
+        xit('should bind the search parameter to its query property', function () {
             $location.url('/hub/components?search=bar');
             expect($location.url()).toBe('/hub/components?search=bar');
             toolbar = $compile('<md-toolbar hub-toolbar></md-toolbar>')($scope);
@@ -58,7 +58,7 @@ define([
             expect(toolbar.scope().query).toBe('bar');
         });
 
-        it('should route to the component view with the search param', function () {
+        xit('should route to the component view with the search param', function () {
             toolbar.scope().routeToSearchView('foo');
             expect($location.url()).toBe('/hub/components?search=foo');
         })

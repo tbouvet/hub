@@ -39,28 +39,32 @@
                     <md-content class="md-padding">
                         <p ng-if="$ctrl.userComponents.length < 1"> You do not have any components registered </p>
                         <md-list ng-if="$ctrl.userComponents.length > 0" flex>
-                            <md-subheader class="md-no-sticky">{{ $ctrl.userComponentsCount }} components</md-subheader>
+                            <md-subheader class="md-no-sticky">{{ $ctrl.userComponentsCount }} components
+                                <div style="float: right; height: 20px">
+                                    <md-checkbox md-no-ink aria-label="Checkbox No Ink"
+                                                 ng-model="$ctrl.pendingOnly"
+                                                 class="md-primary">
+                                        Pending only
+                                    </md-checkbox>
+                                </div>
+                            </md-subheader>
+
                             <md-list-item
                                     ng-repeat="userComponent in $ctrl.userComponents | filter:($ctrl.pendingOnly || '') && {state: 'PENDING'}"
                                     ng-click="$ctrl.view(userComponent)" class="md-3-line">
-                                <img ng-src="{{ userComponent.icon }}" class="md-avatar" alt="Component icon"/>
+                                <img ng-src="{{ userComponent.icon }}" err-src="src/img/default-component.png" class="md-avatar" alt="Component icon"/>
 
                                 <div class="md-list-item-text" layout="column" flex>
                                     <h3>{{ userComponent.name }} </h3>
                                     <h4>{{ userComponent.summary }}</h4>
                                     <span show-xs hide-gt-xs>{{ userComponent.state }}</span>
                                 </div>
-                                <div layout="row" hide-xs>
+                                <div class="md-list-item-text" layout="row" hide-xs flex layout-align="end center" hide-xs>
                                     <md-icon md-font-set="material-icons" style="margin:5px 10px">change_history
                                     </md-icon>
                                     {{ userComponent.version }}
-                                </div>
-                                <div layout="row" hide-xs>
                                     <md-icon md-font-set="material-icons" style="margin:5px 10px">star_rate</md-icon>
                                     {{ userComponent.stars }}
-                                </div>
-                                <div class="md-list-item-text" layout="row" hide-xs flex layout-align="end center"
-                                     hide-xs>
                                     <md-progress-circular ng-if="userComponent.state === 'PENDING'"
                                                           md-mode="indeterminate"
                                                           class="md-primary">
@@ -84,11 +88,10 @@
                             <md-subheader class="md-no-sticky">{{ $ctrl.favoriteComponentsCount }}</md-subheader>
                             <md-list-item ng-repeat="favoriteComponent in $ctrl.favoriteComponents"
                                           ng-click="$ctrl.view(favoriteComponent)" class="md-3-line">
-                                <img ng-src="{{ favoriteComponent.icon }}" class="md-avatar" alt="Component icon"/>
+                                <img ng-src="{{ favoriteComponent.icon }}" err-src="src/img/default-component.png" class="md-avatar" alt="Component icon"/>
                                 <div class="md-list-item-text" layout="column">
                                     <h3>{{ favoriteComponent.name }}</h3>
                                     <h4>{{ favoriteComponent.summary }}</h4>
-
                                     <p>{{ favoriteComponent.version }}</p>
                                 </div>
                             </md-list-item>
