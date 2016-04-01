@@ -8,10 +8,8 @@
 package org.seedstack.hub.rest.detail;
 
 import org.seedstack.hub.domain.model.component.Release;
-import org.seedstack.hub.domain.model.component.Version;
 import org.seedstack.hub.rest.shared.Dates;
 
-import java.net.URL;
 import java.util.Date;
 
 public class ReleaseRepresentation {

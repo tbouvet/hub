@@ -25,7 +25,7 @@ import org.seedstack.seed.it.SeedITRunner;
 
 import javax.inject.Inject;
 import java.net.URL;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @RunWith(SeedITRunner.class)
@@ -40,7 +40,7 @@ public class ComponentRepositoryIT {
         Component component = new Component(componentId, "SeedStack Hub", new Owner("admin"), buildDescription(componentId));
         Release release = new Release(new Version(1, 0, 0, "M2"));
         release.setUrl(new URL("http://component.com/release/1.0.0"));
-        release.asDate(LocalDate.now());
+        release.setDate(LocalDateTime.now());
         component.addComment(new Comment("pith", "some text", new Date()));
         component.addMaintainer(new UserId("pith"));
         component.addRelease(release);

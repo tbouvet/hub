@@ -19,7 +19,12 @@ import org.junit.runner.RunWith;
 import org.seedstack.business.domain.Repository;
 import org.seedstack.hub.application.fetch.Manifest;
 import org.seedstack.hub.application.fetch.ReleaseDTO;
-import org.seedstack.hub.domain.model.component.*;
+import org.seedstack.hub.domain.model.component.Component;
+import org.seedstack.hub.domain.model.component.ComponentId;
+import org.seedstack.hub.domain.model.component.Owner;
+import org.seedstack.hub.domain.model.component.Release;
+import org.seedstack.hub.domain.model.component.State;
+import org.seedstack.hub.domain.model.component.Version;
 import org.seedstack.hub.domain.model.document.DocumentId;
 import org.seedstack.hub.domain.model.document.DocumentScope;
 import org.seedstack.hub.domain.model.organisation.Organisation;
@@ -30,7 +35,7 @@ import org.seedstack.hub.domain.model.user.UserRepository;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -92,7 +97,7 @@ public class ComponentFactoryImplTest {
         }};
         Component component = underTest.createComponent(manifest);
 
-        assertThat(component.getMaintainers()).containsOnly(new UserId("kavi87"),new UserId("adrienlauer"));
+        assertThat(component.getMaintainers()).containsOnly(new UserId("kavi87"), new UserId("adrienlauer"));
     }
 
     @Test
@@ -136,8 +141,8 @@ public class ComponentFactoryImplTest {
         Component component = underTest.createComponent(manifest);
 
         Release release = component.getReleases().get(0);
-        assertThat(release.getVersion()).isEqualTo(new Version(1,0,0,"M1"));
-        assertThat(release.getDate()).isEqualTo(LocalDate.of(2016,3,29));
+        assertThat(release.getVersion()).isEqualTo(new Version(1, 0, 0, "M1"));
+        assertThat(release.getDate()).isEqualTo(LocalDateTime.of(2016, 3, 29, 0, 0));
         assertThat(release.getUrl()).isEqualTo(new URL("https://github.com/seedstack/hub/releases/tag/v2.2.1"));
     }
 }

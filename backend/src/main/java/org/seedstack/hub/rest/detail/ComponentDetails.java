@@ -28,8 +28,9 @@ public class ComponentDetails extends HalRepresentation {
     private String readme;
     private List<String> images;
     private List<String> docs;
-    private int stars;
     private List<String> maintainers;
+    private List<String> wikiPages;
+    private int stars;
 
     public String getId() {
         return id;
@@ -157,5 +158,13 @@ public class ComponentDetails extends HalRepresentation {
 
     public void setMaintainers(List<String> maintainers) {
         this.maintainers = maintainers;
+    }
+
+    public List<String> getWikiPages() {
+        return wikiPages;
+    }
+
+    public void setWikiPages(List<String> wikiPages) {
+        this.wikiPages = wikiPages;
     }
 }

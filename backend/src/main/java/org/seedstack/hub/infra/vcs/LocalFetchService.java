@@ -33,17 +33,15 @@ import java.nio.file.attribute.BasicFileAttributes;
 import java.util.stream.Stream;
 
 abstract class LocalFetchService implements FetchService {
+    private final ThreadLocal<File> tempDir = new ThreadLocal<>();
     @Logging
     private Logger logger;
-
     @Inject
     private ManifestParser manifestParser;
     @Inject
     private ComponentFactory componentFactory;
     @Inject
     private DocumentFactory documentFactory;
-
-    private ThreadLocal<File> tempDir = new ThreadLocal<>();
 
     @Override
     public FetchResult fetch(Source source) throws FetchException {
@@ -88,6 +86,7 @@ abstract class LocalFetchService implements FetchService {
     public void clean() {
         File target = tempDir.get();
         if (target != null) {
+            final Exception[] firstException = new Exception[1];
             try {
                 Files.walkFileTree(target.toPath(), new SimpleFileVisitor<Path>() {
                     @Override
@@ -98,11 +97,12 @@ abstract class LocalFetchService implements FetchService {
                     private FileVisitResult safeDelete(Path file) {
                         try {
                             Files.delete(file);
-                            return FileVisitResult.CONTINUE;
                         } catch (Exception e) {
-                            logger.warn(e.getMessage());
-                            return FileVisitResult.TERMINATE;
+                            if (firstException[0] == null) {
+                                firstException[0] = e;
+                            }
                         }
+                        return FileVisitResult.CONTINUE;
                     }
 
                     @Override
@@ -111,12 +111,17 @@ abstract class LocalFetchService implements FetchService {
                     }
                 });
             } catch (IOException e) {
-                logger.warn("Unable to delete working directory " + target.getAbsolutePath(), e);
+                if (firstException[0] == null) {
+                    firstException[0] = e;
+                }
             } finally {
                 tempDir.remove();
             }
-        }
 
+            if (firstException[0] != null) {
+                logger.warn("Unable to delete temp directory " + target.getAbsolutePath() + ": ", firstException[0].getMessage());
+            }
+        }
     }
 
     abstract protected void doFetch(URL remote, File local) throws FetchException;

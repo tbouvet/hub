@@ -7,14 +7,21 @@
  */
 package org.seedstack.hub;
 
-import org.seedstack.hub.domain.model.component.*;
+import org.seedstack.hub.domain.model.component.Component;
+import org.seedstack.hub.domain.model.component.ComponentId;
+import org.seedstack.hub.domain.model.component.Description;
+import org.seedstack.hub.domain.model.component.Owner;
+import org.seedstack.hub.domain.model.component.Release;
+import org.seedstack.hub.domain.model.component.State;
+import org.seedstack.hub.domain.model.component.Version;
 import org.seedstack.hub.domain.model.document.DocumentId;
 import org.seedstack.hub.domain.model.document.DocumentScope;
+import org.seedstack.hub.domain.model.document.WikiDocument;
 import org.seedstack.hub.domain.model.user.UserId;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 public class MockBuilder {
 
@@ -50,6 +57,15 @@ public class MockBuilder {
         return component;
     }
 
+    public static WikiDocument mockWikiDocument(Component component, String path, String... bodies) {
+        WikiDocument wikiDocument = new WikiDocument(new DocumentId(component.getId(), DocumentScope.WIKI, path));
+        int revCount = 0;
+        for (String body : bodies) {
+            wikiDocument.addRevision(body, new UserId("adrien"), "rev" + revCount++);
+        }
+        return wikiDocument;
+    }
+
     private static void setStars(Component component, int stars) {
         for (int j = 0; j <= stars; j++) {
             component.star();
@@ -72,7 +88,7 @@ public class MockBuilder {
 
     private static Release mockVersion(Integer componentNumber, Integer versionNumber) {
         Release release = new Release(new Version(versionNumber, versionNumber + 1, versionNumber + 2, "M".concat(versionNumber.toString())));
-        release.setDate(LocalDate.now().minusDays(componentNumber + versionNumber));
+        release.setDate(LocalDateTime.now().minusDays(componentNumber + versionNumber));
         try {
             release.setUrl(new URL("http://github.com/seedstack/Component1/releases"));
         } catch (MalformedURLException e) {
