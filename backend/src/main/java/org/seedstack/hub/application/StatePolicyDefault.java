@@ -9,6 +9,7 @@ package org.seedstack.hub.application;
 
 import org.seedstack.hub.application.security.SecurityService;
 import org.seedstack.hub.domain.model.component.Component;
+import org.seedstack.hub.domain.model.component.State;
 
 import javax.inject.Inject;
 
@@ -19,7 +20,11 @@ class StatePolicyDefault implements StatePolicy {
 
     @Override
     public boolean canPublish(Component component) {
-        return securityService.isUserAdmin();
+        return securityService.isUserAdmin() || (unArchived(component) && securityService.isOwnerOf(component));
+    }
+
+    private boolean unArchived(Component component) {
+        return component.getState() == State.ARCHIVED;
     }
 
     @Override

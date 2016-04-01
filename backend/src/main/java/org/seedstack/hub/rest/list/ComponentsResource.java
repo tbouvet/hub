@@ -13,8 +13,10 @@ import org.hibernate.validator.constraints.NotBlank;
 import org.seedstack.business.assembler.FluentAssembler;
 import org.seedstack.business.finder.Result;
 import org.seedstack.business.view.PaginatedView;
+import org.seedstack.hub.application.fetch.ImportException;
 import org.seedstack.hub.application.fetch.ImportService;
 import org.seedstack.hub.domain.model.component.Component;
+import org.seedstack.hub.domain.model.component.ComponentException;
 import org.seedstack.hub.domain.model.component.Source;
 import org.seedstack.hub.domain.model.component.State;
 import org.seedstack.hub.domain.services.fetch.SourceType;
@@ -45,26 +47,24 @@ import static org.seedstack.hub.rest.Rels.*;
 @Path("/")
 @Produces({"application/json", "application/hal+json"})
 public class ComponentsResource {
+    @Logging
+    private Logger logger;
+
     @Inject
     private ComponentFinder componentFinder;
-    @Inject
-    private ServletContext servletContext;
     @Inject
     private RelRegistry relRegistry;
     @Inject
     private ImportService importService;
     @Inject
     private FluentAssembler fluentAssembler;
-    @Logging
-    private Logger logger;
 
     @POST
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     @Path("/components")
     public Response post(
             @FormParam("vcs") @NotBlank @Length(max = 10) String vcs,
-            @FormParam("url") @org.hibernate.validator.constraints.URL @NotBlank String sourceUrl
-    ) throws URISyntaxException {
+            @FormParam("url") @org.hibernate.validator.constraints.URL @NotBlank String sourceUrl) {
         SourceType sourceType;
         try {
             sourceType = SourceType.valueOf(vcs.toUpperCase());
@@ -74,31 +74,26 @@ public class ComponentsResource {
 
         Component component;
         try {
-            component = importService.importComponent(new Source(sourceType, new URL(sourceUrl)));
-        } catch (MalformedURLException e) {
-            throw new BadRequestException("Malformed URL " + sourceUrl);
-        } catch (AuthenticationException | AuthorizationException e) {
-            throw e;
-        } catch (Exception e) {
+            component = importService.importComponent(new Source(sourceType, sourceUrl));
+        } catch (ImportException | ComponentException e) {
             logger.error("Error during component import", e);
             throw new WebApplicationException(e.getMessage(), 400);
         }
 
         ComponentCard componentCard = fluentAssembler.assemble(component).to(ComponentCard.class);
-        updateUrls(componentCard);
-        return Response.created(new URI(relRegistry.uri(COMPONENT).set("componentId", componentCard.getId()).expand())).entity(componentCard).build();
+        URI componentURI = URI.create(relRegistry.uri(COMPONENT).set("componentId", componentCard.getId()).expand());
+        return Response.created(componentURI).entity(componentCard).build();
     }
 
     @GET
     @Path("/components")
     @Rel(value = COMPONENTS, home = true)
     public ResultHal<ComponentCard> list(
-            @QueryParam("search") @Length(max = 64) String searchName,
             @BeanParam RangeInfo rangeInfo,
+            @QueryParam("search") @Length(max = 64) String searchName,
             @QueryParam("sort") @Length(max = 64) String sort) {
 
-        Result<ComponentCard> result = componentFinder.findCards(rangeInfo.range(), searchName, sort);
-        updateUrls(result);
+        Result<ComponentCard> result = componentFinder.findCards(rangeInfo.range(), searchName, SortType.fromOrDefault(sort));
         Link self = relRegistry.uri(COMPONENTS);
         if (searchName != null && !searchName.equals("")) {
             self.set("search", searchName);
@@ -112,7 +107,6 @@ public class ComponentsResource {
     @Rel(value = PENDING, home = true)
     public ResultHal list(@BeanParam RangeInfo rangeInfo) {
         Result<ComponentCard> result = componentFinder.findCardsByState(rangeInfo.range(), State.PENDING);
-        updateUrls(result);
         return new ResultHal<>(COMPONENTS, result, relRegistry.uri(PENDING));
     }
 
@@ -121,7 +115,6 @@ public class ComponentsResource {
     @Rel(value = POPULAR, home = true)
     public ResultHal<ComponentCard> popularCards(@BeanParam RangeInfo rangeInfo) {
         Result<ComponentCard> popularCards = componentFinder.findPopularCards(rangeInfo.range());
-        updateUrls(popularCards);
         return new ResultHal<>(COMPONENTS, popularCards, relRegistry.uri(POPULAR));
     }
 
@@ -130,19 +123,6 @@ public class ComponentsResource {
     @Rel(value = RECENT, home = true)
     public HalRepresentation recentCards(@BeanParam RangeInfo rangeInfo) {
         Result<ComponentCard> recentCards = componentFinder.findRecentCards(rangeInfo.range());
-        updateUrls(recentCards);
         return new ResultHal<>(COMPONENTS, recentCards, relRegistry.uri(RECENT));
-    }
-
-    private void updateUrls(ComponentCard componentCard) {
-        componentCard.setIcon(UriBuilder.uri(servletContext.getContextPath(), componentCard.getIcon()));
-    }
-
-    private void updateUrls(PaginatedView<ComponentCard> paginatedView) {
-        paginatedView.getView().stream().forEach(this::updateUrls);
-    }
-
-    private void updateUrls(Result<ComponentCard> result) {
-        result.getResult().stream().forEach(this::updateUrls);
     }
 }

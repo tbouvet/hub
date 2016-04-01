@@ -63,32 +63,33 @@ public class ComponentResource {
     @Inject
     private SecurityService securityService;
     @Inject
-    private ServletContext servletContext;
-    @Inject
     private StatePolicy statePolicy;
 
     @PathParam(COMPONENT_ID)
     private String componentId;
 
     @GET
-    public ComponentDetails details() {
+    public ComponentDetails get() {
         Component component = componentRepository.load(new ComponentId(componentId));
         if (component == null) {
             throw new NotFoundException("Component " + componentId + " not found");
         }
-        return assemble(component);
-    }
-
-    private ComponentDetails assemble(Component component) {
-        ComponentDetails componentDetails = fluentAssembler.assemble(component).to(ComponentDetails.class);
-        updateUrls(componentDetails);
-        return componentDetails;
+        return fluentAssembler.assemble(component).to(ComponentDetails.class);
     }
 
     @PUT
     public ComponentDetails sync() {
         Component component = importService.sync(new ComponentId(componentId));
-        return assemble(component);
+        return fluentAssembler.assemble(component).to(ComponentDetails.class);
+    }
+
+    @DELETE
+    public void delete() {
+        Component component = componentRepository.load(new ComponentId(componentId));
+        if (component == null) {
+            throw new NotFoundException("Component " + componentId + " not found");
+        }
+        componentRepository.delete(component);
     }
 
     @PUT
@@ -139,20 +140,5 @@ public class ComponentResource {
         componentRepository.persist(component);
         return Response.created(URI.create(relRegistry.uri(Rels.COMMENT).set(COMPONENT_ID, componentId).expand()))
                 .entity(comment).build();
-    }
-
-    private void updateUrls(ComponentDetails componentDetails) {
-        componentDetails.setImages(addContextPath(componentDetails.getImages()));
-        componentDetails.setDocs(addContextPath(componentDetails.getDocs()));
-        componentDetails.setIcon(addContextPath(componentDetails.getIcon()));
-        componentDetails.setReadme(addContextPath(componentDetails.getReadme()));
-    }
-
-    private List<String> addContextPath(List<String> urls) {
-        return urls.stream().map(this::addContextPath).collect(toList());
-    }
-
-    private String addContextPath(String url) {
-        return UriBuilder.uri(servletContext.getContextPath(), url);
     }
 }

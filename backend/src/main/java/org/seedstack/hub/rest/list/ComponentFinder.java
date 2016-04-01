@@ -17,7 +17,7 @@ import org.seedstack.hub.domain.model.component.State;
 @Finder
 public interface ComponentFinder {
 
-    Result<ComponentCard> findCards(Range range, String searchName, String sort);
+    Result<ComponentCard> findCards(Range range, String searchName, SortType sort);
 
     Result<ComponentCard> findCardsByState(Range range, State state);
 

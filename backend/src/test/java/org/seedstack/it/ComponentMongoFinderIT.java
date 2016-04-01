@@ -21,6 +21,7 @@ import org.seedstack.hub.domain.model.component.ComponentId;
 import org.seedstack.hub.domain.model.component.State;
 import org.seedstack.hub.rest.list.ComponentCard;
 import org.seedstack.hub.rest.list.ComponentFinder;
+import org.seedstack.hub.rest.list.SortType;
 import org.seedstack.seed.it.SeedITRunner;
 
 import javax.inject.Inject;
@@ -64,16 +65,16 @@ public class ComponentMongoFinderIT {
 
     @Test
     public void testFindListWithPagination() {
-        Result<ComponentCard> componentCards = componentFinder.findCards(new Range(0, 10), "", "date");
+        Result<ComponentCard> componentCards = componentFinder.findCards(new Range(0, 10), "", SortType.NAME);
         assertThat(componentCards.getResult()).hasSize(10);
         assertThat(componentCards.getFullSize()).isEqualTo(23);
-        componentCards = componentFinder.findCards(new Range(20, 10), "", "date");
+        componentCards = componentFinder.findCards(new Range(20, 10), "", SortType.NAME);
         assertThat(componentCards.getResult()).hasSize(3);
     }
 
     @Test
     public void testFindListWithSearchCriteria() {
-        Result<ComponentCard> componentCards = componentFinder.findCards(new Range(0, 20), "ponent1", "date");
+        Result<ComponentCard> componentCards = componentFinder.findCards(new Range(0, 20), "ponent1", SortType.NAME);
         assertThat(componentCards.getResult()).hasSize(11);
     }
 
