@@ -13,6 +13,7 @@ import org.seedstack.business.domain.Repository;
 import org.seedstack.business.finder.Result;
 import org.seedstack.hub.application.OrganisationService;
 import org.seedstack.hub.application.security.SecurityService;
+import org.seedstack.hub.domain.model.component.ComponentId;
 import org.seedstack.hub.domain.model.organisation.Organisation;
 import org.seedstack.hub.domain.model.organisation.OrganisationId;
 import org.seedstack.hub.domain.model.user.UserId;
@@ -52,30 +53,44 @@ public class OrganisationResource {
     private RelRegistry relRegistry;
 
     @GET
-    public ResultHal<OrganisationCard> getOrganisationCards(@BeanParam RangeInfo rangeInfo) {
+    public ResultHal<OrganisationCard> list(@BeanParam RangeInfo rangeInfo) {
         Result<OrganisationCard> organisationCards = organisationFinder.findOrganisation(rangeInfo.range());
         return new ResultHal<>("organisation", organisationCards, relRegistry.uri(Rels.ORGANISATIONS));
     }
 
     @POST
     @Consumes({"application/json", "application/hal+json"})
-    public Response createOrganisation(@Valid OrganisationCard organisationCard) throws URISyntaxException {
+    public Response create(@Valid OrganisationCard organisationCard) throws URISyntaxException {
         HashSet<UserId> owners = Sets.newHashSet(securityService.getAuthenticatedUser().getEntityId());
         Organisation organisation = new Organisation(new OrganisationId(organisationCard.getId()), organisationCard.getName(), owners);
         organisationRepository.persist(organisation);
-        return Response.created(new URI(relRegistry.uri(Rels.ORGANISATION).set(ORGANISATION_ID, organisationCard.getId()).expand()))
-                .entity(getOrganisationCards(organisationCard.getId())).build();
+
+        URI orgURI = new URI(relRegistry.uri(Rels.ORGANISATION).set(ORGANISATION_ID, organisationCard.getId()).expand());
+        return Response.created(orgURI).entity(get(organisationCard.getId())).build();
     }
 
     @Rel(Rels.ORGANISATION)
     @GET
     @Path("/{organisationId}")
-    public OrganisationRepresentation getOrganisationCards(@PathParam(ORGANISATION_ID) String organisationName) {
+    public OrganisationRepresentation get(@PathParam(ORGANISATION_ID) String organisationName) {
         Organisation organisation = organisationRepository.load(new OrganisationId(organisationName));
         if (organisation == null) {
             throw new NotFoundException();
         }
         return organisationAssembler.assembleDtoFromAggregate(organisation);
+    }
+
+    @Rel(Rels.ORGANISATION)
+    @PUT
+    @Path("/{organisationId}")
+    public Response update(@PathParam(ORGANISATION_ID) String organisationName, OrganisationRepresentation representation) {
+        Organisation organisation = organisationRepository.load(new OrganisationId(organisationName));
+        if (organisation == null) {
+            throw new NotFoundException();
+        }
+        organisationAssembler.mergeAggregateWithDto(organisation, representation);
+        organisationRepository.save(organisation);
+        return Response.ok().build();
     }
 
     @Rel(Rels.ORGANISATION_OWNERS)
@@ -88,8 +103,8 @@ public class OrganisationResource {
 
     @Rel(Rels.ORGANISATION_OWNERS)
     @DELETE
-    @Path("/{organisationId}/owners")
-    public void removeOwner(@PathParam(ORGANISATION_ID) String organisationName, String ownerName) {
+    @Path("/{organisationId}/owners/{ownerName}")
+    public void removeOwner(@PathParam(ORGANISATION_ID) String organisationName, @PathParam("ownerName") String ownerName) {
         organisationService.removeOwner(new OrganisationId(organisationName), new UserId(ownerName));
     }
 
@@ -103,8 +118,23 @@ public class OrganisationResource {
 
     @Rel(Rels.ORGANISATION_MEMBERS)
     @DELETE
-    @Path("/{organisationId}/members")
-    public void removeMember(@PathParam(ORGANISATION_ID) String organisationName, String ownerName) {
+    @Path("/{organisationId}/members/{ownerName}")
+    public void removeMember(@PathParam(ORGANISATION_ID) String organisationName, @PathParam("ownerName") String ownerName) {
         organisationService.removeMember(new OrganisationId(organisationName), new UserId(ownerName));
+    }
+
+    @Rel(Rels.ORGANISATION_COMPONENTS)
+    @POST
+    @Path("/{organisationId}/components")
+    public Response addComponent(@PathParam(ORGANISATION_ID) String organisationName, String componentName) {
+        organisationService.addComponent(new OrganisationId(organisationName), new ComponentId(componentName));
+        return Response.ok().build();
+    }
+
+    @Rel(Rels.ORGANISATION_COMPONENTS)
+    @DELETE
+    @Path("/{organisationId}/components/{componentName}")
+    public void removeComponent(@PathParam(ORGANISATION_ID) String organisationName, @PathParam("componentName") String componentName) {
+        organisationService.removeComponent(new OrganisationId(organisationName), new ComponentId(componentName));
     }
 }

@@ -61,14 +61,14 @@ public class ComponentsResourceTest {
     @Before
     public void setUp() throws Exception {
         new Expectations() {{
-            componentFinder.findCards(withAny(rangeInfo.range()), searchName, SortType.NAME);
+            componentFinder.findPublishedCards(withAny(rangeInfo.range()), SortType.NAME, searchName);
             result = new Result<>(componentCards, size, offset);
         }};
     }
 
     @Test
     public void testGetHasEmbeddedComponents() {
-        HalRepresentation halRepresentation = undertest.list(new RangeInfo(offset, size), searchName, "name");
+        HalRepresentation halRepresentation = undertest.list(new RangeInfo(offset, size), "name", searchName);
 
         assertThat(halRepresentation).isNotNull();
         assertThat(halRepresentation.getEmbedded().get(Rels.COMPONENTS)).isEqualTo(componentCards);

@@ -15,4 +15,15 @@ public enum SourceType {
     public String qualifier() {
         return this.name().toLowerCase();
     }
+
+    public static SourceType from(String value) {
+        if (value == null || value.equals("")) {
+            throw new IllegalArgumentException("Missing VCS type.");
+        }
+        try {
+            return SourceType.valueOf(value.toUpperCase());
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException("Unsupported VCS type " + value);
+        }
+    }
 }

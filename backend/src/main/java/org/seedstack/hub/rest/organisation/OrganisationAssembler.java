@@ -54,6 +54,6 @@ public class OrganisationAssembler extends BaseAssembler<Organisation, Organisat
 
     @Override
     protected void doMergeAggregateWithDto(Organisation organisation, OrganisationRepresentation organisationRepresentation) {
-        throw new UnsupportedOperationException();
+        organisation.changeName(organisationRepresentation.getName());
     }
 }

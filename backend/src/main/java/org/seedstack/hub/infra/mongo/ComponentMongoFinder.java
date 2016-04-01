@@ -8,7 +8,6 @@
 package org.seedstack.hub.infra.mongo;
 
 import org.mongodb.morphia.Datastore;
-import org.mongodb.morphia.dao.DAO;
 import org.mongodb.morphia.query.Query;
 import org.seedstack.business.assembler.FluentAssembler;
 import org.seedstack.business.finder.Range;
@@ -41,13 +40,14 @@ class ComponentMongoFinder extends AbstractMongoFinder implements ComponentFinde
     private FluentAssembler fluentAssembler;
 
     @Override
-    public Result<ComponentCard> findCards(Range range, String searchName, SortType sort) {
+    public Result<ComponentCard> findPublishedCards(Range range, SortType sort, String searchName) {
         Query<Component> query = datastore.find(Component.class);
         addSort(sort, query);
         if (searchName != null && !"".equals(searchName)) {
             query = query.field("_id.name").containsIgnoreCase(searchName);
         }
-        return findPublishedComponentCards(query, range);
+        query.field("state").equal(State.PUBLISHED);
+        return findComponentCards(query, range);
     }
 
     private void addSort(SortType sort, Query<Component> query) {
@@ -68,11 +68,6 @@ class ComponentMongoFinder extends AbstractMongoFinder implements ComponentFinde
         }
     }
 
-    private Result<ComponentCard> findPublishedComponentCards(Query<Component> query, Range range) {
-        query.field("state").equal(State.PUBLISHED);
-        return findComponentCards(query, range);
-    }
-
     private Result<ComponentCard> findComponentCards(Query<Component> query, Range range) {
         List<Component> list = paginateQuery(query, range);
         List<ComponentCard> cards = fluentAssembler.assemble(list).to(ComponentCard.class);
@@ -83,18 +78,6 @@ class ComponentMongoFinder extends AbstractMongoFinder implements ComponentFinde
     public Result<ComponentCard> findCardsByState(Range range, State state) {
         Query<Component> query = datastore.find(Component.class).order(NAME_ORDER).field("state").equal(state);
         return findComponentCards(query, range);
-    }
-
-    @Override
-    public Result<ComponentCard> findRecentCards(Range range) {
-        Query<Component> queryComponent = datastore.find(Component.class).order(RECENT_ORDER);
-        return findPublishedComponentCards(queryComponent, range);
-    }
-
-    @Override
-    public Result<ComponentCard> findPopularCards(Range range) {
-        Query<Component> query = datastore.find(Component.class).order(STARS_ORDER);
-        return findPublishedComponentCards(query, range);
     }
 
     @Override
