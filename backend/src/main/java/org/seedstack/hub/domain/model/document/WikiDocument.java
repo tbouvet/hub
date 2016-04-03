@@ -11,10 +11,8 @@ import org.bitbucket.cowwoc.diffmatchpatch.DiffMatchPatch;
 import org.seedstack.hub.domain.model.user.UserId;
 
 import java.nio.charset.Charset;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -22,6 +20,8 @@ import java.util.List;
  * A special kind of text document which keep tracks of all its changes through revisions.
  */
 public class WikiDocument extends TextDocument {
+    private static final DiffMatchPatch diffMatchPatch = new DiffMatchPatch();
+
     private final List<Revision> revisions = new ArrayList<>();
 
     /**
@@ -53,7 +53,6 @@ public class WikiDocument extends TextDocument {
             latestRevisionText = getText();
         }
 
-        DiffMatchPatch diffMatchPatch = new DiffMatchPatch();
         revisions.add(new Revision(
                 newRevisionIndex,
                 diffMatchPatch.patchToText(
@@ -79,23 +78,34 @@ public class WikiDocument extends TextDocument {
      * @param message       the message describing the reason of the revert.
      */
     public void revertToRevision(int revisionIndex, UserId author, String message) {
-        DiffMatchPatch diffMatchPatch = new DiffMatchPatch();
-        String textResult = "";
+        addRevision(applyRevisionsUpTo(revisionIndex), author, message);
+    }
 
-        for (Revision revision : revisions) {
-            if (revision.getIndex() > revisionIndex) {
-                break;
-            }
-
-            Object[] patchResult = diffMatchPatch.patchApply(new LinkedList<>(diffMatchPatch.patchFromText(revision.getPatch())), textResult);
-            if (!all((boolean[]) patchResult[1])) {
-                throw new DocumentException("Unable to revert to revision " + revisionIndex + ": unable to apply patch of revision " + revision.getIndex());
-            } else {
-                textResult = (String) patchResult[0];
-            }
+    /**
+     * Returns a pretty HTML diff between the two specified revisions
+     *
+     * @param revisionIndex1 the first revision to diff, starting at 0 (-1 to specify the blank document).
+     * @param revisionIndex2 the second revision to diff, starting at 0 (must be equal or greater than revisionIndex1).
+     * @param simplify       simplify the diff for better readability
+     * @return the pretty HTML diff.
+     */
+    public String diff(int revisionIndex1, int revisionIndex2, boolean simplify) {
+        if (revisionIndex1 < -1 || revisionIndex1 >= revisions.size()) {
+            throw new DocumentException("Invalid revision index " + revisionIndex1);
+        }
+        if (revisionIndex2 < -1 || revisionIndex2 >= revisions.size() || revisionIndex2 < revisionIndex1) {
+            throw new DocumentException("Invalid revision index " + revisionIndex2);
+        }
+        String revisionText1 = "";
+        if (revisionIndex1 >= 0) {
+            revisionText1 = applyRevisionsUpTo(revisionIndex1);
         }
 
-        addRevision(textResult, author, message);
+        LinkedList<DiffMatchPatch.Diff> diffs = diffMatchPatch.diffMain(revisionText1, applyRevisionsUpTo(revisionIndex2));
+        if (simplify) {
+            diffMatchPatch.diffCleanupSemantic(diffs);
+        }
+        return diffMatchPatch.diffPrettyHtml(diffs);
     }
 
     /**
@@ -108,16 +118,16 @@ public class WikiDocument extends TextDocument {
     }
 
     /**
-     * Delete all revisions older than the specified threshold.
+     * Return a specific revision of the Wiki document.
      *
-     * @param threshold the date before which revisions are deleted.
+     * @param index the index number of the revision to get, starting with 0 as the oldest revision.
+     * @return the requested revision or null if it doesn't exists.
      */
-    public void pruneOldRevisions(LocalDate threshold) {
-        for (Iterator<Revision> iterator = revisions.iterator(); iterator.hasNext(); ) {
-            Revision revision = iterator.next();
-            if (revision.getDate().isBefore(threshold)) {
-                iterator.remove();
-            }
+    public Revision getRevision(int index) {
+        if (index < revisions.size()) {
+            return revisions.get(index);
+        } else {
+            return null;
         }
     }
 
@@ -132,13 +142,33 @@ public class WikiDocument extends TextDocument {
         throw new IllegalStateException("Cannot directly alter the text in a Wiki document, use addRevision() instead");
     }
 
+    private String applyRevisionsUpTo(int revisionIndex) {
+        String textResult = "";
+        for (Revision revision : revisions) {
+            if (revision.getIndex() > revisionIndex) {
+                break;
+            }
+            textResult = applyRevision(textResult, revision);
+        }
+        return textResult;
+    }
+
+    private String applyRevision(String initialText, Revision revision) {
+        Object[] patchResult = diffMatchPatch.patchApply(new LinkedList<>(diffMatchPatch.patchFromText(revision.getPatch())), initialText);
+        if (!all((boolean[]) patchResult[1])) {
+            throw new DocumentException("Unable to apply patch of revision " + revision.getIndex());
+        } else {
+            initialText = (String) patchResult[0];
+        }
+        return initialText;
+    }
+
     private boolean all(boolean[] values) {
         for (boolean value : values) {
             if (!value) {
                 return false;
             }
         }
-
         return true;
     }
 }

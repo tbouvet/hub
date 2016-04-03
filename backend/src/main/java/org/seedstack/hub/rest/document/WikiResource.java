@@ -10,17 +10,19 @@ package org.seedstack.hub.rest.document;
 import io.swagger.annotations.Api;
 import org.seedstack.business.domain.Repository;
 import org.seedstack.hub.application.security.SecurityService;
+import org.seedstack.hub.domain.model.component.Component;
 import org.seedstack.hub.domain.model.component.ComponentId;
 import org.seedstack.hub.domain.model.document.Document;
 import org.seedstack.hub.domain.model.document.DocumentFactory;
 import org.seedstack.hub.domain.model.document.DocumentId;
 import org.seedstack.hub.domain.model.document.DocumentScope;
-import org.seedstack.hub.domain.model.document.TextDocument;
 import org.seedstack.hub.domain.model.document.WikiDocument;
 import org.seedstack.hub.domain.services.text.TextService;
 
 import javax.inject.Inject;
+import javax.ws.rs.ClientErrorException;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.NotFoundException;
 import javax.ws.rs.POST;
@@ -37,10 +39,12 @@ import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
 
 @Api
-@Path("/components/{componentId}/wiki")
+@Path("/components/{componentId}/wiki/{page:[^/]+}")
 public class WikiResource {
     @Inject
     private Repository<Document, DocumentId> documentRepository;
+    @Inject
+    private Repository<Component, ComponentId> componentRepository;
     @Inject
     private DocumentFactory documentFactory;
     @Inject
@@ -53,56 +57,75 @@ public class WikiResource {
     private HttpHeaders httpHeaders;
     @PathParam("componentId")
     private String componentId;
+    @PathParam("page")
+    private String page;
 
     @GET
-    @Path("{page:[^/]+}")
     @Produces("text/html")
-    public Response getPage(@PathParam("page") String page) {
-        Document doc = documentRepository.load(new DocumentId(new ComponentId(componentId), DocumentScope.WIKI, page));
-        if (doc == null) {
-            throw new NotFoundException("Wiki page not found for component " + componentId + ": " + page);
-        }
+    public Response getPage() {
+        WikiDocument wikiDocument = getWikiDocument();
+        return Response.ok(textService.renderHtml(wikiDocument)).build();
+    }
 
-        if (doc instanceof WikiDocument) {
-            return Response.ok(textService.renderHtml((WikiDocument) doc)).build();
-        } else {
-            throw new ServerErrorException(Response.Status.INTERNAL_SERVER_ERROR);
-        }
+    @PUT
+    @Consumes("text/markdown")
+    @Produces("text/html")
+    public Response updatePage(@QueryParam("message") String message, String body) {
+        WikiDocument wikiDocument = getWikiDocument();
+        wikiDocument.addRevision(body, securityService.getAuthenticatedUser().getId(), message);
+        documentRepository.save(wikiDocument);
+        return Response.ok(textService.renderHtml(wikiDocument)).build();
     }
 
     @POST
-    @Path("{page:[^/]+}")
     @Consumes("text/markdown")
     @Produces("text/html")
-    public Response createPage(@PathParam("page") String page, @QueryParam("message") String message, String body) {
+    public Response createPage(@QueryParam("message") String message, String body) {
+        Component component = getComponent();
+        DocumentId documentId = new DocumentId(new ComponentId(componentId), DocumentScope.WIKI, page);
+        if (documentRepository.exists(documentId)) {
+            throw new ClientErrorException("Wiki page " + page + " already exists for component " + componentId, Response.Status.CONFLICT);
+        }
+
         WikiDocument wikiDocument = documentFactory.createWikiDocument(
-                new DocumentId(
-                        new ComponentId(componentId),
-                        DocumentScope.WIKI,
-                        page
-                ),
+                documentId,
                 body,
                 securityService.getAuthenticatedUser().getId(),
                 message
         );
+        component.addWikiPage(wikiDocument.getId());
 
         documentRepository.persist(wikiDocument);
+        componentRepository.persist(component);
 
         return Response.created(UriBuilder.fromPath(page).build()).entity(textService.renderHtml(wikiDocument)).build();
     }
 
-    @PUT
-    @Path("{page:[^/]+}")
-    @Consumes("text/markdown")
-    @Produces("text/html")
-    public Response updatePage(@PathParam("page") String page, @QueryParam("message") String message, String body) {
-        DocumentId documentId = new DocumentId(new ComponentId(componentId), DocumentScope.WIKI, page);
-        Document doc = documentRepository.load(documentId);
+    @DELETE
+    public Response deletePage() {
+        Component component = getComponent();
+        WikiDocument wikiDocument = getWikiDocument();
+        component.removeWikiPage(wikiDocument.getId());
+        componentRepository.persist(component);
+        documentRepository.delete(wikiDocument);
+        return Response.ok().build();
+    }
 
+    private Component getComponent() {
+        Component component = componentRepository.load(new ComponentId(componentId));
+        if (component == null) {
+            throw new NotFoundException("Component " + componentId + " not found");
+        }
+        return component;
+    }
+
+    private WikiDocument getWikiDocument() {
+        Document doc = documentRepository.load(new DocumentId(new ComponentId(componentId), DocumentScope.WIKI, page));
+        if (doc == null) {
+            throw new NotFoundException("Wiki page not found for component " + componentId + ": " + page);
+        }
         if (doc instanceof WikiDocument) {
-            ((WikiDocument) doc).addRevision(body, securityService.getAuthenticatedUser().getId(), message);
-            documentRepository.save(doc);
-            return Response.ok(textService.renderHtml((TextDocument) doc)).build();
+            return (WikiDocument) doc;
         } else {
             throw new ServerErrorException(Response.Status.INTERNAL_SERVER_ERROR);
         }

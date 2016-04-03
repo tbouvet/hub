@@ -10,11 +10,11 @@ package org.seedstack.hub.domain.model.document;
 import org.mongodb.morphia.annotations.Embedded;
 import org.seedstack.business.domain.BaseValueObject;
 import org.seedstack.hub.domain.model.user.UserId;
+import org.seedstack.hub.rest.shared.Dates;
 
 import java.text.SimpleDateFormat;
-import java.time.Instant;
 import java.time.LocalDate;
-import java.time.ZoneId;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Embedded
@@ -52,8 +52,8 @@ public class Revision extends BaseValueObject {
         return message;
     }
 
-    public LocalDate getDate() {
-        return Instant.ofEpochMilli(date.getTime()).atZone(ZoneId.systemDefault()).toLocalDate();
+    public LocalDateTime getDate() {
+        return Dates.asLocalDateTime(date);
     }
 
     @Override

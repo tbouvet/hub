@@ -36,6 +36,8 @@ public class Component extends BaseAggregateRoot<ComponentId> {
     private List<Release> releases = new ArrayList<>();
     @NotNull
     private List<DocumentId> docs = new ArrayList<>();
+    @NotNull
+    private List<DocumentId> wikiPages = new ArrayList<>();
     @Min(0)
     private int stars = 0;
     private Set<UserId> maintainers = new HashSet<>();
@@ -179,13 +181,25 @@ public class Component extends BaseAggregateRoot<ComponentId> {
         this.maintainers.addAll(maintainers);
     }
 
+    public void addWikiPage(DocumentId documentId) {
+        this.wikiPages.add(documentId);
+    }
+
+    public void removeWikiPage(DocumentId documentId) {
+        this.wikiPages.remove(documentId);
+    }
+
+    public List<DocumentId> getWikiPages() {
+        return Collections.unmodifiableList(wikiPages);
+    }
+
     /**
      * Replace the actual component properties by the new ones, but keep:
      * <ul>
-     *     <li>id</li>
-     *     <li>comments</li>
-     *     <li>stars</li>
-     *     <li>state</li>
+     * <li>id</li>
+     * <li>comments</li>
+     * <li>stars</li>
+     * <li>state</li>
      * </ul>
      *
      * @param component the new component

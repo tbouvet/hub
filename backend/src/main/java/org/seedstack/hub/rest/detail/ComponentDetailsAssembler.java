@@ -7,21 +7,17 @@
  */
 package org.seedstack.hub.rest.detail;
 
-import com.google.inject.ConfigurationException;
-import com.google.inject.Injector;
-import com.google.inject.ProvisionException;
 import org.seedstack.hub.application.StarringService;
 import org.seedstack.hub.domain.model.component.Component;
 import org.seedstack.hub.domain.model.component.ComponentId;
 import org.seedstack.hub.domain.model.component.Description;
 import org.seedstack.hub.domain.model.component.Release;
+import org.seedstack.hub.domain.model.document.DocumentId;
 import org.seedstack.hub.domain.model.user.UserId;
 import org.seedstack.hub.rest.AbstractComponentAssembler;
 import org.seedstack.hub.rest.Rels;
-import org.seedstack.hub.rest.shared.UriBuilder;
 
 import javax.inject.Inject;
-import javax.servlet.ServletContext;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -50,6 +46,7 @@ public class ComponentDetailsAssembler extends AbstractComponentAssembler<Compon
         componentDetails.setReleases(component.getReleases().stream().map(ReleaseRepresentation::new).collect(Collectors.toList()));
         componentDetails.setDocs(component.getDocs().stream().map(this::documentIdToString).collect(toList()));
         componentDetails.setMaintainers(component.getMaintainers().stream().map(UserId::getId).collect(toList()));
+        componentDetails.setWikiPages(component.getWikiPages().stream().map(DocumentId::getPath).collect(Collectors.toList()));
 
         assembleHalLinks(componentDetails, componentId);
 

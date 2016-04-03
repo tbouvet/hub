@@ -13,12 +13,14 @@ import org.seedstack.business.domain.BaseEntity;
 import javax.validation.constraints.NotNull;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.time.Instant;
 import java.time.LocalDate;
-import java.time.ZoneId;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.Date;
+
+import static org.seedstack.hub.rest.shared.Dates.asDate;
+import static org.seedstack.hub.rest.shared.Dates.asLocalDateTime;
 
 @Embedded
 public class Release extends BaseEntity<Version> implements Comparable<Release> {
@@ -44,35 +46,24 @@ public class Release extends BaseEntity<Version> implements Comparable<Release> 
         return version;
     }
 
-    public LocalDate getDate() {
-        return asLocalDate(date);
+    public LocalDateTime getDate() {
+        return asLocalDateTime(date);
     }
 
-    public void setDate(LocalDate date) {
+    public void setDate(LocalDateTime date) {
         this.date = asDate(date);
     }
 
     public void setPublicationDate(String publicationDate) {
         try {
-            this.date = asDate(LocalDate.parse(publicationDate, DateTimeFormatter.ISO_LOCAL_DATE));
-        } catch (DateTimeParseException e) {
-            throw new ComponentException("Invalid date " + publicationDate, e);
+            this.date = asDate(LocalDateTime.parse(publicationDate, DateTimeFormatter.ISO_LOCAL_DATE_TIME));
+        } catch (DateTimeParseException e1) {
+            try {
+                this.date = asDate(LocalDate.parse(publicationDate, DateTimeFormatter.ISO_LOCAL_DATE).atStartOfDay());
+            } catch (DateTimeParseException e2) {
+                throw new ComponentException("Invalid date " + publicationDate, e2);
+            }
         }
-    }
-
-    // Constructor LocalDate() required by Morphia does not exist, we use conversion from/to java.util.Date
-    public LocalDate asLocalDate(Date date) {
-        if (date == null) {
-            return null;
-        }
-        return Instant.ofEpochMilli(date.getTime()).atZone(ZoneId.systemDefault()).toLocalDate();
-    }
-
-    public Date asDate(LocalDate localDate) {
-        if (localDate == null) {
-            return null;
-        }
-        return Date.from(localDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant());
     }
 
     public URL getUrl() {
