@@ -18,5 +18,5 @@ public interface UserFinder {
 
     Result<ComponentCard> findStarred(UserId user, Range range);
 
-    Result<ComponentCard> findUserCards(UserId user, Range range);
+    Result<ComponentCard> findUserComponents(UserId user, Range range);
 }

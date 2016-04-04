@@ -5,7 +5,7 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
-package org.seedstack.it;
+package org.seedstack.it.mongo;
 
 import org.junit.After;
 import org.junit.Before;
@@ -57,14 +57,14 @@ public class UserMongoFinderIT {
 
     @Test
     public void test_findUserCards_for_owner() {
-        Result<ComponentCard> archived = userFinder.findUserCards(new UserId("adrienlauer"), new Range(0,10));
+        Result<ComponentCard> archived = userFinder.findUserComponents(new UserId("adrienlauer"), new Range(0,10));
         assertThat(archived.getResult()).hasSize(10);
         assertThat(archived.getResult().get(0).getId()).isEqualTo("Component0");
     }
 
     @Test
     public void test_findUserCards_for_maintainer() {
-        Result<ComponentCard> archived = userFinder.findUserCards(new UserId("pith"), new Range(0,10));
+        Result<ComponentCard> archived = userFinder.findUserComponents(new UserId("pith"), new Range(0,10));
         assertThat(archived.getResult()).hasSize(10);
         assertThat(archived.getResult().get(0).getId()).isEqualTo("Component0");
     }
@@ -74,7 +74,7 @@ public class UserMongoFinderIT {
         Component mock = MockBuilder.mock("Archived", 0, State.ARCHIVED, "pith");
         componentRepository.persist(mock);
 
-        Result<ComponentCard> archived = userFinder.findUserCards(new UserId("pith"), new Range(0,10));
+        Result<ComponentCard> archived = userFinder.findUserComponents(new UserId("pith"), new Range(0,10));
         assertThat(archived.getResult()).hasSize(10);
         assertThat(archived.getResult().get(0).getId()).isEqualTo("Archived0");
 
@@ -86,7 +86,7 @@ public class UserMongoFinderIT {
         Component component = MockBuilder.mock(888, State.PENDING, "@seedstack");
         componentRepository.persist(component);
 
-        Result<ComponentCard> archived = userFinder.findUserCards(new UserId("admin"), new Range(0,10));
+        Result<ComponentCard> archived = userFinder.findUserComponents(new UserId("admin"), new Range(0,10));
         assertThat(archived.getResult()).hasSize(1);
         assertThat(archived.getResult().get(0).getId()).isEqualTo("Component888");
 
