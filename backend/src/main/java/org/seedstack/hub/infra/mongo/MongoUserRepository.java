@@ -22,6 +22,6 @@ class MongoUserRepository extends BaseMorphiaRepository<User, UserId> implements
 
     @Override
     public Optional<User> findByEmail(String email) {
-        return Optional.ofNullable(getDatastore().createQuery(User.class).field("email").equal(email).get());
+        return Optional.ofNullable(getDatastore().createQuery(User.class).field("emails").hasThisOne(email).get());
     }
 }

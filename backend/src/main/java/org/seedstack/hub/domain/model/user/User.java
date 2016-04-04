@@ -7,7 +7,6 @@
  */
 package org.seedstack.hub.domain.model.user;
 
-import org.hibernate.validator.constraints.Email;
 import org.mongodb.morphia.annotations.Entity;
 import org.mongodb.morphia.annotations.Id;
 import org.seedstack.business.domain.BaseAggregateRoot;
@@ -15,21 +14,25 @@ import org.seedstack.hub.domain.model.component.ComponentId;
 
 import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity("users")
 public class User extends BaseAggregateRoot<UserId> {
     @NotNull
     @Id
     private UserId userId;
-    @Email
-    private String email;
+
+    private byte[] icon;
+
+    private Set<String> emails = new HashSet<>();
 
     private List<ComponentId> starred = new ArrayList<>();
 
     public User(UserId userId, String email) {
         this.userId = userId;
-        this.email = email;
+        addEmail(email);
     }
     public User(UserId userId) {
         this(userId, null);
@@ -48,8 +51,23 @@ public class User extends BaseAggregateRoot<UserId> {
         return userId;
     }
 
-    public String getEmail() {
-        return email;
+    public byte[] getIcon() {
+        return icon;
+    }
+
+    public void setIcon(byte[] icon) {
+        this.icon = icon;
+    }
+
+    public void addEmail(String email) {
+        emails.add(email.toLowerCase());
+    }
+    public void removeEmail(String email) {
+        emails.remove(email.toLowerCase());
+    }
+
+    public Set<String> getEmails() {
+        return emails;
     }
 
     public List<ComponentId> getStarred() {
