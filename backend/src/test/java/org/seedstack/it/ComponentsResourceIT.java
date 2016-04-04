@@ -34,6 +34,7 @@ import java.util.stream.IntStream;
 import static com.jayway.restassured.RestAssured.expect;
 import static java.util.stream.Collectors.toList;
 import static org.skyscreamer.jsonassert.JSONAssert.assertEquals;
+import static org.tmatesoft.svn.core.internal.wc17.db.statement.SVNWCDbSchema.PRISTINE__Fields.size;
 
 public class ComponentsResourceIT extends AbstractSeedWebIT {
 
@@ -67,8 +68,8 @@ public class ComponentsResourceIT extends AbstractSeedWebIT {
         Response response = httpGet("components?search=ponent1&offset=5&size=5");
 
         String requestWithPagination = "{\"_links\":{" +
-                "\"self\":{\"href\":\"/components?search=ponent1&offset=5&size=5\"}," +
-                "\"next\":{\"href\":\"/components?search=ponent1&offset=10&size=5\"}" +
+                "\"self\":{\"href\":\"" + baseURL.getPath() + "components?search=ponent1&offset=5&size=5\"}," +
+                "\"next\":{\"href\":\"" + baseURL.getPath() + "components?search=ponent1&offset=10&size=5\"}" +
                 "},\"_embedded\":{" +
                 "\"components\":[" +
                 "{\"id\":\"Component14\"},{\"id\":\"Component15\"},{\"id\":\"Component16\"},{\"id\":\"Component17\"},{\"id\":\"Component18\"}" +

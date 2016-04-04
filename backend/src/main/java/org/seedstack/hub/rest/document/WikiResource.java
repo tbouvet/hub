@@ -18,6 +18,8 @@ import org.seedstack.hub.domain.model.document.DocumentId;
 import org.seedstack.hub.domain.model.document.DocumentScope;
 import org.seedstack.hub.domain.model.document.WikiDocument;
 import org.seedstack.hub.domain.services.text.TextService;
+import org.seedstack.hub.rest.Rels;
+import org.seedstack.seed.rest.Rel;
 
 import javax.inject.Inject;
 import javax.ws.rs.ClientErrorException;
@@ -39,7 +41,7 @@ import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
 
 @Api
-@Path("/components/{componentId}/wiki/{page:[^/]+}")
+@Path("/components/{componentId}/wiki/{page}")
 public class WikiResource {
     @Inject
     private Repository<Document, DocumentId> documentRepository;
@@ -62,6 +64,7 @@ public class WikiResource {
 
     @GET
     @Produces("text/html")
+    @Rel(Rels.WIKI_PAGES)
     public Response getPage() {
         WikiDocument wikiDocument = getWikiDocument();
         return Response.ok(textService.renderHtml(wikiDocument)).build();

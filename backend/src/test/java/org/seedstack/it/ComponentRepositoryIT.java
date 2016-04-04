@@ -51,10 +51,10 @@ public class ComponentRepositoryIT {
     }
 
     private Description buildDescription(ComponentId componentId) throws Exception {
-        Description description = new Description("c1", "summary", "MPL2", new DocumentId(componentId, DocumentScope.FILE, "/icon.png"), new DocumentId(componentId, DocumentScope.FILE, "readme.md"));
+        Description description = new Description("c1", "summary", "MPL2", new DocumentId(componentId, DocumentScope.FILES, "/icon.png"), new DocumentId(componentId, DocumentScope.FILES, "readme.md"));
         description.setComponentUrl(new URL("http://some-url.com"));
         description.setIssues(new URL("http://issue-url.com"));
-        description.setReadme(new DocumentId(componentId, DocumentScope.FILE, "/readme.png"));
+        description.setReadme(new DocumentId(componentId, DocumentScope.FILES, "/readme.png"));
         return description;
     }
 }

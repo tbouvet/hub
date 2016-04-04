@@ -7,8 +7,8 @@
  */
 package org.seedstack.hub.rest.detail;
 
-import org.seedstack.hub.domain.model.component.Release;
 import org.seedstack.hub.domain.model.component.State;
+import org.seedstack.hub.rest.shared.DocumentRepresentation;
 import org.seedstack.seed.rest.hal.HalRepresentation;
 
 import java.util.List;
@@ -24,13 +24,13 @@ public class ComponentDetails extends HalRepresentation {
     private String license;
     private String url;
     private String issues;
-    private String icon;
-    private String readme;
-    private List<String> images;
-    private List<String> docs;
     private List<String> maintainers;
-    private List<String> wikiPages;
     private int stars;
+    private DocumentRepresentation icon;
+    private DocumentRepresentation readme;
+    private List<DocumentRepresentation> images;
+    private List<DocumentRepresentation> docs;
+    private List<DocumentRepresentation> wikiPages;
 
     public String getId() {
         return id;
@@ -112,35 +112,35 @@ public class ComponentDetails extends HalRepresentation {
         this.issues = issues;
     }
 
-    public String getIcon() {
+    public DocumentRepresentation getIcon() {
         return icon;
     }
 
-    public void setIcon(String icon) {
+    public void setIcon(DocumentRepresentation icon) {
         this.icon = icon;
     }
 
-    public String getReadme() {
+    public DocumentRepresentation getReadme() {
         return readme;
     }
 
-    public void setReadme(String readme) {
+    public void setReadme(DocumentRepresentation readme) {
         this.readme = readme;
     }
 
-    public List<String> getImages() {
+    public List<DocumentRepresentation> getImages() {
         return images;
     }
 
-    public void setImages(List<String> images) {
+    public void setImages(List<DocumentRepresentation> images) {
         this.images = images;
     }
 
-    public List<String> getDocs() {
+    public List<DocumentRepresentation> getDocs() {
         return docs;
     }
 
-    public void setDocs(List<String> docs) {
+    public void setDocs(List<DocumentRepresentation> docs) {
         this.docs = docs;
     }
 
@@ -160,11 +160,11 @@ public class ComponentDetails extends HalRepresentation {
         this.maintainers = maintainers;
     }
 
-    public List<String> getWikiPages() {
+    public List<DocumentRepresentation> getWikiPages() {
         return wikiPages;
     }
 
-    public void setWikiPages(List<String> wikiPages) {
+    public void setWikiPages(List<DocumentRepresentation> wikiPages) {
         this.wikiPages = wikiPages;
     }
 }

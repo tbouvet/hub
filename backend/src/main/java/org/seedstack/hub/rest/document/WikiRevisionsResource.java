@@ -17,7 +17,6 @@ import org.seedstack.hub.domain.model.document.DocumentId;
 import org.seedstack.hub.domain.model.document.DocumentScope;
 import org.seedstack.hub.domain.model.document.WikiDocument;
 import org.seedstack.hub.rest.shared.Dates;
-import org.seedstack.seed.rest.RelRegistry;
 
 import javax.inject.Inject;
 import javax.ws.rs.BadRequestException;
@@ -33,14 +32,12 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
 @Api
-@Path("/components/{componentId}/wiki/{page:[^/]+}")
+@Path("/components/{componentId}/wiki/{page}")
 public class WikiRevisionsResource {
     @Inject
     private Repository<Document, DocumentId> documentRepository;
     @Inject
     private FluentAssembler fluentAssembler;
-    @Inject
-    private RelRegistry relRegistry;
     @Context
     private UriInfo uriInfo;
     @Context

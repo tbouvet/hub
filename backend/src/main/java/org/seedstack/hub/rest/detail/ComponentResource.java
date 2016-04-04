@@ -12,9 +12,9 @@ import org.hibernate.validator.constraints.Length;
 import org.seedstack.business.assembler.FluentAssembler;
 import org.seedstack.business.domain.Repository;
 import org.seedstack.business.finder.Result;
+import org.seedstack.hub.application.StatePolicy;
 import org.seedstack.hub.application.fetch.ImportService;
 import org.seedstack.hub.application.security.SecurityService;
-import org.seedstack.hub.application.StatePolicy;
 import org.seedstack.hub.domain.model.component.Comment;
 import org.seedstack.hub.domain.model.component.Component;
 import org.seedstack.hub.domain.model.component.ComponentId;
@@ -24,28 +24,30 @@ import org.seedstack.hub.rest.Rels;
 import org.seedstack.hub.rest.list.ComponentFinder;
 import org.seedstack.hub.rest.shared.RangeInfo;
 import org.seedstack.hub.rest.shared.ResultHal;
-import org.seedstack.hub.rest.shared.UriBuilder;
 import org.seedstack.seed.rest.Rel;
 import org.seedstack.seed.rest.RelRegistry;
 import org.seedstack.seed.security.AuthorizationException;
 
 import javax.inject.Inject;
-import javax.servlet.ServletContext;
 import javax.validation.constraints.NotNull;
-import javax.ws.rs.*;
+import javax.ws.rs.BadRequestException;
+import javax.ws.rs.BeanParam;
+import javax.ws.rs.DELETE;
+import javax.ws.rs.GET;
+import javax.ws.rs.NotFoundException;
+import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
 import java.net.URI;
 import java.util.Date;
-import java.util.List;
-
-import static java.util.stream.Collectors.toList;
-import static org.seedstack.hub.rest.Rels.COMPONENT;
-import static org.seedstack.hub.rest.Rels.STATE;
 
 @Api
 @Path("/components/{componentId}")
 @Produces({"application/json", "application/hal+json"})
-@Rel(value = COMPONENT, home = true)
+@Rel(value = Rels.COMPONENT, home = true)
 public class ComponentResource {
 
     public static final String COMPONENT_ID = "componentId";
@@ -94,7 +96,7 @@ public class ComponentResource {
 
     @PUT
     @Path("/state")
-    @Rel(value = STATE)
+    @Rel(Rels.STATE)
     public void changeState(@NotNull String state) {
         Component component = componentRepository.load(new ComponentId(componentId));
         switch (State.valueOf(state)) {
@@ -120,15 +122,15 @@ public class ComponentResource {
 
     @GET
     @Path("/comments")
-    @Rel(value = Rels.COMMENT)
+    @Rel(Rels.COMMENT)
     public ResultHal<Comment> getComments(@BeanParam RangeInfo rangeInfo) {
         Result<Comment> comments = componentFinder.findComments(new ComponentId(componentId), rangeInfo.range());
-        return new ResultHal<>(Rels.COMMENT,comments,relRegistry.uri(Rels.COMMENT));
+        return new ResultHal<>(Rels.COMMENT, comments, relRegistry.uri(Rels.COMMENT));
     }
 
     @POST
     @Path("/comments")
-    @Rel(value = Rels.COMMENT)
+    @Rel(Rels.COMMENT)
     public Response postComments(@Length(max = 144) String content) {
         Component component = componentRepository.load(new ComponentId(componentId));
         if (component == null) {

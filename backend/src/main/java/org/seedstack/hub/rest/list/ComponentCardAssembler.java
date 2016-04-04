@@ -8,11 +8,8 @@
 package org.seedstack.hub.rest.list;
 
 import org.seedstack.hub.domain.model.component.Component;
-import org.seedstack.hub.domain.model.document.DocumentId;
 import org.seedstack.hub.rest.AbstractComponentAssembler;
-import org.seedstack.hub.rest.Rels;
-import org.seedstack.hub.rest.detail.ComponentDetails;
-import org.seedstack.hub.rest.shared.UriBuilder;
+import org.seedstack.hub.rest.shared.DocumentRepresentation;
 
 public class ComponentCardAssembler extends AbstractComponentAssembler<ComponentCard> {
 
@@ -21,14 +18,10 @@ public class ComponentCardAssembler extends AbstractComponentAssembler<Component
         componentCard.setId(component.getId().getName());
         componentCard.setName(component.getName());
         componentCard.setSummary(component.getDescription().getSummary());
-        componentCard.setIcon(documentIdToString(component.getDescription().getIcon()));
+        componentCard.setIcon(new DocumentRepresentation(component.getDescription().getIcon(), relRegistry));
         componentCard.setOwner(component.getOwner().toString());
         componentCard.setStars(component.getStars());
         componentCard.setState(component.getState());
-        updateUrls(componentCard);
     }
 
-    private void updateUrls(ComponentCard componentCard) {
-        componentCard.setIcon(addContextPath(componentCard.getIcon()));
-    }
 }

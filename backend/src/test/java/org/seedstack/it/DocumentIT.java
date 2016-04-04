@@ -79,6 +79,6 @@ public class DocumentIT {
     }
 
     private DocumentId buildDocumentId(String componentId, String path) {
-        return new DocumentId(new ComponentId(componentId), DocumentScope.FILE, path);
+        return new DocumentId(new ComponentId(componentId), DocumentScope.FILES, path);
     }
 }
