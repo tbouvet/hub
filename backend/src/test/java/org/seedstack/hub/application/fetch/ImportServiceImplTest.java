@@ -9,6 +9,7 @@ package org.seedstack.hub.application.fetch;
 
 import mockit.*;
 import mockit.integration.junit4.JMockit;
+import org.assertj.core.api.Assertions;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -60,7 +61,7 @@ public class ImportServiceImplTest {
         url = new URL("https://github.com/seedstack/seed.git");
         source = new Source(sourceType, url);
 
-        new Expectations() {{
+        new NonStrictExpectations() {{
             domainRegistry.getService(FetchService.class, sourceType.qualifier());
             result = fetchService;
         }};
@@ -103,5 +104,39 @@ public class ImportServiceImplTest {
         givenIsOwner(false);
 
         underTest.importComponent(new Source(sourceType, url));
+    }
+
+    @Test
+    public void testSync() throws Exception {
+        new Expectations() {{
+            componentRepository.load(new ComponentId("c1"));
+            result = component;
+            component.getSource();
+            result = source;
+        }};
+        givenFetchResult(source);
+        givenIsOwner(true);
+
+        Component component = underTest.sync(new ComponentId("c1"));
+
+        assertThat(component).isNotNull();
+
+        new Verifications() {{
+            componentRepository.persist(withNotNull());
+            times = 1;
+            documentRepository.persist(withNotNull());
+            times = 2;
+        }};
+    }
+
+    @Test
+    public void testSyncUnsupportedSourceType() throws Exception {
+        givenIsOwner(true);
+        try {
+            underTest.sync(new ComponentId("c1"));
+            Assertions.failBecauseExceptionWasNotThrown(ImportException.class);
+        } catch (ImportException e) {
+            Assertions.assertThat(e).hasMessage("Unsupported source type: null");
+        }
     }
 }
