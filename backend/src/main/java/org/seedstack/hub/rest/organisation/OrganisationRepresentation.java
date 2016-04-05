@@ -10,7 +10,7 @@ package org.seedstack.hub.rest.organisation;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotBlank;
 import org.hibernate.validator.constraints.NotEmpty;
-import org.seedstack.hub.rest.list.ComponentCard;
+import org.seedstack.hub.rest.component.list.ComponentCard;
 import org.seedstack.seed.rest.hal.HalRepresentation;
 
 import java.util.List;

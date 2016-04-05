@@ -20,6 +20,7 @@ import java.io.File;
 class ManifestParserImpl implements ManifestParser {
     private static final String FULL_MANIFEST_PATTERN = "seedstack-component.%s";
     private static final String SHORT_MANIFEST_PATTERN = "component.%s";
+    public static final String README_NAME = "README.md";
     @Inject
     private Validator validator;
 
@@ -34,6 +35,10 @@ class ManifestParserImpl implements ManifestParser {
             manifest = objectMapper.readValue(manifestFile, Manifest.class);
         } catch (Exception e) {
             throw new ComponentException("Unable to parse component manifest", e);
+        }
+
+        if (manifest.getReadme() == null && containsReadme(repositoryDirectory)) {
+            manifest.setReadme(README_NAME);
         }
 
         validator.validate(manifest);
@@ -69,5 +74,10 @@ class ManifestParserImpl implements ManifestParser {
         }
 
         throw new ComponentException("Missing manifest file for component located in " + repositoryDirectory);
+    }
+
+    private boolean containsReadme(File repositoryDirectory) {
+        File readme = new File(repositoryDirectory, README_NAME);
+        return readme.canRead();
     }
 }

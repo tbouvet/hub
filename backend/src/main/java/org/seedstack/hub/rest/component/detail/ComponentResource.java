@@ -5,7 +5,7 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
-package org.seedstack.hub.rest.detail;
+package org.seedstack.hub.rest.component.detail;
 
 import io.swagger.annotations.Api;
 import org.hibernate.validator.constraints.Length;
@@ -21,7 +21,7 @@ import org.seedstack.hub.domain.model.component.ComponentId;
 import org.seedstack.hub.domain.model.component.State;
 import org.seedstack.hub.domain.model.user.User;
 import org.seedstack.hub.rest.Rels;
-import org.seedstack.hub.rest.list.ComponentFinder;
+import org.seedstack.hub.rest.component.list.ComponentFinder;
 import org.seedstack.hub.rest.shared.RangeInfo;
 import org.seedstack.hub.rest.shared.ResultHal;
 import org.seedstack.seed.rest.Rel;
