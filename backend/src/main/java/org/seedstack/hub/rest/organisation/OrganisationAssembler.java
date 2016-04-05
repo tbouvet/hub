@@ -48,8 +48,7 @@ public class OrganisationAssembler extends BaseAssembler<Organisation, Organisat
                     .collect(Collectors.toList()));
 
         organisationRepresentation.self(relRegistry.uri(Rels.ORGANISATION)
-                .set(ORGANISATION_ID, organisation.getEntityId().getId())
-                .getHref());
+                .set(ORGANISATION_ID, organisation.getEntityId().getId()));
     }
 
     @Override

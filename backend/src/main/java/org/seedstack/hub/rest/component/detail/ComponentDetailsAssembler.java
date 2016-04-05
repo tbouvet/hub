@@ -82,7 +82,7 @@ public class ComponentDetailsAssembler extends AbstractComponentAssembler<Compon
     private void addStarLinkIfNotStarred(ComponentDetails componentDetails, String componentId) {
         if (!starringService.hasStarred(new ComponentId(componentId))) {
             componentDetails.link(Rels.STAR, relRegistry
-                    .uri(Rels.STAR).set(COMPONENT_ID, componentId).getHref());
+                    .uri(Rels.STAR).set(COMPONENT_ID, componentId));
         }
     }
 }
