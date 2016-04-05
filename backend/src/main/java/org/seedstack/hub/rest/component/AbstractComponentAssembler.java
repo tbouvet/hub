@@ -35,20 +35,20 @@ public abstract class AbstractComponentAssembler<T extends HalRepresentation> ex
         String id = component.getEntityId().getName();
         t.self(relRegistry
                 .uri(Rels.COMPONENT)
-                .set(COMPONENT_ID, id).getHref());
+                .set(COMPONENT_ID, id));
 
         String owner = component.getOwner().toString();
         if (component.getOwner().isUser()) {
             t.link(AUTHOR_COMPONENTS, relRegistry
-                    .uri(AUTHOR_COMPONENTS).set(USER_ID, owner).getHref());
+                    .uri(AUTHOR_COMPONENTS).set(USER_ID, owner));
         } else {
             t.link(ORGANISATION, relRegistry
-                    .uri(ORGANISATION).set(ORGANISATION_ID, owner).getHref());
+                    .uri(ORGANISATION).set(ORGANISATION_ID, owner));
         }
 
-        if (isPublishableByUser(component) || isArchivableByUser(component)) {
+        if (isPublishableByUser(component) || isArchivableByUser(component) || isUnarchivableByUser(component)) {
             t.link(Rels.STATE, relRegistry
-                    .uri(Rels.STATE).set(COMPONENT_ID, id).getHref());
+                    .uri(Rels.STATE).set(COMPONENT_ID, id));
         }
     }
 
@@ -58,6 +58,10 @@ public abstract class AbstractComponentAssembler<T extends HalRepresentation> ex
 
     private boolean isArchivableByUser(Component component) {
         return component.getState() == State.PUBLISHED && statePolicy.canArchive(component);
+    }
+
+    private boolean isUnarchivableByUser(Component component) {
+        return component.getState() == State.ARCHIVED && statePolicy.canArchive(component);
     }
 
     protected abstract void doAssemble(T t, Component component);

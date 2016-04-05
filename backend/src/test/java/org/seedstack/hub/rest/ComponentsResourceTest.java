@@ -24,6 +24,7 @@ import org.seedstack.hub.rest.component.list.SortType;
 import org.seedstack.hub.rest.shared.RangeInfo;
 import org.seedstack.seed.rest.RelRegistry;
 import org.seedstack.seed.rest.hal.HalRepresentation;
+import org.seedstack.seed.rest.hal.Link;
 
 import javax.servlet.ServletContext;
 import java.util.List;
@@ -31,6 +32,7 @@ import java.util.stream.IntStream;
 
 import static java.util.stream.Collectors.toList;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.seedstack.hub.rest.Rels.COMPONENTS;
 
 @RunWith(JMockit.class)
 public class ComponentsResourceTest {
@@ -63,6 +65,8 @@ public class ComponentsResourceTest {
         new Expectations() {{
             componentFinder.findPublishedCards(withAny(rangeInfo.range()), SortType.NAME, searchName);
             result = new Result<>(componentCards, size, offset);
+            relRegistry.uri(COMPONENTS);
+            result = new Link("/components?search=foo&sort=name");
         }};
     }
 

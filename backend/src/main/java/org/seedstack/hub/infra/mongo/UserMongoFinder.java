@@ -16,7 +16,6 @@ import org.seedstack.business.finder.Range;
 import org.seedstack.business.finder.Result;
 import org.seedstack.hub.domain.model.component.Component;
 import org.seedstack.hub.domain.model.component.ComponentId;
-import org.seedstack.hub.domain.model.component.State;
 import org.seedstack.hub.domain.model.organisation.Organisation;
 import org.seedstack.hub.domain.model.user.User;
 import org.seedstack.hub.domain.model.user.UserId;
@@ -79,11 +78,6 @@ class UserMongoFinder extends AbstractMongoFinder implements UserFinder {
                 orgQuery.criteria("members.id").equal(userName)
         );
         return orgQuery.asList();
-    }
-
-    private Result<ComponentCard> findPublishedComponentCards(Query<Component> query, Range range) {
-        query.field("state").equal(State.PUBLISHED);
-        return findComponentCards(query, range);
     }
 
     private Result<ComponentCard> findComponentCards(Query<Component> query, Range range) {

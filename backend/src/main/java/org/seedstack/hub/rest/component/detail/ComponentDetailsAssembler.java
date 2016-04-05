@@ -38,6 +38,7 @@ public class ComponentDetailsAssembler extends AbstractComponentAssembler<Compon
         componentDetails.setState(component.getState());
 
         assembleDescription(componentDetails, component);
+
         List<Release> releases = component.getReleases();
         if (!releases.isEmpty()) {
             componentDetails.setVersion(releases.get(0).toString());
@@ -61,7 +62,6 @@ public class ComponentDetailsAssembler extends AbstractComponentAssembler<Compon
             if (description.getIssues() != null) {
                 componentDetails.setIssues(description.getIssues().toString());
             }
-            componentDetails.setLicense(description.getLicense());
             if (description.getIcon() != null) {
                 componentDetails.setIcon(new DocumentRepresentation(description.getIcon(), relRegistry));
             }
