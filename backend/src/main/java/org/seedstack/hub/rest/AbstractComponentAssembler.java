@@ -34,20 +34,20 @@ public abstract class AbstractComponentAssembler<T extends HalRepresentation> ex
         String id = component.getEntityId().getName();
         t.self(relRegistry
                 .uri(Rels.COMPONENT)
-                .set(COMPONENT_ID, id).expand());
+                .set(COMPONENT_ID, id).getHref());
 
         String owner = component.getOwner().toString();
         if (component.getOwner().isUser()) {
             t.link(AUTHOR_COMPONENTS, relRegistry
-                    .uri(AUTHOR_COMPONENTS).set(USER_ID, owner).expand());
+                    .uri(AUTHOR_COMPONENTS).set(USER_ID, owner).getHref());
         } else {
             t.link(ORGANISATION, relRegistry
-                    .uri(ORGANISATION).set(ORGANISATION_ID, owner).expand());
+                    .uri(ORGANISATION).set(ORGANISATION_ID, owner).getHref());
         }
 
         if (isPublishableByUser(component) || isArchivableByUser(component)) {
             t.link(Rels.STATE, relRegistry
-                    .uri(Rels.STATE).set(COMPONENT_ID, id).expand());
+                    .uri(Rels.STATE).set(COMPONENT_ID, id).getHref());
         }
     }
 

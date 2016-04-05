@@ -140,7 +140,7 @@ public class ComponentResource {
         Comment comment = new Comment(user.getId().getId(), content, new Date());
         component.addComment(comment);
         componentRepository.persist(component);
-        return Response.created(URI.create(relRegistry.uri(Rels.COMMENT).set(COMPONENT_ID, componentId).expand()))
+        return Response.created(URI.create(relRegistry.uri(Rels.COMMENT).set(COMPONENT_ID, componentId).getHref()))
                 .entity(comment).build();
     }
 }

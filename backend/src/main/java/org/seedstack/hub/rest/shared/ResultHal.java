@@ -27,13 +27,13 @@ public class ResultHal<T> extends HalRepresentation {
         self(selfBuilder
                 .set(RangeInfo.OFFSET, result.getOffset())
                 .set(RangeInfo.SIZE, result.getResult().size())
-                .expand());
+                .getHref());
 
         if (result.getOffset() + result.getSize() < result.getFullSize()) {
             link("next", selfBuilder
                     .set(RangeInfo.OFFSET, result.getOffset() + result.getSize())
                     .set(RangeInfo.SIZE, result.getResult().size())
-                    .expand());
+                    .getHref());
         }
     }
 

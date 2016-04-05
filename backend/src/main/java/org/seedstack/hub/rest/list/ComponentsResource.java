@@ -64,7 +64,7 @@ public class ComponentsResource {
             Component component = importService.importComponent(new Source(SourceType.from(vcs), sourceUrl));
 
             ComponentCard componentCard = fluentAssembler.assemble(component).to(ComponentCard.class);
-            URI componentURI = URI.create(relRegistry.uri(COMPONENT).set("componentId", componentCard.getId()).expand());
+            URI componentURI = URI.create(relRegistry.uri(COMPONENT).set("componentId", componentCard.getId()).getHref());
             return Response.created(componentURI).entity(componentCard).build();
 
         } catch (ImportException | ComponentException e) {

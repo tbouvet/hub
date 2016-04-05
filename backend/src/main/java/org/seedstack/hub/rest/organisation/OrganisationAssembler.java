@@ -49,7 +49,7 @@ public class OrganisationAssembler extends BaseAssembler<Organisation, Organisat
 
         organisationRepresentation.self(relRegistry.uri(Rels.ORGANISATION)
                 .set(ORGANISATION_ID, organisation.getEntityId().getId())
-                .expand());
+                .getHref());
     }
 
     @Override

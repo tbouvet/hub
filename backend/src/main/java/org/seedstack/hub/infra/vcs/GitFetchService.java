@@ -30,7 +30,7 @@ class GitFetchService extends LocalFetchService {
 
             logger.debug("Checking out {} branch in directory {}", branchName, target.getAbsolutePath());
 
-            if (localRepository.getRepository().getRef(branchName) == null) {
+            if (localRepository.getRepository().findRef(branchName) == null) {
                 localRepository.branchCreate()
                         .setName(branchName)
                         .setUpstreamMode(CreateBranchCommand.SetupUpstreamMode.TRACK)

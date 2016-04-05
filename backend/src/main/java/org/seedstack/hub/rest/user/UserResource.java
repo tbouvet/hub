@@ -85,7 +85,7 @@ public class UserResource {
     @Path("/stars/{componentId}")
     public Response starComponent(@PathParam("componentId") String componentId) throws URISyntaxException {
         starringService.star(new ComponentId(componentId));
-        return Response.created(new URI(relRegistry.uri(STARS).set("componentId", componentId).expand())).build();
+        return Response.created(new URI(relRegistry.uri(STARS).set("componentId", componentId).getHref())).build();
     }
 
     @Rel(STAR)

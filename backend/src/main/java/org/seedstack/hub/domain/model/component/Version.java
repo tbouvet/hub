@@ -100,6 +100,7 @@ public class Version extends BaseValueObject implements Comparable<Version> {
         return result;
     }
 
+    @SuppressWarnings("unchecked")
     private <T> int compareTo(Comparable<T> i, Comparable<T> j) {
         if (i == null && j == null) {
             return 0;
