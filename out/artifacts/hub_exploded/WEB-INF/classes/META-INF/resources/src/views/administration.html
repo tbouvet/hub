@@ -1,0 +1,99 @@
+<main layout-padding layout="column" id="admin">
+    <div flex layout="row" layout-sm="column" layout-xs="column">
+        <div flex="none">
+            <md-button class="md-accent" hub-history-back>
+                <md-icon md-font-set="material-icons">keyboard_backspace</md-icon>
+                Back
+            </md-button>
+        </div>
+    </div>
+    <section layout="row" layout-wrap layout-xs="column" layout-align="center center">
+        <md-content class="md-whiteframe-1dp" style="width: 100%">
+            <md-toolbar>
+                <div class="md-toolbar-tools">
+                    <h2>
+                        Pending components
+                    </h2>
+                </div>
+            </md-toolbar>
+            <md-content class="md-padding">
+                <p ng-if="$ctrl.pendingComponents.length < 1">There are no pending components</p>
+                <md-list ng-if="$ctrl.pendingComponents.length > 0" flex>
+                    <md-subheader class="md-no-sticky">{{ $ctrl.pendingComponents.length }} components</md-subheader>
+                    <md-list-item ng-repeat="pendingComponent in $ctrl.pendingComponents"
+                                  ng-click="$ctrl.view(pendingComponent)" class="md-3-line">
+                        <img ng-src="{{ pendingComponent.icon }}" err-src="src/img/default-component.png" class="md-avatar" alt="Component icon"/>
+                        <div class="md-list-item-text" layout="column">
+                            <h3>{{ pendingComponent.name }}</h3>
+                            <h4>{{ pendingComponent.summary }}</h4>
+                            <p>{{ pendingComponent.version }}</p>
+                            <md-button class="md-secondary md-raised"
+                                       ng-disabled="publishing"
+                                       ng-click="publishing = true; $ctrl.publishComponent(pendingComponent)">
+                                Publish
+                            </md-button>
+                        </div>
+                    </md-list-item>
+                </md-list>
+            </md-content>
+        </md-content>
+    </section>
+
+    <section layout="row" layout-wrap layout-xs="column" layout-align="center center">
+        <md-content class="md-whiteframe-1dp" style="width: 100%">
+            <md-toolbar>
+                <div class="md-toolbar-tools">
+                    <h2>
+                        Import
+                    </h2>
+                </div>
+            </md-toolbar>
+            <md-content class="md-padding">
+                <h1> Github </h1>
+                <form name="searchGithubForm">
+                    <md-input-container class="md-block">
+                        <label for="searchGithub">Enter user to list its public repositories</label>
+                        <input md-no-asterisk
+                               id="searchGithub"
+                               name="searchGithub"
+                               ng-model-options="{ debounce: 500 }"
+                               ng-model="$ctrl.githubSearchQuery"
+                               ng-change="$ctrl.searchGithubRepositories($ctrl.githubSearchQuery)">
+                    </md-input-container>
+                </form>
+                <md-list ng-if="$ctrl.searchedGithubComponents.length > 0 && !$ctrl.importing" flex>
+
+                    <div layout="row" layout-align="start center">
+                        <md-input-container class="md-block" flex>
+                            <label for="filter-search">Filter</label>
+                            <input id="filter-search" name="search" ng-model="searchFilter">
+                        </md-input-container>
+                        <md-button class="md-primary md-raised"
+                                   ng-click="$ctrl.importComponents($ctrl.selectedRepositories)">
+                            Import selected
+                        </md-button>
+                    </div>
+
+                    <md-subheader class="md-no-sticky">
+                        {{ $ctrl.searchedGithubComponents.length }} components found
+                    </md-subheader>
+
+                    <md-list-item ng-repeat="searchedComponent in $ctrl.searchedGithubComponents | filter:{full_name: searchFilter }"
+                                  class="md-1-line">
+                        <div class="md-list-item-text" layout="row">
+                            <img ng-src="{{ searchedComponent.owner.avatar_url }}" err-src="src/img/default-component.png" class="md-avatar" alt="User picture"/>
+                            <h3 class="md-subhead">{{ searchedComponent.full_name }}</h3>
+                            <md-checkbox class="md-secondary"
+                                         aria-label="add to import list"
+                                         checklist-model="$ctrl.selectedRepositories"
+                                         checklist-value="searchedComponent"
+                                         ng-model="checkboxModel">
+                            </md-checkbox>
+                        </div>
+                    </md-list-item>
+                </md-list>
+                <md-progress-circular ng-if="$ctrl.importing" md-mode="indeterminate"></md-progress-circular>
+            </md-content>
+        </md-content>
+    </section>
+</main>

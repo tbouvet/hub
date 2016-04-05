@@ -1,0 +1,101 @@
+<md-dialog flex="70" aria-label="Add a component" ng-cloak>
+    <form name="form" ng-submit="$ctrl.confirm($ctrl.repository)">
+        <md-toolbar>
+            <div class="md-toolbar-tools">
+                <h2>Add a component</h2>
+                <span flex></span>
+                <md-button class="md-icon-button" ng-click="$ctrl.cancel()">
+                    <md-icon md-font-set="material-icons">close</md-icon>
+                </md-button>
+            </div>
+        </md-toolbar>
+        <md-dialog-content ng-hide="form.$submitted">
+            <md-tabs md-selected="0" md-dynamic-height>
+                <md-tab label="Import">
+                    <md-content class="md-padding">
+                        <div layout-gt-sm="row">
+                            <md-input-container class="md-block" flex="20">
+                                <label>Repository type</label>
+                                <md-select ng-model="$ctrl.repository.vcs">
+                                    <md-optgroup label="Repository type">
+                                        <md-option ng-repeat="option in $ctrl.repositoryTypes">{{ option }}</md-option>
+                                    </md-optgroup>
+                                </md-select>
+                            </md-input-container>
+                            <md-input-container class="md-block" flex-gt-sm>
+                                <label for="url">URL</label>
+                                <input id="url"
+                                       name="url"
+                                       ng-model="$ctrl.repository.url"
+                                       type="url"
+                                       md-autofocus
+                                       required
+                                       vcs-url-validator
+                                       repository="$ctrl.repository"/>
+                                <div ng-messages="form.url.$error">
+                                    <div ng-message="url">The URL does not appear to be valid.</div>
+                                    <div ng-message="required">You did not enter a URL.</div>
+                                    <div ng-message="isRepoUrl">The URL does not appear to be a valid .git URL.</div>
+                                </div>
+                            </md-input-container>
+                        </div>
+                    </md-content>
+                </md-tab>
+                <md-tab label="How to">
+                    <md-content class="md-padding">
+                        <h2 class="md-headline">Importing a component</h2>
+
+                        <p>
+                            To import a component you need to provide the URL to either a Git or SVN repository.
+                            The repository must contain a component descriptor <code>component.yaml|json</code>.
+                        </p>
+
+                        <p>
+                            Example (yaml):
+                        </p>
+                        <code>
+                            id: MyComponent <br>
+                            version: 1.0.0 <br>
+                            owner: owner@domain.com <br>
+                            publicationDate: 2020-03-08 <br>
+                            url: http://fake.url.org/mycomponent <br>
+                            summary: Your awesome component description !<br>
+                            icon: images/icon.png<br>
+                            images:<br>
+                            - images/screenshot-1.png<br>
+                            - images/screenshot-2.png<br>
+                            - images/screenshot-3.png<br>
+                            maintainers:<br>
+                            - some@domain.com<br>
+                            - friends@ext.mpsa.com<br>
+                            docs:<br>
+                            - docs/intro.md<br>
+                            - docs/integration.md<br>
+                            - docs/usage.md<br>
+                        </code>
+                    </md-content>
+                </md-tab>
+            </md-tabs>
+        </md-dialog-content>
+        <md-dialog-actions ng-hide="form.$submitted" layout="row">
+            <span flex></span>
+            <md-button ng-click="$ctrl.cancel()">
+                Cancel
+            </md-button>
+            <md-button type="submit" class="md-primary" ng-disabled="form.$invalid" style="margin-right:20px;">
+                Add component
+            </md-button>
+        </md-dialog-actions>
+        <md-dialog-content ng-show="form.$submitted && !$ctrl.promise.$resolved" flex layout="row"
+                           layout-align="center center">
+            <md-progress-circular md-diameter="150px" class="md-hue-1t" md-mode="indeterminate"></md-progress-circular>
+            Hold tight ! Your component is being added.
+        </md-dialog-content>
+        <md-dialog-content style="min-height: 150px;"
+                           ng-show="form.$submitted && $ctrl.promise.$resolved && $ctrl.failure" flex layout="row"
+                           layout-align="center center">
+            <md-icon style="font-size: 130px; height: 130px; margin: 0 100px" class="material-icons">warning</md-icon>
+            <p>An error occured. We could not import your component.</p>
+        </md-dialog-content>
+    </form>
+</md-dialog>

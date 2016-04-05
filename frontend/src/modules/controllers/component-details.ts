@@ -8,36 +8,38 @@
 import module = require('./module');
 import angular = require("{angular}/angular");
 import IResource = angular.resource.IResource;
+import IHttpService = angular.IHttpService;
 
 enum SubView {
     IDENTITY = <any> 'identity'
 }
 
 function displayDocName() {
-    return function(input) {
+    return function (input) {
         return input.split('/').pop();
     };
 }
 
 class ComponentDetailsController {
-    public component: any;
-    public detailsView: SubView;
+    public component:any;
+    public detailsView:SubView;
 
-    static $inject = ['HomeService', '$routeParams'];
-    constructor(private api: any, private $routeParams: any) {
+    static $inject = ['HomeService', '$routeParams', '$http', '$mdToast', '$mdDialog', '$mdMedia'];
+
+    constructor(private api:any, private $routeParams:any, private $http:IHttpService, private $mdToast, private $mdDialog, private $mdMedia) {
 
         this.detailsView = SubView.IDENTITY;
 
-        this.getComponent().$promise.then((component: any) => {
+        this.getComponent().$promise.then((component:any) => {
             this.component = component;
         });
     }
 
-    public getComponent (): IResource {
-        return this.api('home').enter('component', { componentId: this.$routeParams.id }).get();
+    public getComponent():IResource {
+        return this.api('home').enter('component', {componentId: this.$routeParams.id}).get();
     }
 
-    public rateComponent (component): void {
+    public rateComponent(component):void {
         if (component.isStarred) {
             this.unStarComponent(component);
         } else {
@@ -45,20 +47,91 @@ class ComponentDetailsController {
         }
     }
 
-    private starComponent (component): void {
+    private starComponent(component):void {
         component.$links('star').save(() => {
             component.isStarred = true;
             component.stars++;
-        }, (reject) => { throw new Error(reject); });
+        }, (reject) => {
+            throw new Error(reject);
+        });
     }
 
-    private unStarComponent (component): void {
+    private unStarComponent(component):void {
         component.$links('star').delete(() => {
             component.isStarred = false;
             if (component.stars > 0) {
                 component.stars--;
             }
-        }, (reject) => { throw new Error(reject); })
+        }, (reject) => {
+            throw new Error(reject);
+        })
+    }
+
+    private toast(message:string) {
+        this.$mdToast.show(
+            this.$mdToast.simple()
+                .textContent(message)
+                .position('top right')
+                .hideDelay(3000)
+        );
+    }
+
+    public syncComponent(component):void {
+        this.$mdDialog.show({
+            templateUrl: require.toUrl('{hub}/views/templates/syncing.tmpl.html'),
+            parent: angular.element(document.body),
+            clickOutsideToClose: false,
+            fullscreen: this.$mdMedia('sm') || this.$mdMedia('xs')
+        });
+
+        component.$links('self', {}, {sync: {method: 'PUT'}})
+            .sync()
+            .$promise
+            .then(() => {
+                this.getComponent()
+                    .$promise
+                    .then((component:any) => {
+                        this.component = component;
+                        this.$mdDialog.hide();
+                        this.toast(component.name + ' has been synced!');
+                    })
+                    .catch(ComponentDetailsController.promiseRejected);
+            })
+            .catch(ComponentDetailsController.promiseRejected);
+    }
+
+    public archiveComponent(component):void {
+        component.$links('state', {}, {archive: {method: 'PUT'}})
+            .archive('ARCHIVED')
+            .$promise
+            .then(() => {
+                this.component.state = 'ARCHIVED';
+                this.toast(component.name + ' has been archived!');
+            })
+            .catch(ComponentDetailsController.promiseRejected);
+    }
+
+    public restoreComponent(component):void {
+        component.$links('state', {}, {restore: {method: 'PUT'}})
+            .restore('PUBLISHED')
+            .$promise
+            .then(() => {
+                this.component.state = 'PUBLISHED';
+                this.toast(component.name + ' has been restored!');
+            })
+            .catch(ComponentDetailsController.promiseRejected);
+    }
+
+    public activeWikiURL:any;
+    public activeWikiName:string;
+
+    public setWikiPage(wikiName:string):void {
+        this.activeWikiName = wikiName;
+        this.activeWikiURL = '/components/generator-w20/wiki/' + wikiName;
+    };
+
+    public static promiseRejected(reason):void {
+        throw new Error(reason.statusText || reason.data || reason);
     }
 }
 

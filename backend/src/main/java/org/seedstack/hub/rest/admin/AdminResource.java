@@ -9,6 +9,7 @@ package org.seedstack.hub.rest.admin;
 
 import org.seedstack.hub.application.fetch.ImportService;
 import org.seedstack.hub.domain.model.component.Source;
+import org.seedstack.seed.rest.Rel;
 import org.seedstack.seed.security.RequiresRoles;
 
 import javax.inject.Inject;
@@ -19,6 +20,8 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
 import java.util.List;
 
+import static org.seedstack.hub.rest.Rels.IMPORT_LIST;
+
 @Path("/admin")
 @Produces({"application/json", "application/hal+json"})
 public class AdminResource {
@@ -26,6 +29,7 @@ public class AdminResource {
     @Inject
     private ImportService importService;
 
+    @Rel(value = IMPORT_LIST, home = true)
     @POST
     @RequiresRoles("admin")
     @Path("/import")

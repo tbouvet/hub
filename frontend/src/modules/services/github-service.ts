@@ -1,12 +1,10 @@
 import module = require('./module');
 import angular = require("{angular}/angular");
 import IRequestConfig = angular.IRequestConfig;
-import IQResolveReject = angular.IQResolveReject;
-import IQResolveReject = angular.IQResolveReject;
+import IQResolveReject = angular.IQResolveReject; //
 
 const GITHUB_API = 'https://api.github.com/';
 const GITHUB_API_VERSION = 'application/vnd.github.v3+json';
-// TODO IMPORTANT !! Replace by oauth flow once deployed
 const GITHUB_TOKEN = "";
 
 interface SourceService {

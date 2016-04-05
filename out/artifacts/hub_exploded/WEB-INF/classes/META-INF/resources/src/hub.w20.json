@@ -1,0 +1,135 @@
+{
+  "id": "hub",
+  "name": "Hub fragment",
+
+  "modules": {
+    "toolbar": {
+      "path": "{hub}/modules/directives/toolbar/toolbar",
+      "autoload": true,
+      "configSchema": {
+        "title": "Hub toolbar configuration",
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "logoUrl": {
+            "description": "Toolbar logo URL",
+            "type": "string"
+          },
+          "name": {
+            "description": "Name of the organization to display next to logo",
+            "type": "string"
+          }
+        }
+      }
+    },
+    "home": {
+      "path": "{hub}/modules/controllers/home",
+      "autoload": true
+    },
+    "card": {
+      "path": "{hub}/modules/directives/components/card",
+      "autoload": true
+    },
+    "style": {
+      "path": "[css]!{hub}/style/style.css",
+      "autoload": true
+    },
+    "config": {
+      "path": "{hub}/modules/config",
+      "autoload": true
+    },
+    "sidebar": {
+      "path": "{hub}/modules/directives/sidebar/sidebar",
+      "autoload": true
+    },
+    "speed-dial": {
+      "path": "{hub}/modules/directives/speed-dial/speed-dial",
+      "autoload": true
+    },
+    "import-component": {
+      "path": "{hub}/modules/controllers/import-component",
+      "autoload": true
+    },
+    "add-component": {
+      "path": "{hub}/modules/directives/speed-dial/actions/add-component",
+      "autoload": true
+    },
+    "comment": {
+      "path": "{hub}/modules/directives/comments/comments",
+      "autoload": true
+    },
+    "component-details": {
+      "path": "{hub}/modules/controllers/component-details",
+      "autoload": true
+    },
+    "search": {
+      "path": "{hub}/modules/controllers/search",
+      "autoload": true
+    },
+    "smooth-scroll": {
+      "path": "{smooth-scroll}/SmoothScroll",
+      "autoload": true
+    },
+    "user": {
+      "path": "{hub}/modules/controllers/user",
+      "autoload": true
+    },
+    "administration": {
+      "path": "{hub}/modules/controllers/administration",
+      "autoload": true
+    },
+    "github-service": {
+      "path": "{hub}/modules/services/github-service",
+      "autoload": true
+    },
+    "font-awesome": {
+      "path": "[css]!{font-awesome}/css/font-awesome.min.css",
+      "autoload": true
+    }
+  },
+
+  "i18n": {
+    "en": ["{hub}/i18n/messages-en.json"],
+    "fr": ["{hub}/i18n/messages-fr.json"]
+  },
+
+  "routes": {
+    "/home": {
+      "templateUrl":"{hub}/views/home.html",
+      "controller":"HomeController as $ctrl"
+    },
+    "/components": {
+      "templateUrl": "{hub}/views/search.html",
+      "controller":"SearchController as $ctrl"
+    },
+    "/import-component": {
+      "templateUrl": "{hub}/views/import-component.html",
+      "controller":"ImportComponentController as $ctrl"
+    },
+    "/component/:id": {
+      "templateUrl":"{hub}/views/component-details.html",
+      "controller":"ComponentDetailsController as $ctrl"
+    },
+    "/user": {
+      "templateUrl":"{hub}/views/user.html",
+      "controller":"UserController as $ctrl"
+    },
+    "/admin": {
+      "templateUrl":"{hub}/views/administration.html",
+      "controller":"AdminController as $ctrl",
+      "security": "hasRole('seed-w20', ['admin'])"
+    }
+  },
+
+  "requireConfig": {
+    "paths": {
+      "{smooth-scroll}": "${components-path:bower_components}/smoothscroll-for-websites",
+      "{angular-messages}": "${components-path:bower_components}/angular-messages"
+    },
+    "shim": {
+      "{angular-messages}/angular-messages": ["{angular}/angular"]
+    }
+  }
+
+
+}

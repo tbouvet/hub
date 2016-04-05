@@ -1,0 +1,54 @@
+{
+  "id": "w20-material",
+  "name": "W20 Material",
+  "description": "W20 Angular-Material framework provider",
+  "modules": {
+    "framework": {
+      "path": "{w20-material}/modules/css-framework",
+      "autoload": true,
+      "configSchema": {
+        "title": "CSS Framework module configuration",
+        "type": "object",
+        "additionalProperties": false
+      }
+    },
+    "style": {
+      "path": "[css]!{angular-material}/angular-material.css",
+      "autoload": true
+    }
+  },
+  "requireConfig": {
+    "map": {
+      "*": {
+        "{css-framework}": "{w20-material}"
+      }
+    },
+    "paths": {
+      "{angular-material}": "${components-path:bower_components}/angular-material",
+      "{angular-animate}": "${components-path:bower_components}/angular-animate",
+      "{angular-aria}": "${components-path:bower_components}/angular-aria",
+      "{font-awesome}": "${components-path:bower_components}/font-awesome"
+    },
+    "shim": {
+      "{angular-material}/angular-material": [
+        "{angular}/angular",
+        "{angular-animate}/angular-animate",
+        "{angular-aria}/angular-aria"
+      ],
+      "{angular-animate}/angular-animate": [
+        "{angular}/angular"
+      ],
+      "{angular-aria}/angular-aria": [
+        "{angular}/angular"
+      ]
+    }
+  },
+  "i18n": {
+    "en": [
+      "{w20-material}/i18n/messages-en.json"
+    ],
+    "fr": [
+      "{w20-material}/i18n/messages-fr.json"
+    ]
+  }
+}

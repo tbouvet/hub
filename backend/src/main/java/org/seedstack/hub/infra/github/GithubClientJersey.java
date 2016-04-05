@@ -10,6 +10,8 @@ package org.seedstack.hub.infra.github;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.seedstack.hub.application.fetch.ImportException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.ws.rs.NotFoundException;
 import javax.ws.rs.client.Client;
@@ -22,6 +24,7 @@ import java.net.URI;
 
 class GithubClientJersey implements GithubClient {
 
+    private static final Logger logger = LoggerFactory.getLogger(GithubClientJersey.class);
     private static final String GITHUB_API = "https://api.github.com";
     private static final String REPO_PATH = "/repos/{org}/{name}";
     private static final String RELEASES_PATH = REPO_PATH + "/releases";
@@ -65,8 +68,11 @@ class GithubClientJersey implements GithubClient {
         Response response = get(path, organisation, repository, mediaType);
         if (response.getStatus() == 200) {
             return response.readEntity(String.class);
-        } else if (response.getStatus() == 200) {
-            throw new NotFoundException(String.format("Component %s/%s not found", organisation, repository));
+        } else if (response.getStatus() == 404) {
+            logger.warn(String.format("Component %s/%s not found", organisation, repository));
+            // TODO handle not found READMEs
+            return null;
+            //throw new NotFoundException(String.format("Component %s/%s not found", organisation, repository));
         }else {
             throw new ImportException("Status: " + response.getStatus());
         }

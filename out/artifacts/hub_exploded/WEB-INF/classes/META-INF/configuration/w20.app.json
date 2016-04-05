@@ -1,0 +1,39 @@
+{
+  "hub": {},
+
+  "w20-core": {
+    "modules": {
+      "application": {
+        "id": "seedstack-hub",
+        "home": "/hub/home",
+        "blank": "/blank",
+        "notFound": "/not-found",
+        "redirectAfterRouteError": "/error"
+      },
+      "culture": {
+        "available": [
+          "en",
+          "fr"
+        ],
+        "default": "en"
+      },
+      "env": {
+        "type": "test"
+      },
+      "security": {
+        "autoLogin": true,
+        "redirectAfterLogout": "/",
+        "redirectAfterLogin": "/",
+        "persistentRestrictions": false
+      },
+      "utils": {},
+      "hypermedia": {
+        "api": {
+          "home": "/"
+        }
+      }
+    }
+  },
+
+  "w20-material": {}
+}

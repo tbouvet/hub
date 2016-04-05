@@ -17,6 +17,11 @@ html, body  {
     line-height: 1.2em;
 }
 
+
+#home {
+    background-color: inherit;
+}
+
 #sidebar {
     margin-top: 65px;
     button {
@@ -38,18 +43,10 @@ html, body  {
     padding-right: 18%;
 }
 
-#home {
-    background-color: inherit;
-}
-
 #main-speed-dial {
     position: fixed;
     bottom: 20px;
     right: 60px;
-}
-
-md-backdrop.md-sidenav-backdrop{
-    display:none
 }
 
 
@@ -83,6 +80,9 @@ md-card[md-ink-ripple] {
         max-height: 49px;
         overflow: hidden;
     }
+    .md-title {
+        font-size: 17px;
+    }
 }
 
 .hub-card:hover {
@@ -97,12 +97,21 @@ md-card[md-ink-ripple] {
     height: auto
 }
 
-@media screen and (max-width: 980px) {
+[role="tabpanel"],
+md-tabs {
+    transition: none;
+}
+
+@media screen and (min-width: 1400px) {
+    md-backdrop.md-sidenav-backdrop{
+        display:none
+    }
+}
+
+
+@media screen and (max-width: 1400px) {
     #view {
         padding: 0;
-    }
-    #sidebar {
-        margin-top: 56px;
     }
 }
 

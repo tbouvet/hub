@@ -12,6 +12,7 @@ public final class Rels {
     public static final String STATE = "state";
     public static final String COMPONENT = "component";
     public static final String COMPONENTS = "components";
+    public static final String IMPORT_LIST = "import_list";
     public static final String RECENT = "recent";
     public static final String POPULAR = "popular";
     public static final String PENDING = "pending";

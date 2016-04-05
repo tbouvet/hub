@@ -1,0 +1,33 @@
+{
+  "name": "w20-material",
+  "version": "2.1.5",
+  "ignore": [
+    ".*",
+    "*.iml",
+    "specs",
+    "mocks",
+    "samples",
+    "bower_components",
+    "coverage",
+    "node_modules",
+    "gruntfile.js",
+    "karma.conf.js",
+    "package.json",
+    "test-main.js"
+  ],
+  "dependencies": {
+    "angular": "~1.4.8",
+    "angular-animate": "~1.4.8",
+    "angular-aria": "~1.4.8",
+    "angular-messages": "~1.4.8",
+    "angular-material": "~1.0.6",
+    "font-awesome": "~4.5.0",
+    "w20": "#master"
+  },
+  "devDependencies": {
+    "angular-mocks": "~1.4.8"
+  },
+  "resolutions": {
+    "angular": "~1.4.8"
+   }
+}

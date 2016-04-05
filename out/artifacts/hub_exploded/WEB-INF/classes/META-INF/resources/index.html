@@ -1,0 +1,28 @@
+<!--
+
+    Copyright (c) 2015-2016, The SeedStack authors <http://seedstack.org>
+
+    This Source Code Form is subject to the terms of the Mozilla Public
+    License, v. 2.0. If a copy of the MPL was not distributed with this
+    file, You can obtain one at http://mozilla.org/MPL/2.0/.
+
+-->
+<!doctype html>
+<html data-w20-app="${restPath}/seed-w20/application/configuration" data-w20-app-version="${applicationVersion}" data-w20-timeout="${timeout}" data-w20-cors-with-credentials="${corsWithCredentials}">
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" charset="utf-8"/>
+        <meta http-equiv="X-UA-Compatible" content="IE=Edge"/>
+        <title>${applicationTitle}</title>
+        <link href='https://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css'>
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+        <script data-main="bower_components/w20/modules/w20" src="bower_components/requirejs/require.js"></script>
+    </head>
+    <body layout="row" ng-cloak>
+        <div layout-fill flex layout="column" tabIndex="-1" role="main" class="md-whiteframe-z2">
+            <md-toolbar hub-toolbar layout="row" class="md-whiteframe-z1"></md-toolbar>
+            <md-sidenav hub-sidebar md-disable-backdrop="true" md-component-id="sidebar" id="sidebar" class="md-sidenav-left md-whiteframe-z2"></md-sidenav>
+            <md-content id="view" ng-view></md-content>
+            <md-fab-speed-dial hub-speed-dial id="main-speed-dial" md-open="isClosed" md-direction="up" class="md-scale"></md-fab-speed-dial>
+        </div>
+    </body>
+</html>
