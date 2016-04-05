@@ -5,12 +5,13 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
-package org.seedstack.hub.rest;
+package org.seedstack.hub.rest.component;
 
 import org.seedstack.business.assembler.BaseAssembler;
 import org.seedstack.hub.application.StatePolicy;
 import org.seedstack.hub.domain.model.component.Component;
 import org.seedstack.hub.domain.model.component.State;
+import org.seedstack.hub.rest.Rels;
 import org.seedstack.seed.rest.RelRegistry;
 import org.seedstack.seed.rest.hal.HalRepresentation;
 
@@ -18,7 +19,7 @@ import javax.inject.Inject;
 
 import static org.seedstack.hub.rest.Rels.AUTHOR_COMPONENTS;
 import static org.seedstack.hub.rest.Rels.ORGANISATION;
-import static org.seedstack.hub.rest.detail.ComponentResource.COMPONENT_ID;
+import static org.seedstack.hub.rest.component.detail.ComponentResource.COMPONENT_ID;
 import static org.seedstack.hub.rest.organisation.OrganisationResource.ORGANISATION_ID;
 import static org.seedstack.hub.rest.user.UserResource.USER_ID;
 

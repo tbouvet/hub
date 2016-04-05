@@ -9,7 +9,7 @@ package org.seedstack.hub.rest;
 
 import org.assertj.core.api.Assertions;
 import org.junit.Test;
-import org.seedstack.hub.rest.list.SortType;
+import org.seedstack.hub.rest.component.list.SortType;
 
 public class SortTypeTest {
 

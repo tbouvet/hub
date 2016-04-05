@@ -5,7 +5,7 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
-package org.seedstack.hub.rest.list;
+package org.seedstack.hub.rest.component.list;
 
 import io.swagger.annotations.Api;
 import org.hibernate.validator.constraints.Length;
@@ -85,6 +85,9 @@ public class ComponentsResource {
         Link self = relRegistry.uri(COMPONENTS);
         if (searchName != null && !searchName.equals("")) {
             self.set("search", searchName);
+        }
+        if (sort != null && !sort.equals("")) {
+            self.set("sort", sort);
         }
         return new ResultHal<>(COMPONENTS, result, self);
     }

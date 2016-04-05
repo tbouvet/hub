@@ -11,7 +11,7 @@ import org.seedstack.business.finder.Finder;
 import org.seedstack.business.finder.Range;
 import org.seedstack.business.finder.Result;
 import org.seedstack.hub.domain.model.user.UserId;
-import org.seedstack.hub.rest.list.ComponentCard;
+import org.seedstack.hub.rest.component.list.ComponentCard;
 
 @Finder
 public interface UserFinder {
