@@ -5,6 +5,8 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
+
+/// <amd-dependency path="{hub}/modules/controllers/wiki-editor"/>
 import module = require('./module');
 import angular = require("{angular}/angular");
 import IResource = angular.resource.IResource;
@@ -24,9 +26,24 @@ class ComponentDetailsController {
     public component:any;
     public detailsView:SubView;
 
-    static $inject = ['HomeService', '$routeParams', '$http', '$mdToast', '$mdDialog', '$mdMedia'];
+    static $inject = [
+        'HomeService',
+        '$routeParams',
+        '$http',
+        '$mdToast',
+        '$mdDialog',
+        '$mdMedia',
+        '$window'
+    ];
 
-    constructor(private api:any, private $routeParams:any, private $http:IHttpService, private $mdToast, private $mdDialog, private $mdMedia) {
+    constructor(
+        private api:any,
+        private $routeParams:any,
+        private $http:IHttpService,
+        private $mdToast,
+        private $mdDialog,
+        private $mdMedia,
+        private $window) {
 
         this.detailsView = SubView.IDENTITY;
 
@@ -120,6 +137,19 @@ class ComponentDetailsController {
                 this.toast(component.name + ' has been restored!');
             })
             .catch(ComponentDetailsController.promiseRejected);
+    }
+
+    public decodeURIComponent = this.$window.decodeURIComponent;
+
+    public openWikiCreation(): void {
+        this.$mdDialog.show({
+            controller: 'WikiEditorController',
+            controllerAs: '$ctrl',
+            templateUrl: require.toUrl('{hub}/views/templates/wiki-editor.tmpl.html'),
+            parent: angular.element(document.body),
+            clickOutsideToClose: false,
+            fullscreen: true
+        }).then();
     }
 
     public activeWikiURL:any;

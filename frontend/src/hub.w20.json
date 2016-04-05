@@ -124,6 +124,7 @@
   "requireConfig": {
     "paths": {
       "{smooth-scroll}": "${components-path:bower_components}/smoothscroll-for-websites",
+      "{simplemde}": "${components-path:bower_components}/simplemde/debug",
       "{angular-messages}": "${components-path:bower_components}/angular-messages"
     },
     "shim": {

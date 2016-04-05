@@ -41,26 +41,33 @@ class ImportServiceImpl implements ImportService {
     public Component importComponent(Source source) {
         FetchService fetchService = domainRegistry.getService(FetchService.class, source.getSourceType().qualifier());
         FetchResult result = fetchService.fetch(source);
+        Component component = result.getComponent();
+        component.setSource(source);
         try {
-            checkCurrentUserOwns(result.getComponent());
-            componentRepository.persist(result.getComponent());
+            checkCurrentUserOwns(component);
+            componentRepository.persist(component);
             result.getDocuments().forEach(documentRepository::persist);
         } finally {
             fetchService.clean();
         }
-        return result.getComponent();
+        return component;
     }
 
     @Override
     public Component sync(ComponentId componentId) {
-        Component currentComponent = componentRepository.load(componentId);
-        if (currentComponent == null) {
-            throw new NotFoundException("Component " + componentId.getName() + " not found.");
-        }
+        Component currentComponent = loadComponentOrFail(componentId);
         checkCurrentUserOwns(currentComponent);
 
         Source source = currentComponent.getSource();
+        if (source == null) {
+            throw new ImportException("Unable to synchronize: missing source information");
+        }
+
         FetchService fetchService = domainRegistry.getService(FetchService.class, source.getSourceType().qualifier());
+        if (fetchService == null) {
+            throw new ImportException("Unsupported source type: " + source.getSourceType());
+        }
+        
         try {
             FetchResult result = fetchService.fetch(source);
 
@@ -71,6 +78,14 @@ class ImportServiceImpl implements ImportService {
             componentRepository.persist(currentComponent);
         } finally {
             fetchService.clean();
+        }
+        return currentComponent;
+    }
+
+    private Component loadComponentOrFail(ComponentId componentId) {
+        Component currentComponent = componentRepository.load(componentId);
+        if (currentComponent == null) {
+            throw new NotFoundException("Component " + componentId.getName() + " not found.");
         }
         return currentComponent;
     }

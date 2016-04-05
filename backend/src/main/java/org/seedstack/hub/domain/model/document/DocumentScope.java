@@ -8,6 +8,6 @@
 package org.seedstack.hub.domain.model.document;
 
 public enum DocumentScope {
-    FILE,
+    FILES,
     WIKI
 }

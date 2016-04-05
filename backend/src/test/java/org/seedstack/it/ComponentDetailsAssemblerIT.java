@@ -9,12 +9,16 @@ package org.seedstack.it;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.seedstack.hub.domain.model.component.Component;
 import org.seedstack.hub.domain.model.component.State;
 import org.seedstack.hub.MockBuilder;
+import org.seedstack.hub.domain.model.document.DocumentId;
 import org.seedstack.hub.rest.Rels;
 import org.seedstack.hub.rest.detail.ComponentDetails;
 import org.seedstack.hub.rest.detail.ComponentDetailsAssembler;
+import org.seedstack.hub.rest.shared.DocumentRepresentation;
 import org.seedstack.seed.it.SeedITRunner;
+import org.seedstack.seed.rest.RelRegistry;
 import org.seedstack.seed.rest.hal.Link;
 import org.seedstack.seed.security.WithUser;
 
@@ -27,23 +31,26 @@ public class ComponentDetailsAssemblerIT {
 
     @Inject
     private ComponentDetailsAssembler assembler;
+    @Inject
+    private RelRegistry relRegistry;
 
     @WithUser(id = "admin", password = "password")
     @Test
     public void testAssemble() throws Exception {
-        ComponentDetails detail = assembler.assembleDtoFromAggregate(MockBuilder.mock(2));
+        Component componentMock = MockBuilder.mock(2);
+        ComponentDetails detail = assembler.assembleDtoFromAggregate(componentMock);
         assertThat(detail).isNotNull();
         assertThat(detail.getId()).isEqualTo("Component2");
         assertThat(detail.getName()).isEqualTo("Component 2");
-        assertThat(detail.getIcon()).isEqualTo("components/Component2/files/icon.png");
-        assertThat(detail.getReadme()).isEqualTo("components/Component2/files/readme.md");
+        assertThat(detail.getIcon().getLink("self")).isEqualTo(new DocumentRepresentation(componentMock.getDescription().getIcon(), relRegistry).getLink("self"));
+        assertThat(detail.getReadme().getLink("self")).isEqualTo(new DocumentRepresentation(componentMock.getDescription().getReadme(), relRegistry).getLink("self"));
         assertThat(detail.getSummary()).isEqualTo("A little summary.");
         assertThat(detail.getOwner()).isEqualTo("adrienlauer");
         assertThat(detail.getMaintainers()).containsOnly("pith", "kavi87");
         assertThat(detail.getStars()).isEqualTo(3);
         assertThat(detail.getState()).isEqualTo(State.PUBLISHED);
         assertThat(detail.getVersion()).isEqualTo("2.3.4-M2");
-        assertThat(((Link) detail.getLink("self")).expand()).isEqualTo("/components/Component2");
-        assertThat(((Link) detail.getLink(Rels.STAR)).expand()).isEqualTo("/user/stars/Component2");
+        assertThat(((Link) detail.getLink("self")).getHref()).isEqualTo("/components/Component2");
+        assertThat(((Link) detail.getLink(Rels.STAR)).getHref()).isEqualTo("/user/stars/Component2");
     }
 }

@@ -1,0 +1,31 @@
+<md-dialog aria-label="Create new wiki"  ng-cloak>
+    <form>
+        <md-toolbar>
+            <div class="md-toolbar-tools">
+                <h2>Create new wiki</h2>
+                <span flex></span>
+                <md-button class="md-icon-button" ng-click="$ctrl.cancel()">
+                    <md-icon md-font-set="material-icons">close</md-icon>
+                </md-button>
+            </div>
+        </md-toolbar>
+        <md-dialog-content>
+            <div class="md-dialog-content">
+                <md-input-container>
+                    <label for="wiki-name">Title</label>
+                    <input id="wiki-name" ng-model="user.title">
+                </md-input-container>
+                <section>
+                    <label for="markdown-area">
+                        <textarea id="markdown-area" style="width:100%"></textarea>
+                    </label>
+                </section>
+            </div>
+        </md-dialog-content>
+        <md-dialog-actions layout="row">
+            <md-button ng-click="$ctrl.createWiki()">
+                Create
+            </md-button>
+        </md-dialog-actions>
+    </form>
+</md-dialog>

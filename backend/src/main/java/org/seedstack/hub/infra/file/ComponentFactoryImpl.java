@@ -53,7 +53,7 @@ class ComponentFactoryImpl extends BaseFactory<Component> implements ComponentFa
         addReleases(manifest, component);
 
         if (manifest.getDocs() != null) {
-            component.replaceDocs(manifest.getDocs().stream().map(s -> new DocumentId(componentId, DocumentScope.FILE, s)).collect(Collectors.toList()));
+            component.replaceDocs(manifest.getDocs().stream().map(s -> new DocumentId(componentId, DocumentScope.FILES, s)).collect(Collectors.toList()));
         }
 
         if (manifest.getMaintainers() != null && !manifest.getMaintainers().isEmpty()) {
@@ -102,8 +102,8 @@ class ComponentFactoryImpl extends BaseFactory<Component> implements ComponentFa
                 componentId.getName(),
                 manifest.getSummary(),
                 manifest.getLicense(),
-                manifest.getIcon() != null ? new DocumentId(componentId, DocumentScope.FILE, manifest.getIcon()) : null,
-                manifest.getReadme() != null ? new DocumentId(componentId, DocumentScope.FILE, manifest.getReadme()) : null
+                manifest.getIcon() != null ? new DocumentId(componentId, DocumentScope.FILES, manifest.getIcon()) : null,
+                manifest.getReadme() != null ? new DocumentId(componentId, DocumentScope.FILES, manifest.getReadme()) : null
         );
 
         if (manifest.getUrl() != null) {
@@ -123,7 +123,7 @@ class ComponentFactoryImpl extends BaseFactory<Component> implements ComponentFa
 
         List<String> images = manifest.getImages();
         if (images != null && !images.isEmpty()) {
-            description = description.replaceImages(images.stream().map(s -> new DocumentId(componentId, DocumentScope.FILE, s)).collect(Collectors.toList()));
+            description = description.replaceImages(images.stream().map(s -> new DocumentId(componentId, DocumentScope.FILES, s)).collect(Collectors.toList()));
         }
 
         return description;

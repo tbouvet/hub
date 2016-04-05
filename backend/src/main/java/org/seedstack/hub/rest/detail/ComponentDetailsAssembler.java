@@ -12,14 +12,13 @@ import org.seedstack.hub.domain.model.component.Component;
 import org.seedstack.hub.domain.model.component.ComponentId;
 import org.seedstack.hub.domain.model.component.Description;
 import org.seedstack.hub.domain.model.component.Release;
-import org.seedstack.hub.domain.model.document.DocumentId;
 import org.seedstack.hub.domain.model.user.UserId;
 import org.seedstack.hub.rest.AbstractComponentAssembler;
 import org.seedstack.hub.rest.Rels;
+import org.seedstack.hub.rest.shared.DocumentRepresentation;
 
 import javax.inject.Inject;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toList;
 import static org.seedstack.hub.rest.detail.ComponentResource.COMPONENT_ID;
@@ -43,14 +42,12 @@ public class ComponentDetailsAssembler extends AbstractComponentAssembler<Compon
         if (!releases.isEmpty()) {
             componentDetails.setVersion(releases.get(0).toString());
         }
-        componentDetails.setReleases(component.getReleases().stream().map(ReleaseRepresentation::new).collect(Collectors.toList()));
-        componentDetails.setDocs(component.getDocs().stream().map(this::documentIdToString).collect(toList()));
+        componentDetails.setReleases(component.getReleases().stream().map(ReleaseRepresentation::new).collect(toList()));
+        componentDetails.setDocs(component.getDocs().stream().map(documentId -> new DocumentRepresentation(documentId, relRegistry)).collect(toList()));
         componentDetails.setMaintainers(component.getMaintainers().stream().map(UserId::getId).collect(toList()));
-        componentDetails.setWikiPages(component.getWikiPages().stream().map(DocumentId::getPath).collect(Collectors.toList()));
+        componentDetails.setWikiPages(component.getWikiPages().stream().map(documentId -> new DocumentRepresentation(documentId, relRegistry)).collect(toList()));
 
         assembleHalLinks(componentDetails, componentId);
-
-        updateUrls(componentDetails);
     }
 
     private void assembleDescription(ComponentDetails componentDetails, Component component) {
@@ -65,9 +62,13 @@ public class ComponentDetailsAssembler extends AbstractComponentAssembler<Compon
                 componentDetails.setIssues(description.getIssues().toString());
             }
             componentDetails.setLicense(description.getLicense());
-            componentDetails.setIcon(documentIdToString(description.getIcon()));
-            componentDetails.setReadme(documentIdToString(description.getReadme()));
-            componentDetails.setImages(description.getImages().stream().map(this::documentIdToString).collect(toList()));
+            if (description.getIcon() != null) {
+                componentDetails.setIcon(new DocumentRepresentation(description.getIcon(), relRegistry));
+            }
+            if (description.getReadme() != null) {
+                componentDetails.setReadme(new DocumentRepresentation(description.getReadme(), relRegistry));
+            }
+            componentDetails.setImages(description.getImages().stream().map(documentId -> new DocumentRepresentation(documentId, relRegistry)).collect(toList()));
         }
     }
 
@@ -84,16 +85,4 @@ public class ComponentDetailsAssembler extends AbstractComponentAssembler<Compon
                     .uri(Rels.STAR).set(COMPONENT_ID, componentId).expand());
         }
     }
-
-    private void updateUrls(ComponentDetails componentDetails) {
-        componentDetails.setImages(addContextPath(componentDetails.getImages()));
-        componentDetails.setDocs(addContextPath(componentDetails.getDocs()));
-        componentDetails.setIcon(addContextPath(componentDetails.getIcon()));
-        componentDetails.setReadme(addContextPath(componentDetails.getReadme()));
-    }
-
-    private List<String> addContextPath(List<String> urls) {
-        return urls.stream().map(this::addContextPath).collect(toList());
-    }
-
 }

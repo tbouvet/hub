@@ -123,6 +123,10 @@ class GithubImportController {
             .catch(ImportComponentController.promiseRejected);
     }
 
+    public toggleAll(): void {
+        this.selectedRepositories = this.selectedRepositories.length ? [] : this.searchedGithubComponents;
+    }
+
     public importComponents(selectedComponents):void {
         if (!selectedComponents.length) {
             this.toast('You did not select any repositories!');

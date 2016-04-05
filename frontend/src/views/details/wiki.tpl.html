@@ -8,11 +8,14 @@
         <aside id="component-detail-wiki-list" layout="column" flex-xs="100">
               <section class="md-whiteframe-0dp">
                 <md-content style="overflow: hidden; background-color: inherit">
-                    <md-subheader class="md-no-sticky" style="background-color: inherit">Wiki pages
-                    </md-subheader>
+                    <md-subheader class="md-no-sticky" style="background-color: inherit"> Wiki pages </md-subheader>
+                    <md-button aria-label="Manage component" ng-click="$ctrl.openWikiCreation()">
+                        <md-icon md-font-set="material-icons">note_add</md-icon> Add
+                    </md-button>
                     <md-list>
                         <md-list-item ng-repeat="wikiName in $ctrl.component.wikiPages">
-                            <md-button data-ng-click="$ctrl.setWikiPage(wikiName)" ng-class="$ctrl.activeWikiName === wikiName ? 'md-primary' : 'md-accent'">
+                            <md-button data-ng-click="$ctrl.setWikiPage(wikiName)"
+                                       ng-class="$ctrl.activeWikiName === wikiName ? 'md-primary' : 'md-accent'">
                                 <i class="fa fa-file-text-o"></i> {{ wikiName }}
                             </md-button>
                         </md-list-item>

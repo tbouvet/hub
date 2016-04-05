@@ -90,14 +90,14 @@ class GithubFetchService implements FetchService {
 
     private Document fetchAndSaveReadme(Manifest manifest) {
         String readmeContent = githubClient.getReadme(normalizeOrgName(manifest.getOwner()), manifest.getId());
-        DocumentId readmeId = new DocumentId(new ComponentId(manifest.getId()), DocumentScope.FILE, "README.md");
+        DocumentId readmeId = new DocumentId(new ComponentId(manifest.getId()), DocumentScope.FILES, "README.md");
         return documentFactory.createTextDocument(readmeId, TextFormat.MARKDOWN, readmeContent);
     }
 
     private Document fetchAndSaveIcon(Manifest manifest) {
         byte[] bytes = githubClient.getImage(URI.create(manifest.getIcon()));
         String iconName = getLastPartOfUrl(manifest.getIcon());
-        DocumentId iconId = new DocumentId(new ComponentId(manifest.getId()), DocumentScope.FILE, iconName);
+        DocumentId iconId = new DocumentId(new ComponentId(manifest.getId()), DocumentScope.FILES, iconName);
         return documentFactory.createBinaryDocument(iconId, iconName, bytes);
     }
 

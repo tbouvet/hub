@@ -1,53 +1,19 @@
 <div id="component-detail-docs" layout-padding layout="row" layout-xs="column" style="padding: 0">
-    <md-content ng-if="$ctrl.component.docs.length" class="md-whiteframe-1dp">
+    <md-content ng-if="$ctrl.component.docs.length" class="md-whiteframe-1dp" style="padding: 0">
         <md-tabs md-dynamic-height md-border-bottom md-swipe-content style="background-color: #F6F6F6">
-            <md-tab ng-repeat="doc in $ctrl.component.docs" label="{{ doc | displayDocName }}">
+            <md-tab ng-repeat="doc in $ctrl.component.docs" label="{{ $ctrl.decodeURIComponent(doc._links.self.href) | displayDocName }}">
                 <md-content class="md-padding" style="background-color: #fafafa">
-                    <div class="markdown-body" ng-include="doc"></div>
+                    <div class="markdown-body" ng-include="$ctrl.decodeURIComponent(doc._links.self.href)"></div>
                 </md-content>
             </md-tab>
         </md-tabs>
     </md-content>
-    <header ng-if="!$ctrl.component.docs.length" layout="column" layout-align="center center">
-        <h3 class="md-title muted">No documents available</h3>
-    </header>
+    <div flex>
+        <header ng-if="!$ctrl.component.docs.length" layout="column" layout-align="center center">
+            <h3 class="md-title muted">No documents available</h3>
+        </header>
+    </div>
     <div flex="30" flex-xs="100" layout-align="end center" layout-align-xs="center" flex-order-xs="1">
-        <aside id="component-detail-meta" layout="column" flex-xs="100">
-            <section id="component-detail-meta-usage" class="md-whiteframe-0dp">
-                <md-content style="overflow: hidden; background-color: inherit">
-                    <md-list>
-                        <md-list-item>
-                            <md-icon md-font-set="material-icons">change_history</md-icon>
-                            <p> Latest: {{ $ctrl.component.releases[0].version }} </p>
-                        </md-list-item>
-                        <md-list-item>
-                            <md-icon md-font-set="material-icons">gavel</md-icon>
-                            <p> License:{{ $ctrl.component.license }} </p>
-                        </md-list-item>
-                    </md-list>
-                </md-content>
-            </section>
-            <div class="spacer"></div>
-            <section id="component-detail-meta-general" class="md-whiteframe-0dp">
-                <md-content style="overflow: hidden; background-color: inherit">
-                    <md-subheader class="md-no-sticky" style="background-color: inherit">Used in 12 projects
-                    </md-subheader>
-                    <md-list>
-                        <md-list-item>
-                            <md-icon md-font-set="material-icons">important_devices</md-icon>
-                            <p> Project 1 </p>
-                        </md-list-item>
-                        <md-list-item>
-                            <md-icon md-font-set="material-icons">important_devices</md-icon>
-                            <p> Project 1 </p>
-                        </md-list-item>
-                        <md-list-item>
-                            <md-icon md-font-set="material-icons">important_devices</md-icon>
-                            <p> Project 1 </p>
-                        </md-list-item>
-                    </md-list>
-                </md-content>
-            </section>
-        </aside>
+        <div ng-include="'src/views/details/aside.tpl.html'"></div>
     </div>
 </div>

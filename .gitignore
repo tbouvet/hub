@@ -28,3 +28,6 @@ frontend/hub/modules/**/*.js
 frontend/hub/modules/**/*.js.map
 frontend/node_modules/
 frontend/dist/
+
+#build
+out/

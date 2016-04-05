@@ -107,7 +107,9 @@
                             <md-subheader class="md-no-sticky">
                                 {{ $ctrl.searchedGithubComponents.length }} components found
                             </md-subheader>
-
+                            <md-list-item>
+                                <md-button class="md-secondary" ng-click="$ctrl.toggleAll()"> Toggle all </md-button>
+                            </md-list-item>
                             <md-list-item ng-repeat="searchedComponent in $ctrl.searchedGithubComponents | filter:{full_name: searchFilter }"
                                           class="md-1-line">
                                 <div class="md-list-item-text" layout="row">

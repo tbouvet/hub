@@ -43,6 +43,6 @@ public class DocumentTest {
     }
 
     private DocumentId createDocumentId() {
-        return new DocumentId(new ComponentId("c1"), DocumentScope.FILE, "/path");
+        return new DocumentId(new ComponentId("c1"), DocumentScope.FILES, "/path");
     }
 }

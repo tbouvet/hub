@@ -8,6 +8,7 @@
 package org.seedstack.hub.rest.list;
 
 import org.seedstack.hub.domain.model.component.State;
+import org.seedstack.hub.rest.shared.DocumentRepresentation;
 import org.seedstack.seed.rest.hal.HalRepresentation;
 
 public class ComponentCard extends HalRepresentation {
@@ -16,7 +17,7 @@ public class ComponentCard extends HalRepresentation {
     private String summary;
     private String owner;
     private int stars;
-    private String icon;
+    private DocumentRepresentation icon;
     private State state;
 
     public ComponentCard() {
@@ -58,11 +59,11 @@ public class ComponentCard extends HalRepresentation {
         this.stars = stars;
     }
 
-    public String getIcon() {
+    public DocumentRepresentation getIcon() {
         return icon;
     }
 
-    public void setIcon(String icon) {
+    public void setIcon(DocumentRepresentation  icon) {
         this.icon = icon;
     }
 

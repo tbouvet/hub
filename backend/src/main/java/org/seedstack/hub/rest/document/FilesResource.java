@@ -16,6 +16,8 @@ import org.seedstack.hub.domain.model.document.DocumentId;
 import org.seedstack.hub.domain.model.document.DocumentScope;
 import org.seedstack.hub.domain.model.document.TextDocument;
 import org.seedstack.hub.domain.services.text.TextService;
+import org.seedstack.hub.rest.Rels;
+import org.seedstack.seed.rest.Rel;
 
 import javax.inject.Inject;
 import javax.ws.rs.GET;
@@ -28,6 +30,7 @@ import javax.ws.rs.core.Response;
 
 @Api
 @Path("/components/{componentId}/files/{filePath:.+}")
+@Rel(Rels.FILES)
 public class FilesResource {
     @Inject
     private Repository<Document, DocumentId> documentRepository;
@@ -36,7 +39,7 @@ public class FilesResource {
 
     @GET
     public Response getFile(@PathParam("componentId") String componentId, @PathParam("filePath") String path) {
-        Document doc = documentRepository.load(new DocumentId(new ComponentId(componentId), DocumentScope.FILE, path));
+        Document doc = documentRepository.load(new DocumentId(new ComponentId(componentId), DocumentScope.FILES, path));
         if (doc == null) {
             throw new NotFoundException("File not found for component " + componentId + ": " + path);
         }

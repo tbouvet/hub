@@ -38,7 +38,7 @@ class TextServiceImpl implements TextService {
                     for (TextFormat textFormat : TextFormat.values()) {
                         for (String validExtension : textFormat.validExtensions()) {
                             if (String.format("%s.%s", name, validExtension).equalsIgnoreCase(file.getName())) {
-                                return new DocumentId(componentId, DocumentScope.FILE, file.getName());
+                                return new DocumentId(componentId, DocumentScope.FILES, file.getName());
                             }
                         }
                     }
