@@ -64,7 +64,7 @@ public class WikiResource {
 
     @GET
     @Produces("text/html")
-    @Rel(Rels.WIKI_PAGES)
+    @Rel(Rels.WIKI)
     public Response getPage() {
         WikiDocument wikiDocument = getWikiDocument();
         return Response.ok(textService.renderHtml(wikiDocument)).build();

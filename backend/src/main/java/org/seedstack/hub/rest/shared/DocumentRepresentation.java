@@ -13,8 +13,10 @@ import org.seedstack.seed.rest.RelRegistry;
 import org.seedstack.seed.rest.hal.HalRepresentation;
 
 public class DocumentRepresentation extends HalRepresentation {
+    private String title;
 
     public DocumentRepresentation(DocumentId documentId, RelRegistry relRegistry) {
+        this.title = buildTitle(documentId);
         switch (documentId.getScope()) {
             case FILES:
                 self(relRegistry
@@ -24,7 +26,7 @@ public class DocumentRepresentation extends HalRepresentation {
                 break;
             case WIKI:
                 self(relRegistry
-                        .uri(Rels.WIKI_PAGES)
+                        .uri(Rels.WIKI)
                         .set("componentId", documentId.getComponentId().getName())
                         .set("page", documentId.getPath()));
                 break;
@@ -32,5 +34,38 @@ public class DocumentRepresentation extends HalRepresentation {
     }
 
     public DocumentRepresentation() {
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    private String buildTitle(DocumentId documentId) {
+        String path = documentId.getPath();
+        if (path == null) {
+            return "Untitled";
+        }
+
+        int lastSlash = path.lastIndexOf('/');
+        if (lastSlash != -1) {
+            path = path.substring(lastSlash + (lastSlash == path.length() - 1 ? 0 : 1));
+        }
+
+        int lastDot = path.lastIndexOf('.');
+        if (lastDot != -1) {
+            path = path.substring(0, lastDot);
+        }
+
+        if (path.length() > 0) {
+            path = path.substring(0, 1).toUpperCase() + path.substring(1);
+        } else {
+            path = "Untitled";
+        }
+
+        return path;
     }
 }

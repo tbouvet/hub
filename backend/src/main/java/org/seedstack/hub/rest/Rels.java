@@ -18,7 +18,12 @@ public final class Rels {
     public static final String PENDING = "pending";
     public static final String STARS = "stars";
     public static final String STAR = "star";
+    public static final String ICON = "icon";
+    public static final String README = "readme";
+    public static final String IMAGES = "images";
+    public static final String DOCS = "docs";
     public static final String FILES = "files";
+    public static final String WIKI = "wiki";
     public static final String USER_COMPONENTS = "user/components";
     public static final String AUTHOR_COMPONENTS = "author/components";
     public static final String ORGANISATIONS = "organisations";
@@ -26,5 +31,4 @@ public final class Rels {
     public static final String ORGANISATION_OWNERS = "organisation/owners";
     public static final String ORGANISATION_MEMBERS = "organisation/members";
     public static final String ORGANISATION_COMPONENTS = "organisation/components";
-    public static final String WIKI_PAGES = "wiki/pages";
 }

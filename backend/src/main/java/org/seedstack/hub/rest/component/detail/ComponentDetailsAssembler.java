@@ -9,12 +9,11 @@ package org.seedstack.hub.rest.component.detail;
 
 import org.seedstack.hub.application.StarringService;
 import org.seedstack.hub.domain.model.component.Component;
-import org.seedstack.hub.domain.model.component.ComponentId;
 import org.seedstack.hub.domain.model.component.Description;
 import org.seedstack.hub.domain.model.component.Release;
 import org.seedstack.hub.domain.model.user.UserId;
-import org.seedstack.hub.rest.component.AbstractComponentAssembler;
 import org.seedstack.hub.rest.Rels;
+import org.seedstack.hub.rest.component.AbstractComponentAssembler;
 import org.seedstack.hub.rest.shared.DocumentRepresentation;
 
 import javax.inject.Inject;
@@ -30,25 +29,16 @@ public class ComponentDetailsAssembler extends AbstractComponentAssembler<Compon
 
     @Override
     protected void doAssemble(ComponentDetails componentDetails, Component component) {
-        String componentId = component.getId().getName();
-        componentDetails.setId(componentId);
+        componentDetails.setId(component.getId().getName());
         componentDetails.setName(component.getName());
         componentDetails.setOwner(component.getOwner().toString());
+        componentDetails.setMaintainers(component.getMaintainers().stream().map(UserId::getId).collect(toList()));
         componentDetails.setStars(component.getStars());
         componentDetails.setState(component.getState());
-
         assembleDescription(componentDetails, component);
-
-        List<Release> releases = component.getReleases();
-        if (!releases.isEmpty()) {
-            componentDetails.setVersion(releases.get(0).toString());
-        }
-        componentDetails.setReleases(component.getReleases().stream().map(ReleaseRepresentation::new).collect(toList()));
-        componentDetails.setDocs(component.getDocs().stream().map(documentId -> new DocumentRepresentation(documentId, relRegistry)).collect(toList()));
-        componentDetails.setMaintainers(component.getMaintainers().stream().map(UserId::getId).collect(toList()));
-        componentDetails.setWikiPages(component.getWikiPages().stream().map(documentId -> new DocumentRepresentation(documentId, relRegistry)).collect(toList()));
-
-        assembleHalLinks(componentDetails, componentId);
+        assembleReleases(componentDetails, component);
+        assembleEmbedded(componentDetails, component);
+        assembleLinks(componentDetails, component);
     }
 
     private void assembleDescription(ComponentDetails componentDetails, Component component) {
@@ -63,26 +53,38 @@ public class ComponentDetailsAssembler extends AbstractComponentAssembler<Compon
                 componentDetails.setIssues(description.getIssues().toString());
             }
             if (description.getIcon() != null) {
-                componentDetails.setIcon(new DocumentRepresentation(description.getIcon(), relRegistry));
+                componentDetails.embedded(Rels.ICON, new DocumentRepresentation(description.getIcon(), relRegistry));
             }
             if (description.getReadme() != null) {
-                componentDetails.setReadme(new DocumentRepresentation(description.getReadme(), relRegistry));
+                componentDetails.embedded(Rels.README, new DocumentRepresentation(description.getReadme(), relRegistry));
             }
-            componentDetails.setImages(description.getImages().stream().map(documentId -> new DocumentRepresentation(documentId, relRegistry)).collect(toList()));
+            if (!description.getImages().isEmpty()) {
+                componentDetails.embedded(Rels.IMAGES, description.getImages().stream().map(documentId -> new DocumentRepresentation(documentId, relRegistry)).collect(toList()));
+            }
         }
     }
 
-    private void assembleHalLinks(ComponentDetails componentDetails, String componentId) {
-        addStarLinkIfNotStarred(componentDetails, componentId);
-
-        componentDetails.link(Rels.COMMENT, relRegistry
-                .uri(Rels.COMMENT).set(COMPONENT_ID, componentId).templated());
+    private void assembleReleases(ComponentDetails componentDetails, Component component) {
+        List<Release> releases = component.getReleases();
+        if (!releases.isEmpty()) {
+            componentDetails.setVersion(releases.get(0).toString());
+        }
+        componentDetails.setReleases(component.getReleases().stream().map(ReleaseRepresentation::new).collect(toList()));
     }
 
-    private void addStarLinkIfNotStarred(ComponentDetails componentDetails, String componentId) {
-        if (!starringService.hasStarred(new ComponentId(componentId))) {
-            componentDetails.link(Rels.STAR, relRegistry
-                    .uri(Rels.STAR).set(COMPONENT_ID, componentId));
+    private void assembleEmbedded(ComponentDetails componentDetails, Component component) {
+        if (!component.getDocs().isEmpty()) {
+            componentDetails.embedded(Rels.DOCS, component.getDocs().stream().map(documentId -> new DocumentRepresentation(documentId, relRegistry)).collect(toList()));
         }
+        if (!component.getWikiPages().isEmpty()) {
+            componentDetails.embedded(Rels.WIKI, component.getWikiPages().stream().map(documentId -> new DocumentRepresentation(documentId, relRegistry)).collect(toList()));
+        }
+    }
+
+    private void assembleLinks(ComponentDetails componentDetails, Component component) {
+        if (!starringService.hasStarred(component.getId())) {
+            componentDetails.link(Rels.STAR, relRegistry.uri(Rels.STAR).set(COMPONENT_ID, component.getId().getName()));
+        }
+        componentDetails.link(Rels.COMMENT, relRegistry.uri(Rels.COMMENT).set(COMPONENT_ID, component.getId().getName()).templated());
     }
 }
