@@ -11,48 +11,63 @@ enum Sort {
 interface ISearchCriterias {
     search: string,
     sort: Sort,
-    pageIndex: number,
-    pageSize: number
+    size: number
 }
 
 class SearchController {
+    public components:Card[];
+    public resultSize: number;
+    public noResults: boolean;
+
     static $inject = ['HomeService', '$location'];
+
     constructor(private api:any, private $location:ng.ILocationService) {
         this.components = [];
         this.loadNewCards(this.searchCriterias);
     }
 
-    public components:Card[];
-
     public searchCriterias:ISearchCriterias = {
-        search: this.$location.search().search || '',
+        search: '',
         sort: Sort.DATE,
-        pageIndex: 0,
-        pageSize: 12
+        size: 12
     };
 
+    private nextPage:Function;
+
     public loadNewCards(searchCriterias) {
+        searchCriterias.search =  this.$location.search().search || '';
         this.getCards(searchCriterias, results => {
-                if (results.$embedded('components') && results.$embedded('components').constructor === Array) {
-                    this.components = this.components.concat(results.$embedded('components'));
-                    this.searchCriterias.pageIndex++;
-                }
-            }, () => {});
+            this.resultSize = results.resultSize;
+            if (results.$embedded('components') && results.$embedded('components').constructor === Array) {
+                this.components = this.components.concat(results.$embedded('components'));
+            }
+        });
     }
 
-    private getCards(searchCriterias:ISearchCriterias, successCb:(results:any) => void, errorCb:(rejected?:any) => void):void {
-        this.api('home').enter('components', searchCriterias).get().$promise
-            .then((results:any) => {
-                successCb(results);
-            })
-            .catch(rejected => {
-                errorCb();
-                throw new Error(rejected);
-            });
+    private getCards(searchCriterias:ISearchCriterias, successCb?:(results:any) => void, errorCb?:(rejected?:any) => void):void {
+        var fetchFunction = this.nextPage ? this.nextPage : this.api('home').enter('components');
+
+        if (fetchFunction.get) {
+            fetchFunction.get(searchCriterias).$promise
+                .then((results:any) => {
+                    this.noResults = false;
+                    this.nextPage = results.$links('next') || angular.noop;
+                    if (successCb) {
+                        successCb(results);
+                    }
+                })
+                .catch(rejected => {
+                    if (errorCb) {
+                        errorCb();
+                    }
+                    this.noResults = true;
+                    throw new Error(rejected);
+                });
+        }
     }
 
     public view(card:Card):void {
-        this.$location.path('hub/component/' + card.name);
+        this.$location.path('hub/component/' + card.id);
     }
 }
 

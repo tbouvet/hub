@@ -17,17 +17,11 @@ interface IComment {
     text: string
 }
 
-interface PaginationCriteria {
-    pageIndex: number,
-    pageSize: number
-}
-
 interface ICommentScope extends ng.IScope {
-    submitComment(comment: string): void;
+    submitComment(comment:string): void;
     newCommentText: string;
-    criterias: PaginationCriteria;
     loadNewComments(criterias):void;
-    comments: Comment[];
+    comments: IComment[];
     component: any;
     commentForm: ng.IFormController;
     clearForm: Function
@@ -35,19 +29,18 @@ interface ICommentScope extends ng.IScope {
 
 class HubComment implements ng.IDirective {
     static $inject = ['HomeService', '$resource'];
-    constructor(private api, private $resource) {};
+
+    constructor(private api, private $resource) {
+    };
+
     scope = {
-      component: '='
+        component: '='
     };
     template = commentTemplate;
-    link: ng.IDirectiveLinkFn = (scope: ICommentScope) => {
+    link:ng.IDirectiveLinkFn = (scope:ICommentScope) => {
+        var criterias = { size: 10 };
         scope.comments = [];
         scope.newCommentText = '';
-
-        var criterias = {
-            pageIndex: 0,
-            pageSize: 10
-        };
 
         var clearForm = () => {
             scope.commentForm.$setPristine();
@@ -55,24 +48,35 @@ class HubComment implements ng.IDirective {
             scope.newCommentText = '';
         };
 
-        scope.submitComment = (text: string) => {
+        scope.submitComment = (text:string) => {
             if (scope.component) {
-                scope.component.$links('comment', { componentId: scope.component.id }).save(text).$promise.then((comment: IComment) => {
+                scope.component.$links('comment', {componentId: scope.component.id}).save(text).$promise.then((comment:IComment) => {
                     clearForm();
                     scope.comments.push(comment);
-                }, (reject) => { throw new Error(reject); });
+                }, (reject: any) => {
+                    throw new Error(reject);
+                });
             }
         };
 
+        var nextLink:Function;
+
         scope.loadNewComments = () => {
             if (scope.component) {
-                angular.extend(criterias, { componentId: scope.component.id });
-                scope.component.$links('comment', criterias).get((results: any) => {
-                    if (results.$embedded('comment').view.length) {
-                        scope.comments = <Comment[]> scope.comments.concat(results.$embedded('comment').view);
-                        criterias.pageIndex++;
-                    }
-                }, (reject) => { throw new Error(reject); });
+                var fetchFunction = nextLink ? nextLink : scope.component.$links('comment', {componentId: scope.component.id});
+                if (fetchFunction.get) {
+                    fetchFunction.get(criterias).$promise
+                        .then((results:any) => {
+                            nextLink = results.$links('next') || angular.noop;
+                            if (results.$embedded('comment').length) {
+                                scope.comments = scope.comments.concat(results.$embedded('comment'));
+                            }
+                        })
+                        .catch((reject:any) => {
+                            throw new Error(reject);
+                        });
+                }
+
             }
         };
     }

@@ -2,7 +2,7 @@
     <section ng-show="$ctrl.components.length >= 1">
         <header layout="column">
             <div layout="row">
-                <h3 class="md-title muted">Components <span class="md-subhead">{{ $ctrl.components.length }}/100</span></h3>
+                <h3 class="md-title muted">Components <span class="md-subhead">{{ $ctrl.components.length }}/{{ $ctrl.resultSize }}</span></h3>
                 <span flex></span>
                 <a ng-href="#!/">
                     <md-button class="md-accent">
@@ -15,7 +15,7 @@
             <hub-card ng-repeat="card in $ctrl.components" card="card" on-click="$ctrl.view(card)"></hub-card>
         </section>
     </section>
-    <section ng-show="$ctrl.components.length < 1">
+    <section ng-show="$ctrl.noResults">
         <header layout="column">
             <h3 class="md-title muted">No results found</h3>
         </header>

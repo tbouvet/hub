@@ -1,0 +1,27 @@
+<div id="component-detail-wiki" layout-padding layout="row" layout-xs="column" style="padding: 0">
+    <div id="component-detail-wiki-page" flex="70" flex-xs="100" flex-order-xs="2">
+        <md-content class="md-whiteframe-1dp inherit-background" flex layout-padding style="padding: 0">
+            <div class="markdown-body" ng-include="$ctrl.activeWikiURL"></div>
+        </md-content>
+    </div>
+    <div flex="30" flex-xs="100" layout-align="end center" layout-align-xs="center" flex-order-xs="1">
+        <aside id="component-detail-wiki-list" layout="column" flex-xs="100">
+              <section>
+                <md-content class="md-whiteframe-1dp" style="overflow: hidden; background-color: inherit">
+                    <md-subheader class="md-no-sticky" style="background-color: inherit"> Wiki pages </md-subheader>
+                    <md-button aria-label="Manage component" ng-click="$ctrl.openWikiCreation()">
+                        <md-icon md-font-set="material-icons">note_add</md-icon> Add
+                    </md-button>
+                    <md-list>
+                        <md-list-item ng-repeat="wikiName in $ctrl.component.wikiPages">
+                            <md-button data-ng-click="$ctrl.setWikiPage(wikiName)"
+                                       ng-class="$ctrl.activeWikiName === wikiName ? 'md-primary' : 'md-accent'">
+                                <i class="fa fa-file-text-o"></i> {{ wikiName }}
+                            </md-button>
+                        </md-list-item>
+                    </md-list>
+                </md-content>
+            </section>
+        </aside>
+    </div>
+</div>
