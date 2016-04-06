@@ -11,13 +11,24 @@ import module = require('./module');
 import angular = require("{angular}/angular");
 import SimpleMDE = require("{simplemde}/simplemde");
 import IResource = angular.resource.IResource;
+import IAugmentedJQuery = angular.IAugmentedJQuery;
+
+
+class HubMarkdowEditor implements ng.IDirective {
+    static $inject = [];
+    constructor() {};
+    restrict = 'A';
+    link = (scope: ng.IScope, element: IAugmentedJQuery) => {
+        const markdownEditor = new SimpleMDE({autoDownloadFA: false, element: element[0]});
+    }
+}
+
 
 class WikiEditorController {
     public markdownEditor: any;
 
     static $inject = ['HomeService', '$mdDialog', '$mdMedia'];
     constructor(private api:any, private $mdDialog, private $mdMedia) {
-        this.markdownEditor = new SimpleMDE();
     }
 
     public cancel(): void {
@@ -31,4 +42,5 @@ class WikiEditorController {
 
 angular
     .module(module.angularModules)
+    .directive('hubMarkdownEditor', DirectiveFactory.getFactoryFor<HubMarkdowEditor>(HubMarkdowEditor))
     .controller('WikiEditorController', WikiEditorController);

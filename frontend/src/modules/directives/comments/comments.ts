@@ -53,7 +53,7 @@ class HubComment implements ng.IDirective {
                 scope.component.$links('comment', {componentId: scope.component.id}).save(text).$promise.then((comment:IComment) => {
                     clearForm();
                     scope.comments.push(comment);
-                }, (reject) => {
+                }, (reject: any) => {
                     throw new Error(reject);
                 });
             }

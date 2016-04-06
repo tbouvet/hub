@@ -152,12 +152,18 @@ class ComponentDetailsController {
         }).then();
     }
 
-    public activeWikiURL:any;
+    public activeWikiURL:string;
     public activeWikiName:string;
 
     public setWikiPage(wikiName:string):void {
         this.activeWikiName = wikiName;
         this.activeWikiURL = '/components/generator-w20/wiki/' + wikiName;
+    };
+
+    public activeDoc: string;
+
+    public setActiveDoc(doc: string): void {
+        this.activeDoc = doc;
     };
 
     public static promiseRejected(reason):void {

@@ -9,7 +9,7 @@
     </div>
     <div id="component-detail-header" layout="row" layout-xs="column" layout-wrap>
         <div layout="row" layout-align="center center" layout-align-xs="center">
-            <img class="component-icon" ng-src="{{$ctrl.component.icon}}" err-src="src/img/default-component.png" alt="Component logo">
+            <img class="component-icon" ng-src="{{$ctrl.component.$embedded('icon')._links.self.href}}" err-src="src/img/default-component.png" alt="Component logo">
         </div>
         <div flex layout-xs="column" layout-align-xs="center center" id="component-detail-title">
             <div layout="column" layout-align="center" layout-align-xs="center center" class="md-list-item-text"

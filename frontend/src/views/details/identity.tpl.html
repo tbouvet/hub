@@ -1,14 +1,48 @@
-<div id="component-detail-info" layout="row" layout-xs="column" style="padding: 0">
+<div id="component-detail-info" layout-padding layout="row" layout-xs="column" style="padding: 0">
     <div id="component-detail-readme" flex="70" flex-xs="100" flex-order-xs="2">
-        <md-content ng-if="$ctrl.component.readme" class="md-whiteframe-1dp inherit-background" flex layout-padding style="padding: 0">
-            <div class="markdown-body" ng-include="$ctrl.component.readme"></div>
+        <md-content class="md-whiteframe-1dp inherit-background" flex style="padding: 0">
+            <div class="markdown-body" ng-include="$ctrl.component.$embedded('readme')._links.self.href"></div>
         </md-content>
-        <header ng-if="!$ctrl.component.readme" layout="column" layout-align="center center">
-            <h3 class="md-title muted">No README available</h3>
-        </header>
     </div>
     <div flex="30" flex-xs="100" layout-align="end center" layout-align-xs="center" flex-order-xs="1">
-        <div ng-include="'src/views/details/aside.tpl.html'"></div>
+        <aside id="component-detail-meta" layout="column" flex-xs="100">
+            <section id="component-detail-meta-usage">
+                <md-content style="overflow: hidden; background-color: inherit" class="md-whiteframe-1dp">
+                    <md-subheader class="md-no-sticky" style="background-color: inherit">Info</md-subheader>
+                    <md-list>
+                        <md-list-item>
+                            <md-icon md-font-set="material-icons">change_history</md-icon>
+                            <p> Latest: {{ $ctrl.component.releases[0].version }} </p>
+                        </md-list-item>
+                        <md-list-item ng-if="$ctrl.component.license">
+                            <md-icon md-font-set="material-icons">gavel</md-icon>
+                            <p> License: {{ $ctrl.component.license }} </p>
+                        </md-list-item>
+                    </md-list>
+                </md-content>
+            </section>
+            <div class="spacer"></div>
+            <section id="component-detail-meta-general">
+                <md-content style="overflow: hidden; background-color: inherit" class="md-whiteframe-1dp">
+                    <md-subheader class="md-no-sticky" style="background-color: inherit">Used in 12 projects
+                    </md-subheader>
+                    <md-list>
+                        <md-list-item>
+                            <md-icon md-font-set="material-icons">important_devices</md-icon>
+                            <p> Project 1 </p>
+                        </md-list-item>
+                        <md-list-item>
+                            <md-icon md-font-set="material-icons">important_devices</md-icon>
+                            <p> Project 1 </p>
+                        </md-list-item>
+                        <md-list-item>
+                            <md-icon md-font-set="material-icons">important_devices</md-icon>
+                            <p> Project 1 </p>
+                        </md-list-item>
+                    </md-list>
+                </md-content>
+            </section>
+        </aside>
     </div>
 </div>
 
