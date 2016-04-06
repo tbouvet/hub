@@ -19,10 +19,10 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mongodb.morphia.Datastore;
 import org.seedstack.business.domain.Repository;
+import org.seedstack.hub.MockBuilder;
 import org.seedstack.hub.domain.model.component.Component;
 import org.seedstack.hub.domain.model.component.ComponentId;
 import org.seedstack.hub.domain.model.component.State;
-import org.seedstack.hub.MockBuilder;
 import org.seedstack.mongodb.morphia.MorphiaDatastore;
 import org.seedstack.seed.it.AbstractSeedWebIT;
 
@@ -34,7 +34,6 @@ import java.util.stream.IntStream;
 import static com.jayway.restassured.RestAssured.expect;
 import static java.util.stream.Collectors.toList;
 import static org.skyscreamer.jsonassert.JSONAssert.assertEquals;
-import static org.tmatesoft.svn.core.internal.wc17.db.statement.SVNWCDbSchema.PRISTINE__Fields.size;
 
 public class ComponentsResourceIT extends AbstractSeedWebIT {
 

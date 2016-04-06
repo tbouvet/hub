@@ -60,7 +60,7 @@ public class WikiResourceIT extends AbstractSeedWebIT {
         httpPost("components/Component1/wiki/page1", "# Hello World\n", "creation");
         assertThat(httpGet("components/Component1/wiki/page1", 200).asString()).isEqualTo("<h1><a></a>Hello World</h1>");
         assertEquals("{\"revisions\":[{\"author\":\"adrienlauer\",\"message\":\"creation\"}]}", httpGet("components/Component1/wiki/page1/revisions", 200).asString(), false);
-        assertEquals("{\"wikiPages\":[{\"_links\":{\"self\":{\"href\":\"" + baseURL.getPath() + "components/Component1/wiki/page1\"}}}]}", httpGet("components/Component1", 200).asString(), false);
+        assertEquals("{\"_embedded\":{\"wiki\":[{\"title\":\"Page1\",\"_links\":{\"self\":{\"href\":\"" + baseURL.getPath() + "components/Component1/wiki/page1\"}}}]}}", httpGet("components/Component1", 200).asString(), false);
     }
 
     @RunAsClient
