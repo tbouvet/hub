@@ -17,13 +17,14 @@ import org.junit.runner.RunWith;
 import org.seedstack.business.assembler.FluentAssembler;
 import org.seedstack.business.finder.Result;
 import org.seedstack.hub.application.fetch.ImportService;
-import org.seedstack.hub.rest.list.ComponentCard;
-import org.seedstack.hub.rest.list.ComponentFinder;
-import org.seedstack.hub.rest.list.ComponentsResource;
-import org.seedstack.hub.rest.list.SortType;
+import org.seedstack.hub.rest.component.list.ComponentCard;
+import org.seedstack.hub.rest.component.list.ComponentFinder;
+import org.seedstack.hub.rest.component.list.ComponentsResource;
+import org.seedstack.hub.rest.component.list.SortType;
 import org.seedstack.hub.rest.shared.RangeInfo;
 import org.seedstack.seed.rest.RelRegistry;
 import org.seedstack.seed.rest.hal.HalRepresentation;
+import org.seedstack.seed.rest.hal.Link;
 
 import javax.servlet.ServletContext;
 import java.util.List;
@@ -31,6 +32,7 @@ import java.util.stream.IntStream;
 
 import static java.util.stream.Collectors.toList;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.seedstack.hub.rest.Rels.COMPONENTS;
 
 @RunWith(JMockit.class)
 public class ComponentsResourceTest {
@@ -63,6 +65,8 @@ public class ComponentsResourceTest {
         new Expectations() {{
             componentFinder.findPublishedCards(withAny(rangeInfo.range()), SortType.NAME, searchName);
             result = new Result<>(componentCards, size, offset);
+            relRegistry.uri(COMPONENTS);
+            result = new Link("/components?search=foo&sort=name");
         }};
     }
 

@@ -14,7 +14,7 @@ import org.seedstack.hub.application.security.SecurityService;
 import org.seedstack.hub.application.StarringService;
 import org.seedstack.hub.domain.model.component.ComponentId;
 import org.seedstack.hub.domain.model.user.UserId;
-import org.seedstack.hub.rest.list.ComponentCard;
+import org.seedstack.hub.rest.component.list.ComponentCard;
 import org.seedstack.hub.rest.shared.RangeInfo;
 import org.seedstack.hub.rest.shared.ResultHal;
 import org.seedstack.seed.rest.Rel;
@@ -85,7 +85,7 @@ public class UserResource {
     @Path("/stars/{componentId}")
     public Response starComponent(@PathParam("componentId") String componentId) throws URISyntaxException {
         starringService.star(new ComponentId(componentId));
-        return Response.created(new URI(relRegistry.uri(STARS).set("componentId", componentId).expand())).build();
+        return Response.created(new URI(relRegistry.uri(STARS).set("componentId", componentId).getHref())).build();
     }
 
     @Rel(STAR)

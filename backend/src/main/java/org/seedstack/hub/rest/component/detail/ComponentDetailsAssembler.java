@@ -5,7 +5,7 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
-package org.seedstack.hub.rest.detail;
+package org.seedstack.hub.rest.component.detail;
 
 import org.seedstack.hub.application.StarringService;
 import org.seedstack.hub.domain.model.component.Component;
@@ -13,7 +13,7 @@ import org.seedstack.hub.domain.model.component.ComponentId;
 import org.seedstack.hub.domain.model.component.Description;
 import org.seedstack.hub.domain.model.component.Release;
 import org.seedstack.hub.domain.model.user.UserId;
-import org.seedstack.hub.rest.AbstractComponentAssembler;
+import org.seedstack.hub.rest.component.AbstractComponentAssembler;
 import org.seedstack.hub.rest.Rels;
 import org.seedstack.hub.rest.shared.DocumentRepresentation;
 
@@ -21,7 +21,7 @@ import javax.inject.Inject;
 import java.util.List;
 
 import static java.util.stream.Collectors.toList;
-import static org.seedstack.hub.rest.detail.ComponentResource.COMPONENT_ID;
+import static org.seedstack.hub.rest.component.detail.ComponentResource.COMPONENT_ID;
 
 public class ComponentDetailsAssembler extends AbstractComponentAssembler<ComponentDetails> {
 
@@ -38,6 +38,7 @@ public class ComponentDetailsAssembler extends AbstractComponentAssembler<Compon
         componentDetails.setState(component.getState());
 
         assembleDescription(componentDetails, component);
+
         List<Release> releases = component.getReleases();
         if (!releases.isEmpty()) {
             componentDetails.setVersion(releases.get(0).toString());
@@ -61,7 +62,6 @@ public class ComponentDetailsAssembler extends AbstractComponentAssembler<Compon
             if (description.getIssues() != null) {
                 componentDetails.setIssues(description.getIssues().toString());
             }
-            componentDetails.setLicense(description.getLicense());
             if (description.getIcon() != null) {
                 componentDetails.setIcon(new DocumentRepresentation(description.getIcon(), relRegistry));
             }
@@ -82,7 +82,7 @@ public class ComponentDetailsAssembler extends AbstractComponentAssembler<Compon
     private void addStarLinkIfNotStarred(ComponentDetails componentDetails, String componentId) {
         if (!starringService.hasStarred(new ComponentId(componentId))) {
             componentDetails.link(Rels.STAR, relRegistry
-                    .uri(Rels.STAR).set(COMPONENT_ID, componentId).expand());
+                    .uri(Rels.STAR).set(COMPONENT_ID, componentId));
         }
     }
 }

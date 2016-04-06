@@ -14,7 +14,7 @@ import org.seedstack.hub.domain.model.component.ComponentId;
 import org.seedstack.hub.domain.model.organisation.Organisation;
 import org.seedstack.hub.domain.model.user.UserId;
 import org.seedstack.hub.rest.Rels;
-import org.seedstack.hub.rest.list.ComponentCardAssembler;
+import org.seedstack.hub.rest.component.list.ComponentCardAssembler;
 import org.seedstack.seed.rest.RelRegistry;
 
 import javax.inject.Inject;
@@ -48,8 +48,7 @@ public class OrganisationAssembler extends BaseAssembler<Organisation, Organisat
                     .collect(Collectors.toList()));
 
         organisationRepresentation.self(relRegistry.uri(Rels.ORGANISATION)
-                .set(ORGANISATION_ID, organisation.getEntityId().getId())
-                .expand());
+                .set(ORGANISATION_ID, organisation.getEntityId().getId()));
     }
 
     @Override

@@ -13,8 +13,6 @@ import org.seedstack.seed.rest.RelRegistry;
 import org.seedstack.seed.rest.hal.HalRepresentation;
 
 public class DocumentRepresentation extends HalRepresentation {
-    public DocumentRepresentation() {
-    }
 
     public DocumentRepresentation(DocumentId documentId, RelRegistry relRegistry) {
         switch (documentId.getScope()) {
@@ -31,5 +29,8 @@ public class DocumentRepresentation extends HalRepresentation {
                         .set("page", documentId.getPath()));
                 break;
         }
+    }
+
+    public DocumentRepresentation() {
     }
 }

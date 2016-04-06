@@ -17,9 +17,9 @@ import org.seedstack.hub.domain.model.component.Comment;
 import org.seedstack.hub.domain.model.component.Component;
 import org.seedstack.hub.domain.model.component.ComponentId;
 import org.seedstack.hub.domain.model.component.State;
-import org.seedstack.hub.rest.list.ComponentCard;
-import org.seedstack.hub.rest.list.ComponentFinder;
-import org.seedstack.hub.rest.list.SortType;
+import org.seedstack.hub.rest.component.list.ComponentCard;
+import org.seedstack.hub.rest.component.list.ComponentFinder;
+import org.seedstack.hub.rest.component.list.SortType;
 import org.seedstack.mongodb.morphia.MorphiaDatastore;
 
 import javax.inject.Inject;

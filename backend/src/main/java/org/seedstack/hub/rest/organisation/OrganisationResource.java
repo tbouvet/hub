@@ -65,7 +65,7 @@ public class OrganisationResource {
         Organisation organisation = new Organisation(new OrganisationId(organisationCard.getId()), organisationCard.getName(), owners);
         organisationRepository.persist(organisation);
 
-        URI orgURI = new URI(relRegistry.uri(Rels.ORGANISATION).set(ORGANISATION_ID, organisationCard.getId()).expand());
+        URI orgURI = new URI(relRegistry.uri(Rels.ORGANISATION).set(ORGANISATION_ID, organisationCard.getId()).getHref());
         return Response.created(orgURI).entity(get(organisationCard.getId())).build();
     }
 
