@@ -8,7 +8,6 @@
 package org.seedstack.hub.rest.component.detail;
 
 import org.seedstack.hub.domain.model.component.State;
-import org.seedstack.hub.rest.shared.DocumentRepresentation;
 import org.seedstack.seed.rest.hal.HalRepresentation;
 
 import java.util.List;
@@ -26,11 +25,6 @@ public class ComponentDetails extends HalRepresentation {
     private String issues;
     private List<String> maintainers;
     private int stars;
-    private DocumentRepresentation icon;
-    private DocumentRepresentation readme;
-    private List<DocumentRepresentation> images;
-    private List<DocumentRepresentation> docs;
-    private List<DocumentRepresentation> wikiPages;
 
     public String getId() {
         return id;
@@ -112,38 +106,6 @@ public class ComponentDetails extends HalRepresentation {
         this.issues = issues;
     }
 
-    public DocumentRepresentation getIcon() {
-        return icon;
-    }
-
-    public void setIcon(DocumentRepresentation icon) {
-        this.icon = icon;
-    }
-
-    public DocumentRepresentation getReadme() {
-        return readme;
-    }
-
-    public void setReadme(DocumentRepresentation readme) {
-        this.readme = readme;
-    }
-
-    public List<DocumentRepresentation> getImages() {
-        return images;
-    }
-
-    public void setImages(List<DocumentRepresentation> images) {
-        this.images = images;
-    }
-
-    public List<DocumentRepresentation> getDocs() {
-        return docs;
-    }
-
-    public void setDocs(List<DocumentRepresentation> docs) {
-        this.docs = docs;
-    }
-
     public int getStars() {
         return stars;
     }
@@ -160,11 +122,4 @@ public class ComponentDetails extends HalRepresentation {
         this.maintainers = maintainers;
     }
 
-    public List<DocumentRepresentation> getWikiPages() {
-        return wikiPages;
-    }
-
-    public void setWikiPages(List<DocumentRepresentation> wikiPages) {
-        this.wikiPages = wikiPages;
-    }
 }

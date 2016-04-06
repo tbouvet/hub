@@ -41,8 +41,12 @@ public class ComponentDetailsAssemblerIT {
         assertThat(detail).isNotNull();
         assertThat(detail.getId()).isEqualTo("Component2");
         assertThat(detail.getName()).isEqualTo("Component 2");
-        assertThat(detail.getIcon().getLink("self")).isEqualTo(new DocumentRepresentation(componentMock.getDescription().getIcon(), relRegistry).getLink("self"));
-        assertThat(detail.getReadme().getLink("self")).isEqualTo(new DocumentRepresentation(componentMock.getDescription().getReadme(), relRegistry).getLink("self"));
+        DocumentRepresentation icon = (DocumentRepresentation) detail.getEmbedded().get("icon");
+        assertThat(icon.getLink("self")).isEqualTo(new DocumentRepresentation(componentMock.getDescription().getIcon(), relRegistry).getLink("self"));
+        assertThat(icon.getTitle()).isEqualTo("Icon");
+        DocumentRepresentation readme = (DocumentRepresentation) detail.getEmbedded().get("readme");
+        assertThat(readme.getLink("self")).isEqualTo(new DocumentRepresentation(componentMock.getDescription().getReadme(), relRegistry).getLink("self"));
+        assertThat(readme.getTitle()).isEqualTo("Readme");
         assertThat(detail.getSummary()).isEqualTo("A little summary.");
         assertThat(detail.getOwner()).isEqualTo("adrienlauer");
         assertThat(detail.getMaintainers()).containsOnly("pith", "kavi87");
