@@ -19,7 +19,7 @@
                 </h1>
                 <h2 style="margin-top: 0;" class="md-subhead muted">
                     <md-icon md-font-set="material-icons">person_pin</md-icon>
-                    {{ $ctrl.component.owner }}
+                    <md-button ng-click="$ctrl.viewUser($ctrl.component.owner)">{{ $ctrl.component.owner }}</md-button>
                 </h2>
             </div>
         </div>

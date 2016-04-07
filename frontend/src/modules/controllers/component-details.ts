@@ -25,9 +25,12 @@ function displayDocName() {
 class ComponentDetailsController {
     public component:any;
     public detailsView:SubView;
+    public activeWiki:string;
+    public activeDoc: string;
 
     static $inject = [
         'HomeService',
+        '$location',
         '$routeParams',
         '$http',
         '$mdToast',
@@ -38,6 +41,7 @@ class ComponentDetailsController {
 
     constructor(
         private api:any,
+        private $location: ng.ILocationService,
         private $routeParams:any,
         private $http:IHttpService,
         private $mdToast,
@@ -49,11 +53,25 @@ class ComponentDetailsController {
 
         this.getComponent().$promise.then((component:any) => {
             this.component = component;
+
+            var docs = this.component.$embedded('docs');
+            if (docs && docs.length) {
+                this.activeDoc = docs[0]._links.self.href;
+            }
+
+            var wiki = this.component.$embedded('wiki');
+            if (wiki && wiki.length) {
+                this.activeWiki = wiki[0]._links.self.href;
+            }
         });
     }
 
     public getComponent():IResource {
         return this.api('home').enter('component', {componentId: this.$routeParams.id}).get();
+    }
+
+    public viewUser(user: any): void {
+        this.$location.path('hub/user/' + user);
     }
 
     public rateComponent(component):void {
@@ -141,26 +159,28 @@ class ComponentDetailsController {
 
     public decodeURIComponent = this.$window.decodeURIComponent;
 
-    public openWikiCreation(): void {
+    public openWikiCreation(wiki): void {
         this.$mdDialog.show({
             controller: 'WikiEditorController',
             controllerAs: '$ctrl',
             templateUrl: require.toUrl('{hub}/views/templates/wiki-editor.tmpl.html'),
             parent: angular.element(document.body),
             clickOutsideToClose: false,
-            fullscreen: true
+            fullscreen: true,
+            locals: {
+                wiki: wiki,
+                component: this.component
+            }
         }).then();
     }
 
-    public activeWikiURL:string;
-    public activeWikiName:string;
+    public editWiki(wiki: string): void {
+        this.openWikiCreation(wiki);
+    }
 
-    public setWikiPage(wikiName:string):void {
-        this.activeWikiName = wikiName;
-        this.activeWikiURL = '/components/generator-w20/wiki/' + wikiName;
+    public setActiveWiki(wiki:string):void {
+        this.activeWiki = wiki;
     };
-
-    public activeDoc: string;
 
     public setActiveDoc(doc: string): void {
         this.activeDoc = doc;

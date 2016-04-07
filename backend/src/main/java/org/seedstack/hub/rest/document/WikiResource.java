@@ -73,6 +73,7 @@ public class WikiResource {
     @PUT
     @Consumes("text/markdown")
     @Produces("text/html")
+    @Rel(Rels.WIKI)
     public Response updatePage(@QueryParam("message") String message, String body) {
         WikiDocument wikiDocument = getWikiDocument();
         wikiDocument.addRevision(body, securityService.getAuthenticatedUser().getId(), message);
@@ -83,6 +84,7 @@ public class WikiResource {
     @POST
     @Consumes("text/markdown")
     @Produces("text/html")
+    @Rel(Rels.WIKI)
     public Response createPage(@QueryParam("message") String message, String body) {
         Component component = getComponent();
         DocumentId documentId = new DocumentId(new ComponentId(componentId), DocumentScope.WIKI, page);
@@ -105,6 +107,7 @@ public class WikiResource {
     }
 
     @DELETE
+    @Rel(Rels.WIKI)
     public Response deletePage() {
         Component component = getComponent();
         WikiDocument wikiDocument = getWikiDocument();

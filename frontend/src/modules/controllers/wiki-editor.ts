@@ -13,26 +13,55 @@ import SimpleMDE = require("{simplemde}/simplemde");
 import IResource = angular.resource.IResource;
 import IAugmentedJQuery = angular.IAugmentedJQuery;
 
-
-class HubMarkdowEditor implements ng.IDirective {
-    static $inject = [];
-    constructor() {};
-    restrict = 'A';
-    link = (scope: ng.IScope, element: IAugmentedJQuery) => {
-        const markdownEditor = new SimpleMDE({autoDownloadFA: false, element: element[0]});
-    }
+interface IWiki {
+    page: string,
+    message: string,
+    content: string
 }
 
 
 class WikiEditorController {
-    public markdownEditor: any;
+    public hubMarkdownEditor:any;
+    public wiki: IWiki;
 
-    static $inject = ['HomeService', '$mdDialog', '$mdMedia'];
-    constructor(private api:any, private $mdDialog, private $mdMedia) {
+    static $inject = ['HomeService', '$mdDialog', 'locals', '$timeout'];
+    constructor(private api:any, private $mdDialog, public locals, private $timeout) {
+        this.$timeout(() => {
+            this.hubMarkdownEditor = new SimpleMDE({ autoDownloadFA: false, element: angular.element('#markdown-area')[0] });
+        });
+
+        // Update if wiki is present
+        if (this.locals.wiki) {
+            // TODO updating a wiki, needs to get markdown
+        }
     }
 
-    public cancel(): void {
+    public cancel():void {
         this.$mdDialog.cancel();
+    }
+
+    public createWIki(wiki: IWiki):void {
+        wiki.content = this.hubMarkdownEditor.value();
+
+        var params = { componentId: this.locals.component.id, page: wiki.page, message: wiki.message};
+        var createWikiAction = { createWiki: { method: 'POST', headers: {'Content-Type': 'text/markdown'}}};
+
+        this.locals.component
+            .$links('wiki', params, createWikiAction)
+            .createWiki(null, wiki.content)
+            .$promise
+            .then(r => this.$mdDialog.hide(r))
+            .catch(WikiEditorController.promiseRejected);
+    }
+
+    public deleteWiki(wiki: string): void {
+
+    }
+
+    public updateWiki(): void {
+        if (this.locals.wiki) {
+
+        }
     }
 
     public static promiseRejected(reason):void {
@@ -42,5 +71,4 @@ class WikiEditorController {
 
 angular
     .module(module.angularModules)
-    .directive('hubMarkdownEditor', DirectiveFactory.getFactoryFor<HubMarkdowEditor>(HubMarkdowEditor))
     .controller('WikiEditorController', WikiEditorController);

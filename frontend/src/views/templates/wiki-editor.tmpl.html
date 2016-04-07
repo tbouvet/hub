@@ -2,7 +2,8 @@
     <form>
         <md-toolbar>
             <div class="md-toolbar-tools">
-                <h2>Create new wiki</h2>
+                <h2 ng-if="!$ctrl.locals.wiki">Create new wiki</h2>
+                <h2 ng-if="$ctrl.locals.wiki">Update wiki</h2>
                 <span flex></span>
                 <md-button class="md-icon-button" ng-click="$ctrl.cancel()">
                     <md-icon md-font-set="material-icons">close</md-icon>
@@ -12,19 +13,29 @@
         <md-dialog-content>
             <div class="md-dialog-content">
                 <md-input-container>
-                    <label for="wiki-name">Title</label>
-                    <input md-autofocus id="wiki-name" ng-model="$ctrl.newWikiTitle" required>
+                    <label for="wiki-page">Title</label>
+                    <input md-autofocus id="wiki-page" ng-model="$ctrl.wiki.page" required>
                 </md-input-container>
+                <md-input-container>
+                    <label for="wiki-message">Message</label>
+                    <input id="wiki-message" ng-model="$ctrl.wiki.message">
+                </md-input-container>
+                <md-button ng-if="$ctrl.locals.wiki" ng-click="$ctrl.deleteWiki($ctrl.wiki)" class="md-warn">
+                    Delete
+                </md-button>
                 <section>
                     <label for="markdown-area">
-                        <textarea hub-markdown-editor id="markdown-area" style="width:100%"></textarea>
+                        <textarea id="markdown-area" style="width:100%" required></textarea>
                     </label>
                 </section>
             </div>
         </md-dialog-content>
         <md-dialog-actions layout="row">
-            <md-button ng-click="$ctrl.createWiki()">
+            <md-button ng-click="$ctrl.createWIki($ctrl.wiki)" ng-if="!$ctrl.locals.wiki">
                 Create
+            </md-button>
+            <md-button ng-click="$ctrl.updateWIki($ctrl.wiki)" ng-if="$ctrl.locals.wiki">
+                Update
             </md-button>
         </md-dialog-actions>
     </form>

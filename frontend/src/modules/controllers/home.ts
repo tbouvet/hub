@@ -38,7 +38,7 @@ class HomeController {
         throw new Error(reason)
     }
 
-    public view(card: Card): void {
+    public viewCard(card: Card): void {
         this.location.path('hub/component/' + card.id);
     }
 }

@@ -110,7 +110,7 @@
       "templateUrl":"{hub}/views/component-details.html",
       "controller":"ComponentDetailsController as $ctrl"
     },
-    "/user": {
+    "/user/:name": {
       "templateUrl":"{hub}/views/user.html",
       "controller":"UserController as $ctrl"
     },

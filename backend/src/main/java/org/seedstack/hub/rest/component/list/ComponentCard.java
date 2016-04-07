@@ -11,6 +11,8 @@ import org.seedstack.hub.domain.model.component.State;
 import org.seedstack.hub.rest.shared.DocumentRepresentation;
 import org.seedstack.seed.rest.hal.HalRepresentation;
 
+import java.util.Date;
+
 public class ComponentCard extends HalRepresentation {
     private String id;
     private String name;
@@ -19,6 +21,9 @@ public class ComponentCard extends HalRepresentation {
     private int stars;
     private DocumentRepresentation icon;
     private State state;
+    private String releaseVersion;
+    private Date releaseDate;
+    private String releaseUrl;
 
     public ComponentCard() {
     }
@@ -81,5 +86,29 @@ public class ComponentCard extends HalRepresentation {
 
     public void setState(State state) {
         this.state = state;
+    }
+
+    public String getReleaseVersion() {
+        return releaseVersion;
+    }
+
+    public void setReleaseVersion(String releaseVersion) {
+        this.releaseVersion = releaseVersion;
+    }
+
+    public Date getReleaseDate() {
+        return releaseDate;
+    }
+
+    public void setReleaseDate(Date releaseDate) {
+        this.releaseDate = releaseDate;
+    }
+
+    public String getReleaseUrl() {
+        return releaseUrl;
+    }
+
+    public void setReleaseUrl(String releaseUrl) {
+        this.releaseUrl = releaseUrl;
     }
 }
