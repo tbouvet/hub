@@ -38,7 +38,7 @@ class UserMongoFinder extends AbstractMongoFinder implements UserFinder {
     private FluentAssembler fluentAssembler;
 
     @Override
-    public Result<ComponentCard> findUserCards(UserId user, Range range) {
+    public Result<ComponentCard> findUserComponents(UserId user, Range range) {
         Query<Component> query = datastore.find(Component.class).order("name");
 
         List<Criteria> criteria = addCriteriaForOwnerOrMaintainer(user.getId(), query);

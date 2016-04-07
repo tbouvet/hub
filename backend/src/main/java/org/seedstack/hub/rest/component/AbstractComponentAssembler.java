@@ -17,7 +17,7 @@ import org.seedstack.seed.rest.hal.HalRepresentation;
 
 import javax.inject.Inject;
 
-import static org.seedstack.hub.rest.Rels.AUTHOR_COMPONENTS;
+import static org.seedstack.hub.rest.Rels.USERS_COMPONENTS;
 import static org.seedstack.hub.rest.Rels.ORGANISATION;
 import static org.seedstack.hub.rest.component.detail.ComponentResource.COMPONENT_ID;
 import static org.seedstack.hub.rest.organisation.OrganisationResource.ORGANISATION_ID;
@@ -39,8 +39,8 @@ public abstract class AbstractComponentAssembler<T extends HalRepresentation> ex
 
         String owner = component.getOwner().toString();
         if (component.getOwner().isUser()) {
-            t.link(AUTHOR_COMPONENTS, relRegistry
-                    .uri(AUTHOR_COMPONENTS).set(USER_ID, owner));
+            t.link(USERS_COMPONENTS, relRegistry
+                    .uri(USERS_COMPONENTS).set(USER_ID, owner));
         } else {
             t.link(ORGANISATION, relRegistry
                     .uri(ORGANISATION).set(ORGANISATION_ID, owner));

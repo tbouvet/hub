@@ -31,7 +31,10 @@ public class DataLifecycleListener implements LifecycleListener {
         userRepository.persist(new User(new UserId("adrienlauer"), "adrien.lauer@mpsa.com"));
         userRepository.persist(new User(new UserId("pith"), "pierre.thirouin@ext.mpsa.com"));
         userRepository.persist(new User(new UserId("kavi87"), "kavi.ramyead@ext.mpsa.com"));
-        userRepository.persist(new User(new UserId("simple"), "simple@ext.mpsa.com"));
+
+        User simple = new User(new UserId("simple"), "simple@ext.mpsa.com");
+        simple.addEmail("simple@gmail.com");
+        userRepository.persist(simple);
 
         userRepository.persist(new User(new UserId("admin"), "admin@ext.mpsa.com"));
 
@@ -43,8 +46,5 @@ public class DataLifecycleListener implements LifecycleListener {
 
     @Override
     public void stopping() {
-        userRepository.delete(new UserId("adrienlauer"));
-        userRepository.delete(new UserId("pith"));
-        userRepository.delete(new UserId("kavi87"));
     }
 }
