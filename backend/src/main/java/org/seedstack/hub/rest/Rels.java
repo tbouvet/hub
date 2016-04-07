@@ -8,6 +8,7 @@
 package org.seedstack.hub.rest;
 
 public final class Rels {
+    /* Components */
     public static final String COMMENT = "comment";
     public static final String STATE = "state";
     public static final String COMPONENT = "component";
@@ -16,19 +17,31 @@ public final class Rels {
     public static final String RECENT = "recent";
     public static final String POPULAR = "popular";
     public static final String PENDING = "pending";
-    public static final String STARS = "stars";
+
+    /* Current user */
+    public static final String USER_COMPONENTS = "user/components";
     public static final String STAR = "star";
+    public static final String STARS = "stars";
     public static final String ICON = "icon";
     public static final String README = "readme";
     public static final String IMAGES = "images";
     public static final String DOCS = "docs";
     public static final String FILES = "files";
     public static final String WIKI = "wiki";
-    public static final String USER_COMPONENTS = "user/components";
-    public static final String AUTHOR_COMPONENTS = "author/components";
-    public static final String ORGANISATIONS = "organisations";
+
+    /* User */
+    public static final String USER = "user";
+    public static final String USERS_COMPONENTS = "users/components";
+    public static final String USERS_STARS = "users/stars";
+    public static final String USERS_ICON = "users/icon";
+
+    /* Organisations */
     public static final String ORGANISATION = "organisation";
+    public static final String ORGANISATIONS = "organisations";
+    public static final String ORGANISATION_COMPONENTS = "organisation/components";
     public static final String ORGANISATION_OWNERS = "organisation/owners";
     public static final String ORGANISATION_MEMBERS = "organisation/members";
-    public static final String ORGANISATION_COMPONENTS = "organisation/components";
+
+    /* Wiki */
+    public static final String REVISIONS = "revisions";
 }
