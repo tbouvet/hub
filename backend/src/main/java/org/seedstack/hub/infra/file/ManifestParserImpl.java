@@ -73,7 +73,7 @@ class ManifestParserImpl implements ManifestParser {
             return fileToCheck;
         }
 
-        throw new ComponentException("Missing manifest file for component located in " + repositoryDirectory);
+        throw new ComponentException("Missing manifest file");
     }
 
     private boolean containsReadme(File repositoryDirectory) {
