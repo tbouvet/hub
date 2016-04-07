@@ -5,20 +5,15 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
-package org.seedstack.hub.infra.vcs;
+package org.seedstack.hub.infra.proxy;
 
-import mockit.Injectable;
-import mockit.Mocked;
+import mockit.Deencapsulation;
 import mockit.NonStrictExpectations;
 import mockit.Tested;
 import mockit.integration.junit4.JMockit;
-import org.apache.commons.configuration.Configuration;
 import org.assertj.core.api.Assertions;
-import org.junit.After;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.seedstack.hub.application.ConfigurationException;
-import org.seedstack.seed.Application;
 
 import java.net.InetSocketAddress;
 import java.net.Proxy;
@@ -26,58 +21,30 @@ import java.net.URI;
 import java.util.List;
 
 @RunWith(JMockit.class)
-public class ProxySelectorServiceTest {
+public class ProxyLifecycleListenerTest {
 
     @Tested
-    private ProxySelectorService underTest;
-    @Injectable
-    private Application application;
-    @Mocked
-    private Configuration configuration;
+    private ProxyLifecycleListener underTest;
 
-    @After
-    public void tearDown() throws Exception {
-        if (underTest != null) {
-            underTest.stopping();
-        }
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void testBadUri() throws Exception {
-        underTest.select(null);
-    }
+//    @Test(expected = IllegalArgumentException.class)
+//    public void testBadUri() throws Exception {
+//        underTest.select(null);
+//    }
 
     @Test
     public void testWithNoProxy() throws Exception {
         givenProxy(null, null, null);
         underTest.started();
-        List<Proxy> select = underTest.select(new URI("http://localhost:42"));
+        List<Proxy> select = getHubProxySelector().select(new URI("http://localhost:42"));
         underTest.stopping();
         assertNoProxy(select);
-    }
-
-    @Test
-    public void testWithNoProxyDefault() throws Exception {
-        List<Proxy> select = underTest.select(new URI("http://localhost:42"));
-        assertNoProxy(select);
-    }
-
-    @Test
-    public void testConfigurationError() throws Exception {
-        givenProxy("HTTP", null, 8080);
-        try {
-            underTest.started();
-            Assertions.failBecauseExceptionWasNotThrown(ConfigurationException.class);
-        } catch (ConfigurationException e) {
-            Assertions.assertThat(e).hasMessage("Missing \"url\" in the proxy configuration.");
-        }
     }
 
     @Test
     public void testWithProxy() throws Exception {
         givenProxy("HTTP", "proxy.mycompany.com", 8080);
         underTest.started();
-        List<Proxy> select = underTest.select(new URI("http://app.otherdomain.com"));
+        List<Proxy> select = getHubProxySelector().select(new URI("http://app.otherdomain.com"));
         underTest.stopping();
         assertProxy(select, Proxy.Type.HTTP, "proxy.mycompany.com", 8080);
     }
@@ -86,7 +53,7 @@ public class ProxySelectorServiceTest {
     public void testProxyWithExclusion() throws Exception {
         givenProxy("HTTP", "proxy.mycompany.com", 8080, "*.mycompany.com");
         underTest.started();
-        List<Proxy> select = underTest.select(new URI("http://app.mycompany.com"));
+        List<Proxy> select = getHubProxySelector().select(new URI("http://app.mycompany.com"));
         underTest.stopping();
         assertNoProxy(select);
     }
@@ -95,7 +62,7 @@ public class ProxySelectorServiceTest {
     public void testProxyWithLocalhost() throws Exception {
         givenProxy("HTTP", "proxy.mycompany.com", 8080);
         underTest.started();
-        List<Proxy> select = underTest.select(new URI("http://localhost"));
+        List<Proxy> select = getHubProxySelector().select(new URI("http://localhost"));
         underTest.stopping();
         assertNoProxy(select);
     }
@@ -104,9 +71,9 @@ public class ProxySelectorServiceTest {
     public void testProxyWithMultipleExclusion() throws Exception {
         givenProxy("HTTP", "proxy.mycompany.com", 8080, "*.mycompany.com", "*.otherdomain.com");
         underTest.started();
-        List<Proxy> select1 = underTest.select(new URI("http://app.mycompany.com"));
-        List<Proxy> select2 = underTest.select(new URI("http://app.otherdomain.com"));
-        List<Proxy> select3 = underTest.select(new URI("http://app.yetanotherdomain.com"));
+        List<Proxy> select1 = getHubProxySelector().select(new URI("http://app.mycompany.com"));
+        List<Proxy> select2 = getHubProxySelector().select(new URI("http://app.otherdomain.com"));
+        List<Proxy> select3 = getHubProxySelector().select(new URI("http://app.yetanotherdomain.com"));
         underTest.stopping();
         assertNoProxy(select1);
         assertNoProxy(select2);
@@ -117,7 +84,7 @@ public class ProxySelectorServiceTest {
     public void testProxyWithExclusionNoMatch() throws Exception {
         givenProxy("HTTP", "proxy.mycompany.com", 8080, "*.mycompany.com");
         underTest.started();
-        List<Proxy> select = underTest.select(new URI("http://app.otherdomain.com"));
+        List<Proxy> select = getHubProxySelector().select(new URI("http://app.otherdomain.com"));
         underTest.stopping();
         assertProxy(select, Proxy.Type.HTTP, "proxy.mycompany.com", 8080);
     }
@@ -134,30 +101,37 @@ public class ProxySelectorServiceTest {
     }
 
     private void givenProxy(String type, String host, Integer port, String... exclusions) {
-        new NonStrictExpectations() {{
-            application.getConfiguration();
-            result = configuration;
+        if (type != null) {
+            if (type.equalsIgnoreCase("http")) {
+                new NonStrictExpectations(System.class) {{
+                    System.getenv("http_proxy");
+                    result = String.format("http://%s:%d", host, port);
 
-            configuration.isEmpty();
-            result = type == null && host == null && port == null;
+                    System.getenv("no_proxy");
+                    result = String.join(",", (CharSequence[]) exclusions);
+                }};
+            } else if (type.equalsIgnoreCase("https")) {
+                new NonStrictExpectations(System.class) {{
+                    System.getenv("https_proxy");
+                    result = String.format("https://%s:%d", host, port);
 
-            configuration.containsKey("type");
-            result = type != null;
-            configuration.getString("type");
-            result = type;
+                    System.getenv("no_proxy");
+                    result = String.join(",", (CharSequence[]) exclusions);
+                }};
+            }
+        } else {
+            new NonStrictExpectations(System.class) {{
+                System.getenv("http_proxy");
+                result = null;
+                System.getenv("https_proxy");
+                result = null;
+                System.getenv("no_proxy");
+                result = null;
+            }};
+        }
+    }
 
-            configuration.containsKey("host");
-            result = host != null;
-            configuration.getString("host");
-            result = host;
-
-            configuration.containsKey("port");
-            result = port != null;
-            configuration.getInt("port");
-            result = port;
-
-            configuration.getStringArray("exclusions");
-            result = exclusions != null ? exclusions : null;
-        }};
+    private HubProxySelector getHubProxySelector() {
+        return Deencapsulation.getField(underTest, "hubProxySelector");
     }
 }
