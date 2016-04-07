@@ -7,7 +7,12 @@
  */
 package org.seedstack.hub.application.fetch;
 
+import org.seedstack.hub.domain.model.component.Source;
+
 public class ImportException extends RuntimeException {
+
+    private Source source;
+
     public ImportException(String message, Throwable throwable) {
         super(message, throwable);
     }
@@ -18,5 +23,18 @@ public class ImportException extends RuntimeException {
 
     public ImportException(Throwable e) {
         super(e);
+    }
+
+    public ImportException(Throwable e, Source source) {
+        super(e);
+        this.source = source;
+    }
+
+    public void setSource(Source source) {
+        this.source = source;
+    }
+
+    public Source getSource() {
+        return source;
     }
 }
