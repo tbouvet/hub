@@ -60,17 +60,11 @@ public class ComponentsResource {
     public Response post(
             @FormParam("sourceType") @NotBlank @Length(max = 10) String vcs,
             @FormParam("sourceUrl") @URL @NotBlank String sourceUrl) {
-        try {
             Component component = importService.importComponent(new Source(SourceType.from(vcs), sourceUrl));
 
             ComponentCard componentCard = fluentAssembler.assemble(component).to(ComponentCard.class);
             URI componentURI = URI.create(relRegistry.uri(COMPONENT).set("componentId", componentCard.getId()).getHref());
             return Response.created(componentURI).entity(componentCard).build();
-
-        } catch (ImportException | ComponentException e) {
-            logger.error("Error during component import", e);
-            throw new WebApplicationException(e.getMessage(), 400);
-        }
     }
 
     @GET

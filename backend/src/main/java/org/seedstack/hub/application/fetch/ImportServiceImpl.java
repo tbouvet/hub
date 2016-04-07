@@ -39,18 +39,22 @@ class ImportServiceImpl implements ImportService {
 
     @Override
     public Component importComponent(Source source) {
-        FetchService fetchService = domainRegistry.getService(FetchService.class, source.getSourceType().qualifier());
-        FetchResult result = fetchService.fetch(source);
-        Component component = result.getComponent();
-        component.setSource(source);
         try {
-            checkCurrentUserOwns(component);
-            componentRepository.persist(component);
-            result.getDocuments().forEach(documentRepository::persist);
-        } finally {
-            fetchService.clean();
+            FetchService fetchService = domainRegistry.getService(FetchService.class, source.getSourceType().qualifier());
+            FetchResult result = fetchService.fetch(source);
+            Component component = result.getComponent();
+            component.setSource(source);
+            try {
+                checkCurrentUserOwns(component);
+                componentRepository.persist(component);
+                result.getDocuments().forEach(documentRepository::persist);
+            } finally {
+                fetchService.clean();
+            }
+            return component;
+        } catch (Exception e) {
+            throw new ImportException(e, source);
         }
-        return component;
     }
 
     @Override
@@ -67,7 +71,7 @@ class ImportServiceImpl implements ImportService {
         if (fetchService == null) {
             throw new ImportException("Unsupported source type: " + source.getSourceType());
         }
-        
+
         try {
             FetchResult result = fetchService.fetch(source);
 
@@ -76,6 +80,8 @@ class ImportServiceImpl implements ImportService {
 
             result.getDocuments().forEach(documentRepository::persist);
             componentRepository.persist(currentComponent);
+        } catch (Exception e) {
+            throw new ImportException(e, source);
         } finally {
             fetchService.clean();
         }
