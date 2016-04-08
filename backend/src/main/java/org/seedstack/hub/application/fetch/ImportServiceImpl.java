@@ -1,6 +1,6 @@
 /**
  * Copyright (c) 2015-2016, The SeedStack authors <http://seedstack.org>
- *
+ * <p>
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
@@ -52,6 +52,9 @@ class ImportServiceImpl implements ImportService {
                 fetchService.clean();
             }
             return component;
+        } catch (ImportException e) {
+            e.setSource(source);
+            throw e;
         } catch (Exception e) {
             throw new ImportException(e, source);
         }
@@ -80,6 +83,9 @@ class ImportServiceImpl implements ImportService {
 
             result.getDocuments().forEach(documentRepository::persist);
             componentRepository.persist(currentComponent);
+        } catch (ImportException e) {
+            e.setSource(source);
+            throw e;
         } catch (Exception e) {
             throw new ImportException(e, source);
         } finally {
