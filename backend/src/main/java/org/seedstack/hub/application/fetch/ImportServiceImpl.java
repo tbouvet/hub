@@ -52,6 +52,9 @@ class ImportServiceImpl implements ImportService {
                 fetchService.clean();
             }
             return component;
+        } catch (ImportException e) {
+            e.setSource(source);
+            throw e;
         } catch (Exception e) {
             throw new ImportException(e, source);
         }
@@ -80,6 +83,9 @@ class ImportServiceImpl implements ImportService {
 
             result.getDocuments().forEach(documentRepository::persist);
             componentRepository.persist(currentComponent);
+        } catch (ImportException e) {
+            e.setSource(source);
+            throw e;
         } catch (Exception e) {
             throw new ImportException(e, source);
         } finally {
