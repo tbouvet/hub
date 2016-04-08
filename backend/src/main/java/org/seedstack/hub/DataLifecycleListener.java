@@ -28,6 +28,7 @@ public class DataLifecycleListener implements LifecycleListener {
 
     @Override
     public void started() {
+        userRepository.persist(new User(new UserId("tb"), "thierry.bouvet@mpsa.com"));
         userRepository.persist(new User(new UserId("adrienlauer"), "adrien.lauer@mpsa.com"));
         userRepository.persist(new User(new UserId("pith"), "pierre.thirouin@ext.mpsa.com"));
         userRepository.persist(new User(new UserId("kavi87"), "kavi.ramyead@ext.mpsa.com"));

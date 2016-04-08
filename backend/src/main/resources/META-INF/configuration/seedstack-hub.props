@@ -22,6 +22,7 @@ release = 1.0.0
 
 [org.seedstack.seed.security.users]
 simple = password
+tb = password, admin
 adrienlauer = password, admin
 pith = password
 kavi87 = password, admin
