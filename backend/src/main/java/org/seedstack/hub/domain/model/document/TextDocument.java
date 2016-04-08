@@ -79,6 +79,6 @@ public class TextDocument extends Document {
 
     @Override
     public String toString() {
-        return String.format("TextDocument{id=%s, format=%s, charset=%s, size='%d'}", getId(), format, charset, text.length());
+        return String.format("TextDocument{id=%s, format=%s, charset=%s, size='%d'}", getId(), format, charset, text == null ? 0 : text.length());
     }
 }
