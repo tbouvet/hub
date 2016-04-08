@@ -28,9 +28,9 @@ public class UserCardsAssembler extends BaseAssembler<User, UserCard> {
         userCard.setEmails(user.getEmails());
 
         userCard.self(relRegistry.uri(Rels.USER).set(USER_NAME, id).expand());
-        userCard.link(Rels.USERS_ICON, relRegistry.uri(Rels.USERS_ICON).set(USER_NAME, id).expand());
-        userCard.link(Rels.USERS_COMPONENTS, relRegistry.uri(Rels.USERS_COMPONENTS).set(USER_NAME, id).expand());
-        userCard.link(Rels.USERS_STARS, relRegistry.uri(Rels.USERS_STARS).set(USER_NAME, id).expand());
+        userCard.link(Rels.USERS_ICON, relRegistry.uri(Rels.USERS_ICON).set(USER_NAME, id));
+        userCard.link(Rels.USERS_COMPONENTS, relRegistry.uri(Rels.USERS_COMPONENTS).set(USER_NAME, id));
+        userCard.link(Rels.USERS_STARS, relRegistry.uri(Rels.USERS_STARS).set(USER_NAME, id));
     }
 
     @Override

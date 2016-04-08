@@ -50,7 +50,7 @@ public class UserResource {
     @PathParam(USER_ID)
     private String userId;
 
-    @Rel(USER)
+    @Rel(value = USER, home = true)
     @GET
     @Produces({"application/json", "application/hal+json"})
     public UserCard get() {
