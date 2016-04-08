@@ -44,14 +44,6 @@ class UserController {
                     .catch(reason => {
                         UserController.promiseRejected(reason);
                     });
-
-                UserController.getUserIcon(user).$promise
-                    .then((icon: any) => {
-                        var icon = icon;
-                    })
-                    .catch(reason => {
-                        UserController.promiseRejected(reason);
-                    });
             })
             .catch(reason => {
                 UserController.promiseRejected(reason);
@@ -68,10 +60,6 @@ class UserController {
 
     public static getUserStarredComponents(user):IResource {
         return user.$links('users/stars').get();
-    }
-
-    public static getUserIcon(user):IResource {
-        return user.$links('users/icon').get();
     }
 
     public view(component:Component):void {

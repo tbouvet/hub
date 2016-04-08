@@ -8,24 +8,34 @@
         </div>
     </div>
 
-    <header layout="row" layout-align="start center">
-        <md-icon md-font-set="material-icons" style="margin: 0 10px">face</md-icon>
-        <h3 class="md-headline">{{ $ctrl.user.name }}</h3>
-
-        <div flex></div>
-        <div layout="row" layout-align="end center" layout-padding>
-            <div style="margin-right: 20px;">
-                <md-icon md-font-set="material-icons">star_rate</md-icon>
-                10
-            </div>
-            <div>
-                <md-icon md-font-set="material-icons">extension</md-icon>
-                10
-            </div>
-        </div>
-    </header>
-
     <section layout="row" layout-wrap layout-xs="column" layout-align="center center">
+        <md-content class="md-whiteframe-1dp" style="width: 100%">
+            <md-toolbar>
+                <div class="md-toolbar-tools">
+                    <img ng-src="{{ $ctrl.user._links['users/icon'].href }}" err-src="src/img/default-user.png" class="md-avatar user-profile-icon" alt="User icon"/>
+                    <h2>
+                        {{ $ctrl.user.name }}
+                    </h2>
+                    <div flex></div>
+                    <md-button ng-if="$ctrl.userIsOwner" ng-href="#!/hub/update-profile">Update profile</md-button>
+                </div>
+            </md-toolbar>
+            <md-content style="min-height: 85px; overflow-x: hidden;">
+                <div layout="row" layout-align="end center" layout-padding>
+                    <div style="margin-right: 20px;">
+                        <md-icon md-font-set="material-icons">star_rate</md-icon>
+                        10
+                    </div>
+                    <div>
+                        <md-icon md-font-set="material-icons">extension</md-icon>
+                        {{ $ctrl.userComponentsCount }}
+                    </div>
+                </div>
+            </md-content>
+        </md-content>
+
+        <div class="spacer"></div>
+
         <md-content class="md-whiteframe-1dp" style="width: 100%">
             <md-toolbar>
                 <div class="md-toolbar-tools">
@@ -57,22 +67,21 @@
                                 <div class="md-list-item-text" layout="column" flex>
                                     <h3>{{ userComponent.name }} </h3>
                                     <h4>{{ userComponent.summary }}</h4>
-                                    <span show-xs hide-gt-xs>{{ userComponent.state }}</span>
+                                    <span show-xs hide-gt-xs ng-if="$ctrl.userIsOwner">{{ userComponent.state }}</span>
                                 </div>
                                 <div class="md-list-item-text" layout="row" hide-xs flex layout-align="end center" hide-xs>
-                                    <span ng-if="userComponent.releaseVersion">
-                                        <md-icon md-font-set="material-icons" style="margin:5px 10px">change_history</md-icon> {{ userComponent.releaseVersion }}
+                                    <span ng-if="$ctrl.userIsOwner && userComponent.state === 'PENDING'" style="margin: 10px;">
+                                        <md-tooltip>
+                                            Waiting for approval...
+                                        </md-tooltip>
+                                        <md-progress-circular md-mode="indeterminate"></md-progress-circular>
                                     </span>
                                     <span>
-                                        <md-icon md-font-set="material-icons" style="margin:5px 10px">star_rate</md-icon> {{ userComponent.stars }}
+                                        {{ userComponent.releaseVersion || 'Unreleased' }}
                                     </span>
-                                    <span ng-if="$ctrl.userIsOwner">
-                                        <md-icon ng-if="userComponent.state === 'PENDING'" md-font-set="material-icons" style="margin:10px">hourglass_empty</md-icon>
-                                        <md-icon ng-if="userComponent.state === 'PUBLISHED'" md-font-set="material-icons" style="margin:10px">verified_user</md-icon>
-                                        <md-icon ng-if="userComponent.state === 'ARCHIVED'" md-font-set="material-icons" style="margin:10px">archive</md-icon>
-                                        <span>{{ userComponent.state }}</span>
+                                    <span style="margin: 10px;">
+                                        <md-icon md-font-set="material-icons">star_rate</md-icon> {{ userComponent.stars }}
                                     </span>
-
                                 </div>
                             </md-list-item>
                         </md-list>
