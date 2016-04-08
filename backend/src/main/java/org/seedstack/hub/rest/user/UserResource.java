@@ -91,7 +91,7 @@ public class UserResource {
     @GET
     @Path("icon")
     public byte[] getIcon() {
-        User user = securityService.getAuthenticatedUser();
+        User user = userRepository.findByName(userId).orElseThrow(NotFoundException::new);
         byte[] icon = user.getIcon();
         if (icon == null) {
             throw new NotFoundException();
