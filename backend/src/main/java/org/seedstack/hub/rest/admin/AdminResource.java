@@ -1,12 +1,13 @@
 /**
  * Copyright (c) 2015-2016, The SeedStack authors <http://seedstack.org>
- *
+ * <p>
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 package org.seedstack.hub.rest.admin;
 
+import org.seedstack.hub.application.fetch.ImportException;
 import org.seedstack.hub.application.fetch.ImportService;
 import org.seedstack.hub.domain.model.component.Component;
 import org.seedstack.hub.domain.model.component.Source;
@@ -27,10 +28,15 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.ResponseBuilder;
 import java.time.Duration;
 import java.util.List;
+import java.util.Objects;
+import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 
+import static javax.ws.rs.core.Response.Status.ACCEPTED;
+import static javax.ws.rs.core.Response.Status.BAD_REQUEST;
 import static org.seedstack.hub.rest.Rels.IMPORT_LIST;
 
 @Path("/admin")
@@ -51,19 +57,32 @@ public class AdminResource {
     @Consumes({"application/json"})
     public Response importList(List<Source> sources) {
         long startTime = System.currentTimeMillis();
-
-        List<ComponentCard> componentCards = sources.parallelStream()
-                .map(source -> {
-                    logger.info("importing " + source.getUrl());
-                    Component component = importService.importComponent(source);
-                    logger.info("imported " + source.getUrl());
-                    return component;
-                })
-                .map(assembler::assembleDtoFromAggregate)
-                .collect(Collectors.toList());
+        final ImportReport importReport = new ImportReport();
+        Executors.newWorkStealingPool().submit(() ->
+                importReport.setComponentCards(
+                        sources.parallelStream()
+                                .map(source -> {
+                                    Component component = null;
+                                    try {
+                                        component = importService.importComponent(source);
+                                    } catch (ImportException e) {
+                                        importReport.addFailedSource(e);
+                                    }
+                                    return component;
+                                }).filter(Objects::nonNull)
+                                .map(assembler::assembleDtoFromAggregate)
+                                .collect(Collectors.toList())
+                )
+        );
 
         long stopTime = System.currentTimeMillis();
         logger.info(Duration.ofMillis(stopTime - startTime).toString());
-        return Response.ok().entity(componentCards).build();
+        ResponseBuilder response;
+        if (importReport.getFailedSources().isEmpty()) {
+            response = Response.ok();
+        } else {
+            response = Response.status(ACCEPTED);
+        }
+        return response.entity(importReport).build();
     }
 }

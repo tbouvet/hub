@@ -289,7 +289,7 @@
                 <version>2.2.1</version>
                 <executions>
                     <execution>
-                        <id>attach-sources</id>
+                        <id>attach-failedSources</id>
                         <goals>
                             <goal>jar-no-fork</goal>
                         </goals>
