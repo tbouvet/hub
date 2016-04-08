@@ -9,12 +9,17 @@ package org.seedstack.hub.infra.github;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import org.seedstack.hub.application.fetch.Manifest;
+import org.seedstack.hub.application.fetch.NotFoundException;
 import org.seedstack.hub.application.fetch.ReleaseDTO;
 import org.seedstack.hub.domain.model.component.Component;
 import org.seedstack.hub.domain.model.component.ComponentFactory;
 import org.seedstack.hub.domain.model.component.ComponentId;
 import org.seedstack.hub.domain.model.component.Source;
-import org.seedstack.hub.domain.model.document.*;
+import org.seedstack.hub.domain.model.document.Document;
+import org.seedstack.hub.domain.model.document.DocumentFactory;
+import org.seedstack.hub.domain.model.document.DocumentId;
+import org.seedstack.hub.domain.model.document.DocumentScope;
+import org.seedstack.hub.domain.model.document.TextFormat;
 import org.seedstack.hub.domain.services.fetch.FetchException;
 import org.seedstack.hub.domain.services.fetch.FetchResult;
 import org.seedstack.hub.domain.services.fetch.FetchService;
@@ -28,6 +33,7 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.util.Objects;
 import java.util.stream.Stream;
 
 @Named("github")
@@ -51,17 +57,27 @@ class GithubFetchService implements FetchService {
         addReleasesToManifest(manifest);
         Component component = componentFactory.createComponent(manifest);
 
-        Document icon = fetchAndSaveIcon(manifest);
-        component.setDescription(component.getDescription().changeIcon(icon.getId()));
+        Document icon = null;
+        try {
+            icon = fetchAndSaveIcon(manifest);
+            component.setDescription(component.getDescription().changeIcon(icon.getId()));
+        } catch (NotFoundException e) {
+            // some components don't have an icon
+        }
 
-        Document readme = fetchAndSaveReadme(manifest);
-        component.setDescription(component.getDescription().setReadme(readme.getId()));
+        Document readme = null;
+        try {
+            readme = fetchAndSaveReadme(manifest);
+            component.setDescription(component.getDescription().setReadme(readme.getId()));
+        } catch (NotFoundException e) {
+            // some components don't have a readme
+        }
 
-        return new FetchResult(component, Stream.of(icon, readme));
+        return new FetchResult(component, Stream.of(icon, readme).filter(Objects::nonNull));
     }
 
     private Manifest importComponentFromGithub(String organisationName, String componentName) {
-        JsonNode jsonComponent =  githubClient.getRepo(organisationName, componentName);
+        JsonNode jsonComponent = githubClient.getRepo(organisationName, componentName);
 
         Manifest manifest = new Manifest();
         manifest.setOwner(getOwnerName(jsonComponent));

@@ -7,6 +7,7 @@
  */
 package org.seedstack.hub.infra.proxy;
 
+import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import org.seedstack.seed.LifecycleListener;
 
@@ -27,9 +28,9 @@ class ProxyLifecycleListener implements LifecycleListener {
 
     @Override
     public void started() {
-        String http_proxy = System.getenv("http_proxy");
-        String https_proxy = System.getenv("https_proxy");
-        String noProxy = System.getenv("no_proxy");
+        String http_proxy = getenv("http_proxy");
+        String https_proxy = getenv("https_proxy");
+        String noProxy = getenv("no_proxy");
 
         hubProxySelector = new HubProxySelector(
                 buildProxy(http_proxy, 80),
@@ -45,6 +46,14 @@ class ProxyLifecycleListener implements LifecycleListener {
 
         ProxySelector.setDefault(hubProxySelector);
         Authenticator.setDefault(hubProxyAuthenticator);
+    }
+
+    private String getenv(String variable) {
+        String value = System.getenv(variable);
+        if (Strings.isNullOrEmpty(value)) {
+            value = System.getenv(variable.toUpperCase());
+        }
+        return value;
     }
 
     @Override
@@ -64,16 +73,18 @@ class ProxyLifecycleListener implements LifecycleListener {
         String[] httpProxyInfo = parseProxy(value, String.valueOf(defaultPort));
         if (httpProxyInfo != null) {
             return new Proxy(Proxy.Type.HTTP, new InetSocketAddress(httpProxyInfo[0], Integer.parseInt(httpProxyInfo[1])));
+        } else {
+            return Proxy.NO_PROXY;
         }
-        return null;
     }
 
     private PasswordAuthentication buildPasswordAuthentication(String value) {
         String[] httpCredentials = parseCredentials(value);
         if (httpCredentials != null) {
             return new PasswordAuthentication(httpCredentials[0], httpCredentials[1].toCharArray());
+        } else {
+            return null;
         }
-        return null;
     }
 
     /**
