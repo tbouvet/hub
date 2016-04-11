@@ -32,7 +32,7 @@ enabled = true
 property.supportedMethods= GET\\, POST\\, HEAD\\, OPTIONS\\, PUT\\, DELETE
 
 [org.seedstack.mongodb.client.main]
-hosts = localhost
+hosts = ${sys:mongoHosts}
 databases = hub
 
 [org.seedstack.hub.domain.model.*]
