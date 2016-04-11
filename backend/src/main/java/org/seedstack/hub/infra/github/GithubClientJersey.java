@@ -64,11 +64,25 @@ class GithubClientJersey implements GithubClient {
         Response response = get(path, organisation, repository, mediaType);
         if (response.getStatus() == 200) {
             return response.readEntity(String.class);
+        } else if (response.getStatus() == 403) {
+            String message = getErrorMessage(response);
+            throw new QuotaExceededException(message);
         } else if (response.getStatus() == 404) {
             throw new NotFoundException(String.format("Not found: %s", path));
         } else {
             throw new ImportException("Bad HTTP status: " + response.getStatus());
         }
+    }
+
+    private String getErrorMessage(Response response) {
+        ObjectMapper objectMapper = new ObjectMapper();
+        String message;
+        try {
+            message = objectMapper.readTree(response.readEntity(String.class)).get("message").asText();
+        } catch (IOException e) {
+            throw new ImportException(e);
+        }
+        return message;
     }
 
     private Response get(String path, String organisation, String repository, MediaType mediaType) {
