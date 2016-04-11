@@ -19,7 +19,7 @@ backend/pom.xml.next
 backend/release.properties
 backend/src/main/resources/META-INF/resources/
 backend/**/proxy.props
-backend/**/docker.override.props
+backend/**/seedstack-hub.override.props
 
 # Frontend
 frontend/bower_components/
