@@ -1,22 +1,33 @@
 <div id="component-detail-wiki" layout-padding layout="row" layout-xs="column" style="padding: 0">
     <div id="component-detail-wiki-page" flex="70" flex-xs="100" flex-order-xs="2">
         <md-content class="md-whiteframe-1dp inherit-background" flex layout-padding style="padding: 0">
-            <div class="markdown-body" ng-include="$ctrl.activeWikiURL"></div>
+            <div layout="row" layout-align="end center">
+                <md-button ng-click="$ctrl.editWiki($ctrl.activeWiki)"><i class="fa fa-pencil"></i> Edit </md-button>
+            </div>
+            <div class="markdown-body" ng-include="$ctrl.activeWiki"></div>
         </md-content>
     </div>
     <div flex="30" flex-xs="100" layout-align="end center" layout-align-xs="center" flex-order-xs="1">
         <aside id="component-detail-wiki-list" layout="column" flex-xs="100">
-              <section>
+            <section>
                 <md-content class="md-whiteframe-1dp" style="overflow: hidden; background-color: inherit">
-                    <md-subheader class="md-no-sticky" style="background-color: inherit"> Wiki pages </md-subheader>
-                    <md-button aria-label="Manage component" ng-click="$ctrl.openWikiCreation()">
-                        <md-icon md-font-set="material-icons">note_add</md-icon> Add
-                    </md-button>
+                    <div layout="row" layout-align="end">
+                        <md-button ng-click="$ctrl.openWikiCreation()"
+                                   aria-label="Manage component">
+                            <i class="fa fa-plus"></i> Add
+                        </md-button>
+                    </div>
+                    <md-subheader class="md-no-sticky" style="background-color: inherit">
+                        Wiki pages
+                    </md-subheader>
                     <md-list>
-                        <md-list-item ng-repeat="wikiName in $ctrl.component.wikiPages">
-                            <md-button data-ng-click="$ctrl.setWikiPage(wikiName)"
-                                       ng-class="$ctrl.activeWikiName === wikiName ? 'md-primary' : 'md-accent'">
-                                <i class="fa fa-file-text-o"></i> {{ wikiName }}
+                        <md-list-item ng-repeat="wiki in $ctrl.component.$embedded('wiki')">
+                            <md-button data-ng-click="$ctrl.setActiveWiki(wiki._links.self.href)"
+                                       ng-class="$ctrl.activeWiki === wiki._links.self.href ? 'md-primary' : 'md-accent'"
+                                       layout="row" layout-align="start center" flex>
+                                <span>
+                                    <i class="fa fa-file-text-o"></i> {{ wiki._links.self.href | displayDocName }}
+                                </span>
                             </md-button>
                         </md-list-item>
                     </md-list>

@@ -74,6 +74,10 @@
       "path": "{hub}/modules/controllers/user",
       "autoload": true
     },
+    "update-profile": {
+      "path": "{hub}/modules/controllers/update-profile",
+      "autoload": true
+    },
     "administration": {
       "path": "{hub}/modules/controllers/administration",
       "autoload": true
@@ -110,9 +114,13 @@
       "templateUrl":"{hub}/views/component-details.html",
       "controller":"ComponentDetailsController as $ctrl"
     },
-    "/user": {
+    "/user/:id": {
       "templateUrl":"{hub}/views/user.html",
       "controller":"UserController as $ctrl"
+    },
+    "/update-profile": {
+      "templateUrl":"{hub}/views/update-profile.html",
+      "controller":"UserUpdateController as $ctrl"
     },
     "/admin": {
       "templateUrl":"{hub}/views/administration.html",

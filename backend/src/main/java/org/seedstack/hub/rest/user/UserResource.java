@@ -50,7 +50,7 @@ public class UserResource {
     @PathParam(USER_ID)
     private String userId;
 
-    @Rel(USER)
+    @Rel(value = USER, home = true)
     @GET
     @Produces({"application/json", "application/hal+json"})
     public UserCard get() {
@@ -91,7 +91,7 @@ public class UserResource {
     @GET
     @Path("icon")
     public byte[] getIcon() {
-        User user = securityService.getAuthenticatedUser();
+        User user = userRepository.findByName(userId).orElseThrow(NotFoundException::new);
         byte[] icon = user.getIcon();
         if (icon == null) {
             throw new NotFoundException();

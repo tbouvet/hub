@@ -10,7 +10,28 @@
         <md-divider></md-divider>
         <p class="md-headline">For developers to share components</p>
     </section>
-    <section ng-if="$ctrl.popularComponents.length > 0 && $ctrl.recentComponents.length > 0">
+    <section ng-if="$ctrl.recentComponents.length">
+        <header layout="column">
+            <h3 class="md-title muted">Recent</h3>
+        </header>
+        <section layout="row" layout-wrap layout-xs="column" layout-align="start center">
+            <md-content class="md-whiteframe-1dp" flex>
+                <md-list style="padding: 0">
+                    <md-list-item ng-repeat-start="card in $ctrl.recentComponents" ng-click="$ctrl.viewCard(card)" class="md-2-line">
+                        <img ng-src="{{ card.icon }}" err-src="src/img/default-component.png" style="width: 45px; margin-right: 10px">
+                        <div class="md-list-item-text" layout="column">
+                            <h3>{{ card.name }}</h3>
+                            <h4 ng-if="card.releaseVersion">
+                                {{ card.owner }} has published release {{ card.releaseVersion }} on {{ card.releaseDate | date }}
+                            </h4>
+                        </div>
+                    </md-list-item>
+                    <md-divider ng-repeat-end></md-divider>
+                </md-list>
+            </md-content>
+        </section>
+    </section>
+    <section ng-if="$ctrl.popularComponents.length">
         <header layout="column">
             <div layout="row">
                 <h3 class="md-title muted">Popular</h3>
@@ -23,13 +44,7 @@
             </div>
         </header>
         <section layout="row" layout-wrap layout-xs="column" layout-align="start center">
-            <hub-card ng-repeat="card in $ctrl.popularComponents" card="card" on-click="$ctrl.view(card)"></hub-card>
-        </section>
-        <header layout="column">
-            <h3 class="md-title muted">Recent</h3>
-        </header>
-        <section layout="row" layout-wrap layout-xs="column" layout-align="start center">
-            <hub-card ng-repeat="card in $ctrl.recentComponents" card="card" on-click="$ctrl.view(card)"></hub-card>
+            <hub-card ng-repeat="card in $ctrl.popularComponents" card="card" on-click="$ctrl.viewCard(card)"></hub-card>
         </section>
     </section>
     <section ng-if="!($ctrl.popularComponents.length > 0) && !($ctrl.recentComponents.length > 0)">

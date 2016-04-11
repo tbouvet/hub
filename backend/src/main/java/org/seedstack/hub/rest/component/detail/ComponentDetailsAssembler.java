@@ -86,5 +86,6 @@ public class ComponentDetailsAssembler extends AbstractComponentAssembler<Compon
             componentDetails.link(Rels.STAR, relRegistry.uri(Rels.STAR).set(COMPONENT_ID, component.getId().getName()));
         }
         componentDetails.link(Rels.COMMENT, relRegistry.uri(Rels.COMMENT).set(COMPONENT_ID, component.getId().getName()).templated());
+        componentDetails.link(Rels.WIKI, relRegistry.uri(Rels.WIKI).set(COMPONENT_ID, component.getId().getName()).templated());
     }
 }

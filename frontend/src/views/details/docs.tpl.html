@@ -11,12 +11,17 @@
         <aside id="component-detail-docs-list" layout="column" flex-xs="100">
             <section>
                 <md-content class="md-whiteframe-1dp" style="overflow: hidden; background-color: inherit">
-                    <md-subheader class="md-no-sticky" style="background-color: inherit"> Documents </md-subheader>
+                    <md-subheader class="md-no-sticky" style="background-color: inherit">
+                        Documents
+                    </md-subheader>
                     <md-list>
                         <md-list-item ng-repeat="doc in $ctrl.component.$embedded('docs')">
-                            <md-button data-ng-click="$ctrl.setActiveDoc(doc)"
-                                       ng-class="$ctrl.activeDoc === doc ? 'md-primary' : 'md-accent'">
-                                <i class="fa fa-file-text-o"></i> {{ doc | displayDocName }}
+                            <md-button data-ng-click="$ctrl.setActiveDoc(doc._links.self.href)"
+                                       ng-class="$ctrl.activeDoc === doc._links.self.href ? 'md-primary' : 'md-accent'"
+                                       layout="row" layout-align="start center" flex>
+                                <span>
+                                    <i class="fa fa-file-text-o"></i> {{ doc._links.self.href | displayDocName }}
+                                </span>
                             </md-button>
                         </md-list-item>
                     </md-list>
