@@ -8,6 +8,7 @@
 package org.seedstack.hub.rest.shared;
 
 import org.seedstack.hub.domain.model.document.DocumentId;
+import org.seedstack.hub.domain.services.document.DocumentService;
 import org.seedstack.hub.rest.Rels;
 import org.seedstack.seed.rest.RelRegistry;
 import org.seedstack.seed.rest.hal.HalRepresentation;
@@ -15,8 +16,8 @@ import org.seedstack.seed.rest.hal.HalRepresentation;
 public class DocumentRepresentation extends HalRepresentation {
     private String title;
 
-    public DocumentRepresentation(DocumentId documentId, RelRegistry relRegistry) {
-        this.title = buildTitle(documentId);
+    public DocumentRepresentation(DocumentId documentId, DocumentService documentService, RelRegistry relRegistry) {
+        this.title = documentService.buildTitle(documentId);
         switch (documentId.getScope()) {
             case FILES:
                 self(relRegistry
@@ -44,28 +45,4 @@ public class DocumentRepresentation extends HalRepresentation {
         this.title = title;
     }
 
-    private String buildTitle(DocumentId documentId) {
-        String path = documentId.getPath();
-        if (path == null) {
-            return "Untitled";
-        }
-
-        int lastSlash = path.lastIndexOf('/');
-        if (lastSlash != -1) {
-            path = path.substring(lastSlash + (lastSlash == path.length() - 1 ? 0 : 1));
-        }
-
-        int lastDot = path.lastIndexOf('.');
-        if (lastDot != -1) {
-            path = path.substring(0, lastDot);
-        }
-
-        if (path.length() > 0) {
-            path = path.substring(0, 1).toUpperCase() + path.substring(1);
-        } else {
-            path = "Untitled";
-        }
-
-        return path;
-    }
 }

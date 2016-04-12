@@ -5,9 +5,12 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
-package org.seedstack.hub.domain.model.document;
+package org.seedstack.hub.domain.services.document;
 
-import org.seedstack.business.domain.GenericRepository;
+import org.seedstack.business.Service;
+import org.seedstack.hub.domain.model.document.DocumentId;
 
-public interface DocumentRepository extends GenericRepository<Document, DocumentId> {
+@Service
+public interface DocumentService {
+    String buildTitle(DocumentId documentId);
 }

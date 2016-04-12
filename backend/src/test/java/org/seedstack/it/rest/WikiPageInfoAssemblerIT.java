@@ -10,11 +10,14 @@ package org.seedstack.it.rest;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.seedstack.hub.MockBuilder;
+import org.seedstack.hub.rest.Rels;
 import org.seedstack.hub.rest.document.WikiPageInfo;
 import org.seedstack.hub.rest.document.WikiPageInfoAssembler;
+import org.seedstack.hub.rest.document.WikiPageRevision;
 import org.seedstack.seed.it.SeedITRunner;
 
 import javax.inject.Inject;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -25,12 +28,18 @@ public class WikiPageInfoAssemblerIT {
     private WikiPageInfoAssembler assembler;
 
     @Test
+    @SuppressWarnings("unchecked")
     public void testAssemble() throws Exception {
         WikiPageInfo wikiPageInfo = assembler.assembleDtoFromAggregate(MockBuilder.mockWikiDocument(MockBuilder.mock(1), "page1", "a", "b", "c"));
         assertThat(wikiPageInfo).isNotNull();
-        assertThat(wikiPageInfo.getRevisions()).hasSize(3);
-        assertThat(wikiPageInfo.getRevisions().get(0).getMessage()).isEqualTo("rev0");
-        assertThat(wikiPageInfo.getRevisions().get(1).getMessage()).isEqualTo("rev1");
-        assertThat(wikiPageInfo.getRevisions().get(2).getMessage()).isEqualTo("rev2");
+        assertThat(getRevisions(wikiPageInfo)).hasSize(3);
+        assertThat(getRevisions(wikiPageInfo).get(0).getMessage()).isEqualTo("rev0");
+        assertThat(getRevisions(wikiPageInfo).get(1).getMessage()).isEqualTo("rev1");
+        assertThat(getRevisions(wikiPageInfo).get(2).getMessage()).isEqualTo("rev2");
+    }
+
+    @SuppressWarnings("unchecked")
+    private List<WikiPageRevision> getRevisions(WikiPageInfo wikiPageInfo) {
+        return (List<WikiPageRevision>) wikiPageInfo.getEmbedded().get(Rels.WIKI_REVISIONS);
     }
 }

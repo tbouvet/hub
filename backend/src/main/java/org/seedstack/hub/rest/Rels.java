@@ -18,8 +18,7 @@ public final class Rels {
     public static final String POPULAR = "popular";
     public static final String PENDING = "pending";
 
-    /* Current user */
-    public static final String USER_COMPONENTS = "user/components";
+    /* Current component */
     public static final String STAR = "star";
     public static final String STARS = "stars";
     public static final String ICON = "icon";
@@ -31,6 +30,7 @@ public final class Rels {
 
     /* User */
     public static final String USER = "user";
+    public static final String USER_COMPONENTS = "user/components";
     public static final String USERS_COMPONENTS = "users/components";
     public static final String USERS_STARS = "users/stars";
     public static final String USERS_ICON = "users/icon";
@@ -43,5 +43,8 @@ public final class Rels {
     public static final String ORGANISATION_MEMBERS = "organisation/members";
 
     /* Wiki */
-    public static final String REVISIONS = "revisions";
+    public static final String WIKI_INFO = "info";
+    public static final String WIKI_REVISIONS = "revisions";
+    public static final String WIKI_REVISION = "revision";
+    public static final String WIKI_REVISION_DIFF = "diff";
 }

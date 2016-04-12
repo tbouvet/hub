@@ -10,10 +10,9 @@ package org.seedstack.hub.domain.model.document;
 import org.mongodb.morphia.annotations.Embedded;
 import org.seedstack.business.domain.BaseValueObject;
 import org.seedstack.hub.domain.model.user.UserId;
-import org.seedstack.hub.rest.shared.Dates;
+import org.seedstack.hub.shared.Dates;
 
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Date;
 

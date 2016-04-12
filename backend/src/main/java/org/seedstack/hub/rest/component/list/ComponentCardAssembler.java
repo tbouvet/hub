@@ -10,7 +10,7 @@ package org.seedstack.hub.rest.component.list;
 import org.seedstack.hub.domain.model.component.Component;
 import org.seedstack.hub.domain.model.component.Release;
 import org.seedstack.hub.rest.component.AbstractComponentAssembler;
-import org.seedstack.hub.rest.shared.Dates;
+import org.seedstack.hub.shared.Dates;
 import org.seedstack.hub.rest.shared.DocumentRepresentation;
 
 import java.util.List;
@@ -22,7 +22,7 @@ public class ComponentCardAssembler extends AbstractComponentAssembler<Component
         componentCard.setId(component.getId().getName());
         componentCard.setName(component.getName());
         componentCard.setSummary(component.getDescription().getSummary());
-        componentCard.setIcon(new DocumentRepresentation(component.getDescription().getIcon(), relRegistry));
+        componentCard.setIcon(new DocumentRepresentation(component.getDescription().getIcon(), documentService, relRegistry));
         componentCard.setOwner(component.getOwner().toString());
         componentCard.setStars(component.getStars());
         componentCard.setState(component.getState());

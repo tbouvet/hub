@@ -8,7 +8,7 @@
 package org.seedstack.hub.rest.component.detail;
 
 import org.seedstack.hub.domain.model.component.Release;
-import org.seedstack.hub.rest.shared.Dates;
+import org.seedstack.hub.shared.Dates;
 
 import java.util.Date;
 

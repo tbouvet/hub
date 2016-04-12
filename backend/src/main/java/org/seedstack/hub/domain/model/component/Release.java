@@ -19,8 +19,8 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.Date;
 
-import static org.seedstack.hub.rest.shared.Dates.asDate;
-import static org.seedstack.hub.rest.shared.Dates.asLocalDateTime;
+import static org.seedstack.hub.shared.Dates.asDate;
+import static org.seedstack.hub.shared.Dates.asLocalDateTime;
 
 @Embedded
 public class Release extends BaseEntity<Version> implements Comparable<Release> {

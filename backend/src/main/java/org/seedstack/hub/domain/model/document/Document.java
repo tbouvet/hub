@@ -28,6 +28,7 @@ public abstract class Document extends BaseAggregateRoot<DocumentId> {
     private DocumentId documentId;
     @NotNull
     private String contentType;
+    private String title;
 
     /**
      * Creates a document from an identifier and a content type.
@@ -65,5 +66,25 @@ public abstract class Document extends BaseAggregateRoot<DocumentId> {
      */
     public String getContentType() {
         return contentType;
+    }
+
+    /**
+     * @return the title of the document.
+     */
+    public String getTitle() {
+        if (title != null) {
+            return title;
+        } else {
+            return documentId.buildDefaultTitle();
+        }
+    }
+
+    /**
+     * Sets a new title for the document.
+     *
+     * @param title the new title.
+     */
+    public void setTitle(String title) {
+        this.title = title;
     }
 }

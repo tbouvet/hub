@@ -21,12 +21,21 @@ import org.seedstack.seed.rest.RelRegistry;
 import org.seedstack.seed.rest.hal.HalRepresentation;
 
 import javax.inject.Inject;
-import javax.ws.rs.*;
+import javax.ws.rs.BeanParam;
+import javax.ws.rs.DELETE;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
 import java.net.URI;
 import java.net.URISyntaxException;
 
-import static org.seedstack.hub.rest.Rels.*;
+import static org.seedstack.hub.rest.Rels.COMPONENTS;
+import static org.seedstack.hub.rest.Rels.STAR;
+import static org.seedstack.hub.rest.Rels.STARS;
+import static org.seedstack.hub.rest.Rels.USER_COMPONENTS;
 
 @Api
 @Path("/user")
@@ -75,7 +84,7 @@ public class CurrentUserResource {
     @Path("/stars/{componentId}")
     public Response starComponent(@PathParam("componentId") String componentId) throws URISyntaxException {
         starringService.star(new ComponentId(componentId));
-        return Response.created(new URI(relRegistry.uri(STAR).set("componentId", componentId).expand())).build();
+        return Response.created(new URI(relRegistry.uri(STAR).set("componentId", componentId).getHref())).build();
     }
 
     @Rel(STAR)

@@ -20,6 +20,7 @@ import org.seedstack.hub.application.StarringService;
 import org.seedstack.hub.application.StatePolicy;
 import org.seedstack.hub.domain.model.component.Component;
 import org.seedstack.hub.domain.model.component.State;
+import org.seedstack.hub.domain.services.document.DocumentService;
 import org.seedstack.hub.rest.Rels;
 import org.seedstack.hub.rest.component.detail.ComponentDetails;
 import org.seedstack.hub.rest.component.detail.ComponentDetailsAssembler;
@@ -36,6 +37,8 @@ public class AbstractComponentAssemblerTest {
     private StatePolicy statePolicy;
     @Injectable
     private StarringService starringService;
+    @Injectable
+    private DocumentService documentService;
     @Mocked
     private Component component;
 

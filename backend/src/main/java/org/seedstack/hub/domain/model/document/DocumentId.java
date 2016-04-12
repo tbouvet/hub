@@ -83,6 +83,33 @@ public class DocumentId extends BaseValueObject {
         return path;
     }
 
+    /**
+     * @return the default title of the document based on its path.
+     */
+    public String buildDefaultTitle() {
+        if (path == null) {
+            return "Untitled";
+        }
+
+        int lastSlash = path.lastIndexOf('/');
+        if (lastSlash != -1) {
+            path = path.substring(lastSlash + (lastSlash == path.length() - 1 ? 0 : 1));
+        }
+
+        int lastDot = path.lastIndexOf('.');
+        if (lastDot != -1) {
+            path = path.substring(0, lastDot);
+        }
+
+        if (path.length() > 0) {
+            path = path.substring(0, 1).toUpperCase() + path.substring(1);
+        } else {
+            path = "Untitled";
+        }
+
+        return path;
+    }
+
     @Override
     public String toString() {
         return UriBuilder.uri(componentId.toString(), path);

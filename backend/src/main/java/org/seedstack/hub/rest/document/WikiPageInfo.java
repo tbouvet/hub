@@ -9,47 +9,24 @@ package org.seedstack.hub.rest.document;
 
 import org.seedstack.seed.rest.hal.HalRepresentation;
 
-import java.util.Date;
-import java.util.List;
-
 public class WikiPageInfo extends HalRepresentation {
-    private List<Revision> revisions;
+    private String title;
+    private String source;
 
-    public List<Revision> getRevisions() {
-        return revisions;
+    public String getTitle() {
+        return title;
     }
 
-    public void setRevisions(List<Revision> revisions) {
-        this.revisions = revisions;
+    public void setTitle(String title) {
+        this.title = title;
     }
 
-    public static class Revision extends HalRepresentation {
-        private Date date;
-        private String author;
-        private String message;
-
-        public Date getDate() {
-            return date;
-        }
-
-        public void setDate(Date date) {
-            this.date = date;
-        }
-
-        public String getAuthor() {
-            return author;
-        }
-
-        public void setAuthor(String author) {
-            this.author = author;
-        }
-
-        public String getMessage() {
-            return message;
-        }
-
-        public void setMessage(String message) {
-            this.message = message;
-        }
+    public String getSource() {
+        return source;
     }
+
+    public void setSource(String source) {
+        this.source = source;
+    }
+
 }

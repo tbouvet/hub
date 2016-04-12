@@ -53,13 +53,13 @@ public class ComponentDetailsAssembler extends AbstractComponentAssembler<Compon
                 componentDetails.setIssues(description.getIssues().toString());
             }
             if (description.getIcon() != null) {
-                componentDetails.embedded(Rels.ICON, new DocumentRepresentation(description.getIcon(), relRegistry));
+                componentDetails.embedded(Rels.ICON, new DocumentRepresentation(description.getIcon(), documentService, relRegistry));
             }
             if (description.getReadme() != null) {
-                componentDetails.embedded(Rels.README, new DocumentRepresentation(description.getReadme(), relRegistry));
+                componentDetails.embedded(Rels.README, new DocumentRepresentation(description.getReadme(), documentService, relRegistry));
             }
             if (!description.getImages().isEmpty()) {
-                componentDetails.embedded(Rels.IMAGES, description.getImages().stream().map(documentId -> new DocumentRepresentation(documentId, relRegistry)).collect(toList()));
+                componentDetails.embedded(Rels.IMAGES, description.getImages().stream().map(documentId -> new DocumentRepresentation(documentId, documentService, relRegistry)).collect(toList()));
             }
         }
     }
@@ -74,10 +74,10 @@ public class ComponentDetailsAssembler extends AbstractComponentAssembler<Compon
 
     private void assembleEmbedded(ComponentDetails componentDetails, Component component) {
         if (!component.getDocs().isEmpty()) {
-            componentDetails.embedded(Rels.DOCS, component.getDocs().stream().map(documentId -> new DocumentRepresentation(documentId, relRegistry)).collect(toList()));
+            componentDetails.embedded(Rels.DOCS, component.getDocs().stream().map(documentId -> new DocumentRepresentation(documentId, documentService, relRegistry)).collect(toList()));
         }
         if (!component.getWikiPages().isEmpty()) {
-            componentDetails.embedded(Rels.WIKI, component.getWikiPages().stream().map(documentId -> new DocumentRepresentation(documentId, relRegistry)).collect(toList()));
+            componentDetails.embedded(Rels.WIKI, component.getWikiPages().stream().map(documentId -> new DocumentRepresentation(documentId, documentService, relRegistry)).collect(toList()));
         }
     }
 

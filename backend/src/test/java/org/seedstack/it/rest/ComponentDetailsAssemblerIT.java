@@ -12,6 +12,7 @@ import org.junit.runner.RunWith;
 import org.seedstack.hub.domain.model.component.Component;
 import org.seedstack.hub.domain.model.component.State;
 import org.seedstack.hub.MockBuilder;
+import org.seedstack.hub.domain.services.document.DocumentService;
 import org.seedstack.hub.rest.Rels;
 import org.seedstack.hub.rest.component.detail.ComponentDetails;
 import org.seedstack.hub.rest.component.detail.ComponentDetailsAssembler;
@@ -31,6 +32,8 @@ public class ComponentDetailsAssemblerIT {
     @Inject
     private ComponentDetailsAssembler assembler;
     @Inject
+    private DocumentService documentService;
+    @Inject
     private RelRegistry relRegistry;
 
     @WithUser(id = "admin", password = "password")
@@ -42,10 +45,10 @@ public class ComponentDetailsAssemblerIT {
         assertThat(detail.getId()).isEqualTo("Component2");
         assertThat(detail.getName()).isEqualTo("Component 2");
         DocumentRepresentation icon = (DocumentRepresentation) detail.getEmbedded().get("icon");
-        assertThat(icon.getLink("self")).isEqualTo(new DocumentRepresentation(componentMock.getDescription().getIcon(), relRegistry).getLink("self"));
+        assertThat(icon.getLink("self")).isEqualTo(new DocumentRepresentation(componentMock.getDescription().getIcon(), documentService, relRegistry).getLink("self"));
         assertThat(icon.getTitle()).isEqualTo("Icon");
         DocumentRepresentation readme = (DocumentRepresentation) detail.getEmbedded().get("readme");
-        assertThat(readme.getLink("self")).isEqualTo(new DocumentRepresentation(componentMock.getDescription().getReadme(), relRegistry).getLink("self"));
+        assertThat(readme.getLink("self")).isEqualTo(new DocumentRepresentation(componentMock.getDescription().getReadme(), documentService, relRegistry).getLink("self"));
         assertThat(readme.getTitle()).isEqualTo("Readme");
         assertThat(detail.getSummary()).isEqualTo("A little summary.");
         assertThat(detail.getOwner()).isEqualTo("adrienlauer");

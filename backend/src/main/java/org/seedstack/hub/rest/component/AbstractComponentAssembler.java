@@ -11,6 +11,7 @@ import org.seedstack.business.assembler.BaseAssembler;
 import org.seedstack.hub.application.StatePolicy;
 import org.seedstack.hub.domain.model.component.Component;
 import org.seedstack.hub.domain.model.component.State;
+import org.seedstack.hub.domain.services.document.DocumentService;
 import org.seedstack.hub.rest.Rels;
 import org.seedstack.seed.rest.RelRegistry;
 import org.seedstack.seed.rest.hal.HalRepresentation;
@@ -26,6 +27,8 @@ import static org.seedstack.hub.rest.user.UserResource.USER_ID;
 public abstract class AbstractComponentAssembler<T extends HalRepresentation> extends BaseAssembler<Component, T> {
     @Inject
     protected RelRegistry relRegistry;
+    @Inject
+    protected DocumentService documentService;
     @Inject
     private StatePolicy statePolicy;
 

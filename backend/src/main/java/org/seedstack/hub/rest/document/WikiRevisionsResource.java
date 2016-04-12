@@ -8,7 +8,6 @@
 package org.seedstack.hub.rest.document;
 
 import io.swagger.annotations.Api;
-import org.seedstack.business.assembler.FluentAssembler;
 import org.seedstack.business.domain.Repository;
 import org.seedstack.hub.domain.model.component.ComponentId;
 import org.seedstack.hub.domain.model.document.Document;
@@ -16,7 +15,9 @@ import org.seedstack.hub.domain.model.document.DocumentException;
 import org.seedstack.hub.domain.model.document.DocumentId;
 import org.seedstack.hub.domain.model.document.DocumentScope;
 import org.seedstack.hub.domain.model.document.WikiDocument;
-import org.seedstack.hub.rest.shared.Dates;
+import org.seedstack.hub.rest.Rels;
+import org.seedstack.hub.shared.Dates;
+import org.seedstack.seed.rest.Rel;
 
 import javax.inject.Inject;
 import javax.ws.rs.BadRequestException;
@@ -32,12 +33,10 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
 @Api
-@Path("/components/{componentId}/wiki/{page}")
+@Path("/components/{componentId}/wiki/{page}/revisions")
 public class WikiRevisionsResource {
     @Inject
     private Repository<Document, DocumentId> documentRepository;
-    @Inject
-    private FluentAssembler fluentAssembler;
     @Context
     private UriInfo uriInfo;
     @Context
@@ -48,22 +47,16 @@ public class WikiRevisionsResource {
     private String page;
 
     @GET
-    @Path("/revisions")
+    @Path("/{revisionId}")
     @Produces({"application/json", "application/hal+json"})
-    public Response getRevisions() {
-        return Response.ok(fluentAssembler.assemble(getWikiDocument()).to(WikiPageInfo.class)).build();
-    }
-
-    @GET
-    @Path("/revisions/{revisionId}")
-    @Produces({"application/json", "application/hal+json"})
+    @Rel(Rels.WIKI_REVISION)
     public Response getRevision(@PathParam("revisionId") int revisionId) {
         org.seedstack.hub.domain.model.document.Revision revision = getWikiDocument().getRevision(revisionId);
         if (revision == null) {
             throw new NotFoundException("Revision of wiki page " + page + " for component " + componentId + " not found: " + revisionId);
         }
 
-        WikiPageInfo.Revision wikiPageRevision = new WikiPageInfo.Revision();
+        WikiPageRevision wikiPageRevision = new WikiPageRevision();
         wikiPageRevision.setMessage(revision.getMessage());
         wikiPageRevision.setDate(Dates.asDate(revision.getDate()));
         wikiPageRevision.setAuthor(revision.getAuthor().getId());
@@ -72,8 +65,9 @@ public class WikiRevisionsResource {
     }
 
     @GET
-    @Path("/revisions/{revisionId}/diff")
-    @Produces({"application/json", "application/hal+json"})
+    @Path("/{revisionId}/diff")
+    @Produces("text/html")
+    @Rel(Rels.WIKI_REVISION_DIFF)
     public Response getDiff(@PathParam("revisionId") int revisionId) {
         try {
             return Response.ok(getWikiDocument().diff(revisionId - 1, revisionId, true)).build();

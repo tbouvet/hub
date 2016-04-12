@@ -57,25 +57,25 @@ public class WikiResourceIT extends AbstractSeedWebIT {
     @RunAsClient
     @Test
     public void create_wiki_page() throws JSONException {
-        httpPost("components/Component1/wiki/page1", "# Hello World\n", "creation");
+        httpPost("components/Component1/wiki", "Page1", "# Hello World\\n", "creation");
         assertThat(httpGet("components/Component1/wiki/page1", 200).asString()).isEqualTo("<h1><a></a>Hello World</h1>");
-        assertEquals("{\"revisions\":[{\"author\":\"adrienlauer\",\"message\":\"creation\"}]}", httpGet("components/Component1/wiki/page1/revisions", 200).asString(), false);
+        assertEquals("{\"_embedded\":{\"revisions\":[{\"author\":\"adrienlauer\",\"message\":\"creation\"}]}}}", httpGet("components/Component1/wiki/page1/info", 200).asString(), false);
         assertEquals("{\"_embedded\":{\"wiki\":[{\"title\":\"Page1\",\"_links\":{\"self\":{\"href\":\"" + baseURL.getPath() + "components/Component1/wiki/page1\"}}}]}}", httpGet("components/Component1", 200).asString(), false);
     }
 
     @RunAsClient
     @Test
     public void update_wiki_page() throws JSONException {
-        httpPost("components/Component1/wiki/page2", "# Hello World\n", "creation");
-        httpPut("components/Component1/wiki/page2", "# Hello World!\n", "update");
+        httpPost("components/Component1/wiki", "page2", "# Hello World\\n", "creation");
+        httpPut("components/Component1/wiki/page2", "# Hello World!\\n", "update");
         assertThat(httpGet("components/Component1/wiki/page2", 200).asString()).isEqualTo("<h1><a></a>Hello World!</h1>");
-        assertEquals("{\"revisions\":[{\"author\":\"adrienlauer\",\"message\":\"creation\"},{\"author\":\"adrienlauer\",\"message\":\"update\"}]}\n", httpGet("components/Component1/wiki/page2/revisions", 200).asString(), false);
+        assertEquals("{\"_embedded\":{\"revisions\":[{\"author\":\"adrienlauer\",\"message\":\"creation\"},{\"author\":\"adrienlauer\",\"message\":\"update\"}]}}", httpGet("components/Component1/wiki/page2/info", 200).asString(), false);
     }
 
     @RunAsClient
     @Test
     public void delete_wiki_page() throws JSONException {
-        httpPost("components/Component1/wiki/page3", "# Hello World\n", "creation");
+        httpPost("components/Component1/wiki", "page3", "# Hello World\\n", "creation");
         assertThat(httpGet("components/Component1/wiki/page3", 200).asString()).isEqualTo("<h1><a></a>Hello World</h1>");
         httpDelete("components/Component1/wiki/page3");
         httpGet("components/Component1/wiki/page3", 404);
@@ -84,7 +84,7 @@ public class WikiResourceIT extends AbstractSeedWebIT {
     @RunAsClient
     @Test
     public void get_revision_details() throws JSONException {
-        httpPost("components/Component1/wiki/page4", "# Hello World\n", "creation");
+        httpPost("components/Component1/wiki", "page4", "# Hello World\\n", "creation");
         assertThat(httpGet("components/Component1/wiki/page4", 200).asString()).isEqualTo("<h1><a></a>Hello World</h1>");
         assertEquals("{\"author\":\"adrienlauer\",\"message\":\"creation\"}", httpGet("components/Component1/wiki/page4/revisions/0", 200).asString(), false);
     }
@@ -92,9 +92,9 @@ public class WikiResourceIT extends AbstractSeedWebIT {
     @RunAsClient
     @Test
     public void diff_two_revisions() throws JSONException {
-        httpPost("components/Component1/wiki/page5", "# Hello World\n", "creation");
-        httpPut("components/Component1/wiki/page5", "# Hello World!\n", "update");
-        httpPut("components/Component1/wiki/page5", "# Hello World?\n", "update");
+        httpPost("components/Component1/wiki", "page5", "# Hello World\\n", "creation");
+        httpPut("components/Component1/wiki/page5", "# Hello World!\\n", "update");
+        httpPut("components/Component1/wiki/page5", "# Hello World?\\n", "update");
         assertThat(httpGet("components/Component1/wiki/page5", 200).asString()).isEqualTo("<h1><a></a>Hello World?</h1>");
         assertThat(httpGet("components/Component1/wiki/page5/revisions/2/diff", 200).asString()).isEqualTo("<span># Hello World</span><del style=\"background:#ffe6e6;\">!</del><ins style=\"background:#e6ffe6;\">?</ins><span>&para;<br></span>");
     }
@@ -108,25 +108,25 @@ public class WikiResourceIT extends AbstractSeedWebIT {
                 .get(baseURL.toString() + path);
     }
 
-    private Response httpPost(String path, String body, String message) {
+    private Response httpPost(String path, String title, String contents, String message) {
         return expect()
                 .statusCode(201)
                 .given()
                 .auth().basic("adrienlauer", "password")
-                .header("Content-Type", "text/markdown")
+                .header("Content-Type", "application/json")
                 .queryParam("message", message)
-                .body(body)
+                .body("{\"title\": \"" + title + "\", \"source\": \"" + contents + "\"}")
                 .post(baseURL.toString() + path);
     }
 
-    private Response httpPut(String path, String body, String message) {
+    private Response httpPut(String path, String contents, String message) {
         return expect()
                 .statusCode(200)
                 .given()
                 .auth().basic("adrienlauer", "password")
-                .header("Content-Type", "text/markdown")
+                .header("Content-Type", "application/json")
                 .queryParam("message", message)
-                .body(body)
+                .body("{\"source\": \"" + contents + "\"}")
                 .put(baseURL.toString() + path);
     }
 
@@ -135,7 +135,6 @@ public class WikiResourceIT extends AbstractSeedWebIT {
                 .statusCode(200)
                 .given()
                 .auth().basic("adrienlauer", "password")
-                .header("Content-Type", "text/markdown")
                 .delete(baseURL.toString() + path);
     }
 
