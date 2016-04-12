@@ -16,10 +16,10 @@ import org.seedstack.business.finder.Result;
 import org.seedstack.hub.application.fetch.ImportException;
 import org.seedstack.hub.application.fetch.ImportService;
 import org.seedstack.hub.domain.model.component.Component;
-import org.seedstack.hub.domain.model.component.ComponentException;
 import org.seedstack.hub.domain.model.component.Source;
 import org.seedstack.hub.domain.model.component.State;
 import org.seedstack.hub.domain.services.fetch.SourceType;
+import org.seedstack.hub.rest.admin.ImportReport;
 import org.seedstack.hub.rest.shared.RangeInfo;
 import org.seedstack.hub.rest.shared.ResultHal;
 import org.seedstack.seed.Logging;
@@ -60,11 +60,19 @@ public class ComponentsResource {
     public Response post(
             @FormParam("sourceType") @NotBlank @Length(max = 10) String vcs,
             @FormParam("sourceUrl") @URL @NotBlank String sourceUrl) {
-            Component component = importService.importComponent(new Source(SourceType.from(vcs), sourceUrl));
-
+        final ImportReport importReport = new ImportReport();
+        Component component = null;
+        try {
+            component = importService.importComponent(new Source(SourceType.from(vcs), sourceUrl));
             ComponentCard componentCard = fluentAssembler.assemble(component).to(ComponentCard.class);
             URI componentURI = URI.create(relRegistry.uri(COMPONENT).set("componentId", componentCard.getId()).getHref());
-            return Response.created(componentURI).entity(componentCard).build();
+            importReport.addComponentCard(componentCard);
+            return Response.created(componentURI).entity(importReport).build();
+        } catch (ImportException e) {
+            logger.debug(e.getMessage(), e);
+            importReport.addFailedSource(e);
+            return Response.status(Response.Status.BAD_REQUEST).entity(importReport).build();
+        }
     }
 
     @GET

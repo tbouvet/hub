@@ -19,7 +19,7 @@ public class ImportReport {
 
     private List<ComponentCard> componentCards = new ArrayList<>();
 
-    private Map<String, String> failedSources = new HashMap<>();
+    private Map<String, List<String>> failedSources = new HashMap<>();
 
     public List<ComponentCard> getComponentCards() {
         return componentCards;
@@ -29,11 +29,21 @@ public class ImportReport {
         this.componentCards = componentCards;
     }
 
-    public Map<String, String> getFailedSources() {
+    public Map<String, List<String>> getFailedSources() {
         return failedSources;
     }
 
     public void addFailedSource(ImportException exception){
-        failedSources.put(exception.getSource().getUrl(), exception.getMessage());
+        List<String> messages = new ArrayList<>();
+        if(exception.getViolations()!=null && !exception.getViolations().isEmpty()){
+            exception.getViolations().forEach(violation -> messages.add(violation));
+        }else{
+            messages.add(exception.getMessage());
+        }
+        failedSources.put(exception.getSource().getUrl(), messages);
+    }
+
+    public void addComponentCard(ComponentCard componentCard){
+        componentCards.add(componentCard);
     }
 }

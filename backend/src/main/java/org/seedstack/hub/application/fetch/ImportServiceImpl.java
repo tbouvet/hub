@@ -21,7 +21,10 @@ import org.seedstack.seed.Logging;
 import org.slf4j.Logger;
 
 import javax.inject.Inject;
+import javax.validation.ConstraintViolation;
+import javax.validation.Validator;
 import javax.ws.rs.NotFoundException;
+import java.util.Set;
 
 class ImportServiceImpl implements ImportService {
 
@@ -36,6 +39,8 @@ class ImportServiceImpl implements ImportService {
     private Repository<Component, ComponentId> componentRepository;
     @Inject
     private Repository<Document, DocumentId> documentRepository;
+    @Inject
+    private Validator validator;
 
     @Override
     public Component importComponent(Source source) {
@@ -43,6 +48,7 @@ class ImportServiceImpl implements ImportService {
             FetchService fetchService = domainRegistry.getService(FetchService.class, source.getSourceType().qualifier());
             FetchResult result = fetchService.fetch(source);
             Component component = result.getComponent();
+            componentValidation(component);
             component.setSource(source);
             try {
                 checkCurrentUserOwns(component);
@@ -77,7 +83,7 @@ class ImportServiceImpl implements ImportService {
 
         try {
             FetchResult result = fetchService.fetch(source);
-
+            componentValidation(result.getComponent());
             currentComponent.getAllDocs().forEach(documentRepository::delete);
             currentComponent.mergeWith(result.getComponent());
 
@@ -92,6 +98,17 @@ class ImportServiceImpl implements ImportService {
             fetchService.clean();
         }
         return currentComponent;
+    }
+
+    private void componentValidation(Component component) {
+        Set<ConstraintViolation<Component>> constraints = validator.validate(component);
+        if (constraints != null && !constraints.isEmpty()) {
+            ImportException importException = new ImportException("Component validation error");
+            constraints.forEach(constraint ->
+                    importException.addViolation("Component validation error for attribute : " + constraint.getPropertyPath() + " : " + constraint.getMessage())
+            );
+            throw importException;
+        }
     }
 
     private Component loadComponentOrFail(ComponentId componentId) {

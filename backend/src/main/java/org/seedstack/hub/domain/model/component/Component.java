@@ -23,6 +23,7 @@ public class Component extends BaseAggregateRoot<ComponentId> {
     @Id
     @NotNull
     private ComponentId componentId;
+    @NotNull
     private String name;
     @NotNull
     private Owner owner;

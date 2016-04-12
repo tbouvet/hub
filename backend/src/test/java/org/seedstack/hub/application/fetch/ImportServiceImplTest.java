@@ -25,6 +25,7 @@ import org.seedstack.hub.domain.services.fetch.FetchResult;
 import org.seedstack.hub.domain.services.fetch.FetchService;
 import org.seedstack.hub.domain.services.fetch.SourceType;
 
+import javax.validation.Validator;
 import java.net.URL;
 import java.util.stream.Stream;
 
@@ -48,7 +49,8 @@ public class ImportServiceImplTest {
     private Repository<Component, ComponentId> componentRepository;
     @Injectable
     private Repository<Document, DocumentId> documentRepository;
-
+    @Injectable
+    private Validator validator;
     @Mocked
     private FetchService fetchService;
     @Mocked
