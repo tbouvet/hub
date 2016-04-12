@@ -22,7 +22,7 @@ import javax.validation.constraints.NotNull;
  * A base class for all document types.
  */
 @Entity("documents")
-public abstract class Document extends BaseAggregateRoot<DocumentId> {
+public class Document extends BaseAggregateRoot<DocumentId> {
     @Id
     @NotNull
     private DocumentId documentId;
