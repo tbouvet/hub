@@ -9,9 +9,14 @@ package org.seedstack.hub.application.fetch;
 
 import org.seedstack.hub.domain.model.component.Source;
 
+import java.util.ArrayList;
+import java.util.Collection;
+
 public class ImportException extends RuntimeException {
 
     private Source source;
+
+    private Collection<String> violations = new ArrayList<>();
 
     public ImportException(String message, Throwable throwable) {
         super(message, throwable);
@@ -36,5 +41,17 @@ public class ImportException extends RuntimeException {
 
     public Source getSource() {
         return source;
+    }
+
+    public void addViolation(String violation){
+        violations.add(violation);
+    }
+
+    public void setViolations(Collection<String> violations) {
+        this.violations = violations;
+    }
+
+    public Collection<String> getViolations() {
+        return violations;
     }
 }

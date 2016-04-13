@@ -18,10 +18,7 @@ import org.seedstack.seed.security.RequiresRoles;
 import org.slf4j.Logger;
 
 import javax.inject.Inject;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 import java.time.Duration;
@@ -70,7 +67,7 @@ public class AdminResource {
                                 .collect(Collectors.toList())
                 )
         );
-        ResponseBuilder response = null;
+        ResponseBuilder response = Response.noContent();
         try {
             if (future.get() == null) {
                 long stopTime = System.currentTimeMillis();
@@ -82,7 +79,7 @@ public class AdminResource {
                 }
             }
         } catch (InterruptedException | ExecutionException e) {
-            throw new ImportException(e);
+            throw new InternalServerErrorException(new ImportException(e));
         }
         return response.entity(importReport).build();
     }
