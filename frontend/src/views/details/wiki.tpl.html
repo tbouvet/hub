@@ -4,7 +4,7 @@
             <div style="float: right" layout="row" layout-align="end center">
                 <md-button ng-click="$ctrl.editWiki($ctrl.activeWiki)"><i class="fa fa-pencil"></i> Edit </md-button>
             </div>
-            <div class="markdown-body" ng-include="$ctrl.activeWiki"></div>
+            <div class="markdown-body" ng-include="$ctrl.activeWiki._links.self.href"></div>
         </md-content>
         <header ng-if="!$ctrl.component.$embedded('wiki').length" layout="column" layout-align="center center">
             <h3 class="md-title muted">No Wiki available</h3>
@@ -29,8 +29,8 @@
                     </md-subheader>
                     <md-list>
                         <md-list-item ng-repeat="wiki in $ctrl.component.$embedded('wiki')">
-                            <md-button data-ng-click="$ctrl.setActiveWiki(wiki._links.self.href)"
-                                       ng-class="$ctrl.activeWiki === wiki._links.self.href ? 'md-primary' : 'md-accent'"
+                            <md-button data-ng-click="$ctrl.setActiveWiki(wiki)"
+                                       ng-class="$ctrl.activeWiki._links.self.href === wiki._links.self.href ? 'md-primary' : 'md-accent'"
                                        layout="row" layout-align="start center" flex>
                                 <span>
                                     <i class="fa fa-file-text-o"></i> {{ wiki._links.self.href | displayDocName }}

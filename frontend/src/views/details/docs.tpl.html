@@ -1,7 +1,7 @@
 <div id="component-detail-docs" layout-padding layout="row" layout-xs="column" style="padding: 0">
     <div id="component-detail-doc" flex="70" flex-xs="100" flex-order-xs="2">
         <md-content class="md-whiteframe-1dp inherit-background" flex style="padding: 0">
-            <div class="markdown-body" ng-include="$ctrl.activeDoc"></div>
+            <div class="markdown-body" ng-include="$ctrl.activeDoc._links.self.href"></div>
         </md-content>
         <header ng-if="!$ctrl.component.$embedded('docs').length" layout="column" layout-align="center center">
             <h3 class="md-title muted">No documents available</h3>
@@ -16,8 +16,8 @@
                     </md-subheader>
                     <md-list>
                         <md-list-item ng-repeat="doc in $ctrl.component.$embedded('docs')">
-                            <md-button data-ng-click="$ctrl.setActiveDoc(doc._links.self.href)"
-                                       ng-class="$ctrl.activeDoc === doc._links.self.href ? 'md-primary' : 'md-accent'"
+                            <md-button data-ng-click="$ctrl.setActiveDoc(doc)"
+                                       ng-class="$ctrl.activeDoc._links.self.href === doc._links.self.href ? 'md-primary' : 'md-accent'"
                                        layout="row" layout-align="start center" flex>
                                 <span>
                                     <i class="fa fa-file-text-o"></i> {{ doc._links.self.href | displayDocName }}
