@@ -26,7 +26,7 @@
         <div id="component-detail-actions" layout-wrap layout-xs="row" layout-align-xs="center center" style="margin-top: 20px">
             <md-icon ng-if="$ctrl.component.state ==='PUBLISHED'" md-font-set="material-icons">visibility</md-icon>
             <md-icon ng-if="$ctrl.component.state ==='ARCHIVED'" md-font-set="material-icons">visibility_off</md-icon>
-            <md-progress-circular ng-if="$ctrl.component.state ==='PENDING'" md-mode="indeterminate"></md-progress-circular>
+            <md-icon ng-if="$ctrl.component.state ==='PENDING'" md-font-set="material-icons">hourglass_empty</md-icon>
             {{ $ctrl.component.state }}
             <md-button ng-if="$ctrl.component.isStarred" ng-click="$ctrl.rateComponent($ctrl.component)" aria-label="Star" title="unstar this component">
                 <md-icon md-font-set="material-icons">star_rate</md-icon> {{ $ctrl.component.stars }}
@@ -50,7 +50,7 @@
                         </md-button>
                     </md-menu-item>
                     <md-menu-item>
-                        <md-button ng-click="$ctrl.delete($ctrl.component)">
+                        <md-button ng-click="$ctrl.deleteComponent($ctrl.component)">
                             <md-icon md-font-set="material-icons">delete_forever</md-icon> Delete
                         </md-button>
                     </md-menu-item>
@@ -66,12 +66,12 @@
         </div>
     </div>
     <div flex layout="row" layout-align="start center" layout-align-xs="center center" layout-wrap>
-        <md-button ng-class="$ctrl.detailsView === 'identity' ? 'md-primary' : 'md-accent'" ng-click="$ctrl.detailsView = 'identity'">Info</md-button>
-        <md-button ng-class="$ctrl.detailsView === 'docs' ? 'md-primary' : 'md-accent'" ng-click="$ctrl.detailsView = 'docs'">Docs</md-button>
-        <md-button ng-class="$ctrl.detailsView === 'wiki' ? 'md-primary' : 'md-accent'" ng-click="$ctrl.detailsView = 'wiki'">Wiki</md-button>
-        <md-button ng-class="$ctrl.detailsView === 'source' ? 'md-primary' : 'md-accent'" ng-click="$ctrl.detailsView = 'sources'">Source</md-button>
-        <md-button ng-class="$ctrl.detailsView === 'issues' ? 'md-primary' : 'md-accent'" ng-click="$ctrl.detailsView = 'issues'">Issues</md-button>
-        <md-button ng-class="$ctrl.detailsView === 'help' ? 'md-primary' : 'md-accent'" ng-click="$ctrl.detailsView = 'help'">Help</md-button>
+        <md-button ng-class="$ctrl.detailsView === 'identity' ? 'md-primary' : 'md-accent'" ng-click="$ctrl.navigateToTab('identity')">Info</md-button>
+        <md-button ng-class="$ctrl.detailsView === 'docs' ? 'md-primary' : 'md-accent'" ng-click="$ctrl.navigateToTab('docs')">Docs</md-button>
+        <md-button ng-class="$ctrl.detailsView === 'wiki' ? 'md-primary' : 'md-accent'" ng-click="$ctrl.navigateToTab('wiki')">Wiki</md-button>
+        <md-button ng-class="$ctrl.detailsView === 'source' ? 'md-primary' : 'md-accent'" ng-click="$ctrl.navigateToTab('sources')">Source</md-button>
+        <md-button ng-class="$ctrl.detailsView === 'issues' ? 'md-primary' : 'md-accent'" ng-click="$ctrl.navigateToTab('issues')">Issues</md-button>
+        <md-button ng-class="$ctrl.detailsView === 'help' ? 'md-primary' : 'md-accent'" ng-click="$ctrl.navigateToTab('help')">Help</md-button>
     </div>
     <section ng-switch="$ctrl.detailsView">
         <div ng-switch-when="identity">

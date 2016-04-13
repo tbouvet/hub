@@ -23,7 +23,8 @@ html, body  {
 }
 
 #sidebar {
-    margin-top: 65px;
+    margin-top: 64px;
+    position: absolute;
     button {
         text-align: left !important;
     }
@@ -36,10 +37,14 @@ html, body  {
     }
 }
 
+md-backdrop.md-sidenav-backdrop{
+    opacity: 0 !important;
+}
+
 #view {
     height: 100%;
     background-color: #fafafa; /* #fafafa or #EEEEEE ? */
-    padding-left: 18%;
+    padding-left: 220px;
     padding-right: 18%;
 }
 
@@ -120,16 +125,13 @@ md-tabs {
     transition: none;
 }
 
-@media screen and (min-width: 987px) {
-    md-backdrop.md-sidenav-backdrop{
-        display:none
-    }
-}
-
-
-@media screen and (max-width: 987px) {
+@media screen and (max-width: 960px) {
     #view {
         padding: 0;
+    }
+
+    #sidebar {
+        margin-top: 56px;
     }
 }
 

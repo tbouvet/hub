@@ -112,7 +112,8 @@
     },
     "/component/:id": {
       "templateUrl":"{hub}/views/component-details.html",
-      "controller":"ComponentDetailsController as $ctrl"
+      "controller":"ComponentDetailsController as $ctrl",
+      "reloadOnSearch": false
     },
     "/user/:id": {
       "templateUrl":"{hub}/views/user.html",
@@ -133,10 +134,14 @@
     "paths": {
       "{smooth-scroll}": "${components-path:bower_components}/smoothscroll-for-websites",
       "{simplemde}": "${components-path:bower_components}/simplemde/debug",
+      "{ng-file-upload}": "${components-path:bower_components}/ng-file-upload",
+      "{ng-img-crop}": "${components-path:bower_components}/ng-img-crop/compile/minified",
       "{angular-messages}": "${components-path:bower_components}/angular-messages"
     },
     "shim": {
-      "{angular-messages}/angular-messages": ["{angular}/angular"]
+      "{angular-messages}/angular-messages": ["{angular}/angular"],
+      "{ng-file-upload}/ng-file-upload.min": ["{angular}/angular"],
+      "{ng-img-crop}/ng-img-crop": ["{angular}/angular"]
     }
   }
 
