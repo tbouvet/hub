@@ -53,26 +53,26 @@ public class OrganisationResource {
     private RelRegistry relRegistry;
 
     @GET
-    public ResultHal<OrganisationCard> list(@BeanParam RangeInfo rangeInfo) {
+    public ResultHal<OrganisationCard> listOrganisations(@BeanParam RangeInfo rangeInfo) {
         Result<OrganisationCard> organisationCards = organisationFinder.findOrganisation(rangeInfo.range());
         return new ResultHal<>("organisation", organisationCards, relRegistry.uri(Rels.ORGANISATIONS));
     }
 
     @POST
     @Consumes({"application/json", "application/hal+json"})
-    public Response create(@Valid OrganisationCard organisationCard) throws URISyntaxException {
+    public Response createOrganisation(@Valid OrganisationCard organisationCard) throws URISyntaxException {
         HashSet<UserId> owners = Sets.newHashSet(securityService.getAuthenticatedUser().getEntityId());
         Organisation organisation = new Organisation(new OrganisationId(organisationCard.getId()), organisationCard.getName(), owners);
         organisationRepository.persist(organisation);
 
         URI orgURI = new URI(relRegistry.uri(Rels.ORGANISATION).set(ORGANISATION_ID, organisationCard.getId()).getHref());
-        return Response.created(orgURI).entity(get(organisationCard.getId())).build();
+        return Response.created(orgURI).entity(getOrganisation(organisationCard.getId())).build();
     }
 
     @Rel(Rels.ORGANISATION)
     @GET
     @Path("/{organisationId}")
-    public OrganisationRepresentation get(@PathParam(ORGANISATION_ID) String organisationName) {
+    public OrganisationRepresentation getOrganisation(@PathParam(ORGANISATION_ID) String organisationName) {
         Organisation organisation = organisationRepository.load(new OrganisationId(organisationName));
         if (organisation == null) {
             throw new NotFoundException();
@@ -83,7 +83,7 @@ public class OrganisationResource {
     @Rel(Rels.ORGANISATION)
     @PUT
     @Path("/{organisationId}")
-    public Response update(@PathParam(ORGANISATION_ID) String organisationName, OrganisationRepresentation representation) {
+    public Response updateOrganisation(@PathParam(ORGANISATION_ID) String organisationName, OrganisationRepresentation representation) {
         Organisation organisation = organisationRepository.load(new OrganisationId(organisationName));
         if (organisation == null) {
             throw new NotFoundException();

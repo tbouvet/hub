@@ -53,7 +53,7 @@ public class UserResource {
     @Rel(value = USER, home = true)
     @GET
     @Produces({"application/json", "application/hal+json"})
-    public UserCard get() {
+    public UserCard getUser() {
         User user = userRepository.findByName(userId).orElseThrow(NotFoundException::new);
         return fluentAssembler.assemble(user).to(UserCard.class);
     }
@@ -61,7 +61,7 @@ public class UserResource {
     @Rel(USER)
     @PUT
     @Produces({"application/json", "application/hal+json"})
-    public UserCard update(UserCard userCard) {
+    public UserCard updateUser(UserCard userCard) {
         checkCanEdit();
         User user = securityService.getAuthenticatedUser();
         fluentAssembler.merge(userCard).into(user);
@@ -78,7 +78,7 @@ public class UserResource {
 
     @Rel(USER)
     @DELETE
-    public void delete() {
+    public void deleteUser() {
         User user = userRepository.findByName(userId).orElseThrow(NotFoundException::new);
         if (securityService.getAuthenticatedUser().equals(user) || securityService.isUserAdmin()) {
             userRepository.delete(user);
@@ -90,7 +90,7 @@ public class UserResource {
     @Rel(Rels.USERS_ICON)
     @GET
     @Path("icon")
-    public byte[] getIcon() {
+    public byte[] getUserIcon() {
         User user = userRepository.findByName(userId).orElseThrow(NotFoundException::new);
         byte[] icon = user.getIcon();
         if (icon == null) {
@@ -104,7 +104,7 @@ public class UserResource {
     @Path("icon")
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     @Produces({"application/json", "application/hal+json"})
-    public HalRepresentation uploadIcon(@FormDataParam("file") byte[] bytes) {
+    public HalRepresentation uploadUserIcon(@FormDataParam("file") byte[] bytes) {
         checkCanEdit();
         User user = securityService.getAuthenticatedUser();
         user.setIcon(bytes);
@@ -115,7 +115,7 @@ public class UserResource {
     @Rel(Rels.USERS_ICON)
     @DELETE
     @Path("icon")
-    public void deleteIcon() {
+    public void deleteUserIcon() {
         checkCanEdit();
         User user = securityService.getAuthenticatedUser();
         user.setIcon(null);
@@ -126,7 +126,7 @@ public class UserResource {
     @GET
     @Path("components")
     @Produces({"application/json", "application/hal+json"})
-    public HalRepresentation getComponents(@BeanParam RangeInfo rangeInfo) {
+    public HalRepresentation getUserComponents(@BeanParam RangeInfo rangeInfo) {
         Result<ComponentCard> userComponents = userFinder.findUserComponents(new UserId(userId), rangeInfo.range());
         return new ResultHal<>(COMPONENTS, userComponents, relRegistry.uri(USERS_COMPONENTS).set("userId", userId));
     }
@@ -135,7 +135,7 @@ public class UserResource {
     @GET
     @Path("/stars")
     @Produces({"application/json", "application/hal+json"})
-    public HalRepresentation getStars(@BeanParam RangeInfo rangeInfo) {
+    public HalRepresentation getUserStars(@BeanParam RangeInfo rangeInfo) {
         UserId userId = securityService.getAuthenticatedUser().getEntityId();
         return new ResultHal<>(COMPONENTS, userFinder.findStarred(userId, rangeInfo.range()), relRegistry.uri(STARS));
     }

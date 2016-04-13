@@ -71,7 +71,7 @@ public class ComponentResource {
     private String componentId;
 
     @GET
-    public ComponentDetails get() {
+    public ComponentDetails getComponentDetails() {
         Component component = componentRepository.load(new ComponentId(componentId));
         if (component == null) {
             throw new NotFoundException("Component " + componentId + " not found");
@@ -80,13 +80,13 @@ public class ComponentResource {
     }
 
     @PUT
-    public ComponentDetails sync() {
+    public ComponentDetails syncComponent() {
         Component component = importService.sync(new ComponentId(componentId));
         return fluentAssembler.assemble(component).to(ComponentDetails.class);
     }
 
     @DELETE
-    public void delete() {
+    public void deleteComponent() {
         Component component = componentRepository.load(new ComponentId(componentId));
         if (component == null) {
             throw new NotFoundException("Component " + componentId + " not found");
@@ -97,7 +97,7 @@ public class ComponentResource {
     @PUT
     @Path("/state")
     @Rel(Rels.STATE)
-    public void changeState(@NotNull String state) {
+    public void changeComponentState(@NotNull String state) {
         Component component = componentRepository.load(new ComponentId(componentId));
         switch (State.valueOf(state)) {
             case PUBLISHED:

@@ -11,13 +11,14 @@ import com.google.common.collect.Lists;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.seedstack.business.domain.Repository;
+import org.seedstack.hub.application.fetch.Manifest;
 import org.seedstack.hub.domain.model.component.Component;
 import org.seedstack.hub.domain.model.component.ComponentFactory;
 import org.seedstack.hub.domain.model.component.ComponentId;
 import org.seedstack.hub.domain.model.document.Document;
 import org.seedstack.hub.domain.model.document.DocumentFactory;
 import org.seedstack.hub.domain.model.document.DocumentId;
-import org.seedstack.hub.application.fetch.Manifest;
 import org.seedstack.hub.domain.model.document.DocumentScope;
 import org.seedstack.seed.it.SeedITRunner;
 import org.seedstack.seed.security.WithUser;
@@ -36,6 +37,8 @@ public class DocumentIT {
     private ComponentFactory componentFactory;
     @Inject
     private DocumentFactory documentFactory;
+    @Inject
+    private Repository<Document, DocumentId> documentRepository;
     private File directory;
     private Manifest manifest;
 

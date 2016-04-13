@@ -98,7 +98,7 @@ public class ComponentsResource {
     @GET
     @Path("/pending")
     @Rel(value = PENDING, home = true)
-    public ResultHal list(@BeanParam RangeInfo rangeInfo) {
+    public ResultHal listPendingComponents(@BeanParam RangeInfo rangeInfo) {
         Result<ComponentCard> result = componentFinder.findCardsByState(rangeInfo.range(), State.PENDING);
         return new ResultHal<>(COMPONENTS, result, relRegistry.uri(PENDING));
     }
