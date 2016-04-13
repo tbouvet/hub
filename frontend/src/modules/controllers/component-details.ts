@@ -12,21 +12,17 @@ import angular = require("{angular}/angular");
 import IResource = angular.resource.IResource;
 import IHttpService = angular.IHttpService;
 
-enum SubView {
-    IDENTITY = <any> 'identity'
-}
-
-function displayDocName() {
+var displayDocName = ['$window', function ($window) {
     return function (input) {
-        return input.split('/').pop();
+        return $window.decodeURIComponent(input).split('/').pop();
     };
-}
+}];
 
 class ComponentDetailsController {
     public component:any;
-    public detailsView:SubView;
+    public detailsView:string;
     public activeWiki:string;
-    public activeDoc: string;
+    public activeDoc:string;
 
     static $inject = [
         'HomeService',
@@ -39,17 +35,16 @@ class ComponentDetailsController {
         '$window'
     ];
 
-    constructor(
-        private api:any,
-        private $location: ng.ILocationService,
-        private $routeParams:any,
-        private $http:IHttpService,
-        private $mdToast,
-        private $mdDialog,
-        private $mdMedia,
-        private $window) {
+    constructor(private api:any,
+                private $location:ng.ILocationService,
+                private $routeParams:any,
+                private $http:IHttpService,
+                private $mdToast,
+                private $mdDialog,
+                private $mdMedia,
+                private $window) {
 
-        this.detailsView = SubView.IDENTITY;
+        this.getTab();
 
         this.getComponent().$promise.then((component:any) => {
             this.component = component;
@@ -66,11 +61,25 @@ class ComponentDetailsController {
         });
     }
 
+    public navigateToTab(tab:string) {
+        this.$location.search('tab', tab);
+        this.getTab(tab);
+    }
+
+    public getTab(tab?: string) {
+        if (tab) {
+            this.detailsView = tab;
+        } else {
+            this.detailsView = this.$routeParams.tab ? this.$routeParams.tab : 'identity';
+        }
+
+    }
+
     public getComponent():IResource {
         return this.api('home').enter('component', {componentId: this.$routeParams.id}).get();
     }
 
-    public viewUser(user: any): void {
+    public viewUser(user:any):void {
         this.$location.path('hub/user/' + user);
     }
 
@@ -157,9 +166,30 @@ class ComponentDetailsController {
             .catch(ComponentDetailsController.promiseRejected);
     }
 
+    public deleteComponent(component):void {
+        var confirm = this.$mdDialog.confirm()
+            .title('Delete component ' + component.name + ' ?')
+            .textContent('This will permanently remove the component from the hub')
+            .ariaLabel('Delete component')
+            .ok('Delete it')
+            .cancel('No, i want to keep it');
+
+        this.$mdDialog.show(confirm).then(() => {
+            component.$links('self')
+                .delete()
+                .$promise
+                .then(() => {
+                    this.toast('Component deleted !');
+                    this.$location.path('hub/home');
+                })
+                .catch(ComponentDetailsController.promiseRejected);
+        });
+    }
+
+
     public decodeURIComponent = this.$window.decodeURIComponent;
 
-    public openWikiCreation(wiki): void {
+    public openWiki(wiki):void {
         this.$mdDialog.show({
             controller: 'WikiEditorController',
             controllerAs: '$ctrl',
@@ -171,18 +201,20 @@ class ComponentDetailsController {
                 wiki: wiki,
                 component: this.component
             }
-        }).then();
+        }).then(html => {
+
+        });
     }
 
-    public editWiki(wiki: string): void {
-        this.openWikiCreation(wiki);
+    public editWiki(wiki:string):void {
+        this.openWiki(wiki);
     }
 
     public setActiveWiki(wiki:string):void {
         this.activeWiki = wiki;
     };
 
-    public setActiveDoc(doc: string): void {
+    public setActiveDoc(doc:string):void {
         this.activeDoc = doc;
     };
 

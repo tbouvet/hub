@@ -13,26 +13,36 @@ import SimpleMDE = require("{simplemde}/simplemde");
 import IResource = angular.resource.IResource;
 import IAugmentedJQuery = angular.IAugmentedJQuery;
 
-interface IWiki {
-    page: string,
-    message: string,
-    content: string
+interface WikiPageInfo {
+    title: string,
+    source: string
 }
-
 
 class WikiEditorController {
     public hubMarkdownEditor:any;
-    public wiki: IWiki;
+    public message: string;
+    public wikiPageInfo: WikiPageInfo;
 
-    static $inject = ['HomeService', '$mdDialog', 'locals', '$timeout'];
-    constructor(private api:any, private $mdDialog, public locals, private $timeout) {
+    static $inject = ['HomeService', '$mdDialog', 'locals', '$timeout', '$route'];
+    constructor(private api:any, private $mdDialog, public locals, private $timeout, private $route) {
         this.$timeout(() => {
-            this.hubMarkdownEditor = new SimpleMDE({ autoDownloadFA: false, element: angular.element('#markdown-area')[0] });
+            this.hubMarkdownEditor = new SimpleMDE({
+                autoDownloadFA: false,
+                element: angular.element('#markdown-area')[0],
+                autosave: {
+                    enabled: true,
+                    uniqueId: "wiki-edition",
+                    delay: 1000,
+                }
+            });
         });
 
-        // Update if wiki is present
-        if (this.locals.wiki) {
-            // TODO updating a wiki, needs to get markdown
+        var wikiToUpdate  = this.locals.wiki;
+
+        if (wikiToUpdate) {
+
+        } else {
+            this.wikiPageInfo = { title: '', source: '' };
         }
     }
 
@@ -40,17 +50,18 @@ class WikiEditorController {
         this.$mdDialog.cancel();
     }
 
-    public createWIki(wiki: IWiki):void {
-        wiki.content = this.hubMarkdownEditor.value();
-
-        var params = { componentId: this.locals.component.id, page: wiki.page, message: wiki.message};
-        var createWikiAction = { createWiki: { method: 'POST', headers: {'Content-Type': 'text/markdown'}}};
+    public createWIki(message: string, wikiPageInfo: WikiPageInfo):void {
+        wikiPageInfo.source = this.hubMarkdownEditor.value();
 
         this.locals.component
-            .$links('wiki', params, createWikiAction)
-            .createWiki(null, wiki.content)
+            .$links('wiki', { componentId: this.locals.component.id }, { create: { method: 'POST', headers: { 'Accept': 'text/html' }}})
+            .create({ message: message }, wikiPageInfo)
             .$promise
-            .then(r => this.$mdDialog.hide(r))
+            .then(html => {
+                this.hubMarkdownEditor.clearAutosavedValue();
+                this.$route.reload();
+                this.$mdDialog.hide(html)
+            })
             .catch(WikiEditorController.promiseRejected);
     }
 

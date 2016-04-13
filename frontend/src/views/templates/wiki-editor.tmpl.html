@@ -14,13 +14,13 @@
             <div class="md-dialog-content">
                 <md-input-container>
                     <label for="wiki-page">Title</label>
-                    <input md-autofocus id="wiki-page" ng-model="$ctrl.wiki.page" required>
+                    <input md-autofocus id="wiki-page" ng-model="$ctrl.wikiPageInfo.title" required>
                 </md-input-container>
                 <md-input-container>
                     <label for="wiki-message">Message</label>
-                    <input id="wiki-message" ng-model="$ctrl.wiki.message">
+                    <input id="wiki-message" ng-model="$ctrl.message">
                 </md-input-container>
-                <md-button ng-if="$ctrl.locals.wiki" ng-click="$ctrl.deleteWiki($ctrl.wiki)" class="md-warn">
+                <md-button ng-if="$ctrl.locals.wiki" ng-click="$ctrl.deleteWiki()" class="md-warn">
                     Delete
                 </md-button>
                 <section>
@@ -31,7 +31,7 @@
             </div>
         </md-dialog-content>
         <md-dialog-actions layout="row">
-            <md-button ng-click="$ctrl.createWIki($ctrl.wiki)" ng-if="!$ctrl.locals.wiki">
+            <md-button ng-click="$ctrl.createWIki($ctrl.message, $ctrl.wikiPageInfo)" ng-if="!$ctrl.locals.wiki">
                 Create
             </md-button>
             <md-button ng-click="$ctrl.updateWIki($ctrl.wiki)" ng-if="$ctrl.locals.wiki">

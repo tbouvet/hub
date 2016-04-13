@@ -15,6 +15,7 @@ interface IHubSidebarScope extends ng.IScope {
     route(path: string): void;
     authorizationService: { hasRole: (realm, role, attributes) => {} };
     userPrincipals: { subjectId: string };
+    keepVisible: boolean;
 }
 class HubSidebar implements ng.IDirective {
     static $inject = ['$mdSidenav', '$mdMedia', '$location', 'EventService', 'AuthenticationService', 'AuthorizationService'];
@@ -22,11 +23,9 @@ class HubSidebar implements ng.IDirective {
     template = sidebarTemplate;
     link: ng.IDirectiveLinkFn = (scope: IHubSidebarScope) => {
 
-        this.eventService.on('w20.security.authenticated', () => {
-            scope.userPrincipals = this.authenticationService.subjectPrincipals();
-        });
-
         scope.authorizationService = this.authorizationService;
+
+        scope.keepVisible = true;
 
         scope.route = (path: string) => {
             if (this.$mdMedia('xs') || this.$mdMedia('sm')) {
@@ -37,7 +36,16 @@ class HubSidebar implements ng.IDirective {
                 this.$location.path(path);
             }
 
-        }
+        };
+
+        this.eventService.on('w20.security.authenticated', () => {
+            scope.userPrincipals = this.authenticationService.subjectPrincipals();
+        });
+
+        this.eventService.on('hub.sidenav.toggle', () => {
+            scope.keepVisible = !scope.keepVisible;
+            this.$mdSidenav('sidebar').toggle();
+        });
     }
 }
 

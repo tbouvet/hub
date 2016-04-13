@@ -3,7 +3,7 @@
         <md-content class="md-whiteframe-1dp inherit-background" flex style="padding: 0">
             <div class="markdown-body" ng-include="$ctrl.activeDoc"></div>
         </md-content>
-        <header ng-if="!$ctrl.component.docs.length" layout="column" layout-align="center center">
+        <header ng-if="!$ctrl.component.$embedded('docs').length" layout="column" layout-align="center center">
             <h3 class="md-title muted">No documents available</h3>
         </header>
     </div>

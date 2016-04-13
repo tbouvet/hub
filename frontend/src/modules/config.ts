@@ -32,8 +32,8 @@ define([
         $mdThemingProvider.definePalette('light-green-white-text', lightGreenLightText);
 
         $mdThemingProvider.theme('default')
-            .primaryPalette('light-green-white-text')
-            .accentPalette('brown');
+            .primaryPalette('blue')
+            .accentPalette('blue-grey');
 
     }]);
 
