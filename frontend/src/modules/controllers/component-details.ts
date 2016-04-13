@@ -21,8 +21,8 @@ var displayDocName = ['$window', function ($window) {
 class ComponentDetailsController {
     public component:any;
     public detailsView:string;
-    public activeWiki:string;
-    public activeDoc:string;
+    public activeWiki:Object;
+    public activeDoc:Object;
 
     static $inject = [
         'HomeService',
@@ -51,12 +51,12 @@ class ComponentDetailsController {
 
             var docs = this.component.$embedded('docs');
             if (docs && docs.length) {
-                this.activeDoc = docs[0]._links.self.href;
+                this.activeDoc = docs[0];
             }
 
             var wiki = this.component.$embedded('wiki');
             if (wiki && wiki.length) {
-                this.activeWiki = wiki[0]._links.self.href;
+                this.activeWiki = wiki[0];
             }
         });
     }
@@ -206,15 +206,15 @@ class ComponentDetailsController {
         });
     }
 
-    public editWiki(wiki:string):void {
+    public editWiki(wiki):void {
         this.openWiki(wiki);
     }
 
-    public setActiveWiki(wiki:string):void {
+    public setActiveWiki(wiki):void {
         this.activeWiki = wiki;
     };
 
-    public setActiveDoc(doc:string):void {
+    public setActiveDoc(doc):void {
         this.activeDoc = doc;
     };
 

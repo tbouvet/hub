@@ -20,8 +20,14 @@
                     <label for="wiki-message">Message</label>
                     <input id="wiki-message" ng-model="$ctrl.message">
                 </md-input-container>
-                <md-button ng-if="$ctrl.locals.wiki" ng-click="$ctrl.deleteWiki()" class="md-warn">
-                    Delete
+                <md-button ng-show="$ctrl.locals.wiki && !confirm" ng-click="confirm = true" class="md-warn">
+                    Delete wiki
+                </md-button>
+                <md-button ng-show="confirm" ng-click="$ctrl.deleteWiki()" class="md-warn">
+                    Confirm
+                </md-button>
+                <md-button ng-show="confirm" ng-click="confirm = false" class="md-primary">
+                    Cancel
                 </md-button>
                 <section>
                     <label for="markdown-area">
@@ -31,10 +37,10 @@
             </div>
         </md-dialog-content>
         <md-dialog-actions layout="row">
-            <md-button ng-click="$ctrl.createWIki($ctrl.message, $ctrl.wikiPageInfo)" ng-if="!$ctrl.locals.wiki">
+            <md-button ng-click="$ctrl.createWiki($ctrl.message, $ctrl.wikiPageInfo)" ng-if="!$ctrl.locals.wiki">
                 Create
             </md-button>
-            <md-button ng-click="$ctrl.updateWIki($ctrl.wiki)" ng-if="$ctrl.locals.wiki">
+            <md-button ng-click="$ctrl.updateWiki($ctrl.message, $ctrl.wikiPageInfo)" ng-if="$ctrl.locals.wiki">
                 Update
             </md-button>
         </md-dialog-actions>

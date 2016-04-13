@@ -30,6 +30,10 @@ public class DocumentRepresentation extends HalRepresentation {
                         .uri(Rels.WIKI)
                         .set("componentId", documentId.getComponentId().getName())
                         .set("page", documentId.getPath()));
+                link(Rels.WIKI_INFO, relRegistry
+                        .uri(Rels.WIKI_INFO)
+                        .set("componentId", documentId.getComponentId().getName())
+                        .set("page", documentId.getPath()));
                 break;
         }
     }

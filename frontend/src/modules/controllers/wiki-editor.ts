@@ -12,6 +12,7 @@ import angular = require("{angular}/angular");
 import SimpleMDE = require("{simplemde}/simplemde");
 import IResource = angular.resource.IResource;
 import IAugmentedJQuery = angular.IAugmentedJQuery;
+import IResource = angular.resource.IResource;
 
 interface WikiPageInfo {
     title: string,
@@ -20,11 +21,12 @@ interface WikiPageInfo {
 
 class WikiEditorController {
     public hubMarkdownEditor:any;
-    public message: string;
-    public wikiPageInfo: WikiPageInfo;
+    public message:string;
+    public wikiPageInfo:WikiPageInfo;
 
-    static $inject = ['HomeService', '$mdDialog', 'locals', '$timeout', '$route'];
-    constructor(private api:any, private $mdDialog, public locals, private $timeout, private $route) {
+    static $inject = ['HomeService', '$mdDialog', 'locals', '$timeout', '$route', '$templateCache'];
+
+    constructor(private api:any, private $mdDialog, public locals, private $timeout, private $route, private $templateCache) {
         this.$timeout(() => {
             this.hubMarkdownEditor = new SimpleMDE({
                 autoDownloadFA: false,
@@ -35,44 +37,87 @@ class WikiEditorController {
                     delay: 1000,
                 }
             });
+
+            if (this.locals && this.locals.wiki) {
+
+                WikiEditorController.getWikiInfo(this.locals.wiki).$promise
+                    .then((wikiPageInfo:WikiPageInfo) => {
+                        this.wikiPageInfo = wikiPageInfo;
+                        this.hubMarkdownEditor.value(wikiPageInfo.source);
+                    })
+                    .catch(WikiEditorController.promiseRejected);
+
+            } else {
+                this.wikiPageInfo = {
+                    title: '',
+                    source: ''
+                };
+            }
         });
 
-        var wikiToUpdate  = this.locals.wiki;
 
-        if (wikiToUpdate) {
-
-        } else {
-            this.wikiPageInfo = { title: '', source: '' };
-        }
     }
 
-    public cancel():void {
-        this.$mdDialog.cancel();
+    public static getWikiInfo(wiki):IResource {
+        return wiki.$links('info').get();
     }
 
-    public createWIki(message: string, wikiPageInfo: WikiPageInfo):void {
+    public createWiki(message:string, wikiPageInfo:WikiPageInfo):void {
         wikiPageInfo.source = this.hubMarkdownEditor.value();
 
         this.locals.component
-            .$links('wiki', { componentId: this.locals.component.id }, { create: { method: 'POST', headers: { 'Accept': 'text/html' }}})
-            .create({ message: message }, wikiPageInfo)
+            .$links('wiki', {componentId: this.locals.component.id}, {
+                create: {
+                    method: 'POST',
+                    headers: {'Accept': 'text/html'}
+                }
+            })
+            .create({message: message}, wikiPageInfo)
             .$promise
             .then(html => {
-                this.hubMarkdownEditor.clearAutosavedValue();
-                this.$route.reload();
-                this.$mdDialog.hide(html)
+                this.successAction(html);
             })
             .catch(WikiEditorController.promiseRejected);
     }
 
-    public deleteWiki(wiki: string): void {
+    public updateWiki(message:string, wikiPageInfo:WikiPageInfo):void {
+        wikiPageInfo.source = this.hubMarkdownEditor.value();
 
+        this.locals.wiki
+            .$links('self', {}, {
+                update: {
+                    method: 'PUT',
+                    headers: {'Accept': 'text/html '}
+                }
+            })
+            .update({message: message}, wikiPageInfo)
+            .$promise
+            .then(html => {
+                this.successAction(html);
+            })
+            .catch(WikiEditorController.promiseRejected);
     }
 
-    public updateWiki(): void {
-        if (this.locals.wiki) {
+    public deleteWiki():void {
+        this.locals.wiki
+            .$links('self')
+            .delete()
+            .$promise
+            .then(html => {
+                this.successAction(html);
+            })
+            .catch(WikiEditorController.promiseRejected);
+    }
 
-        }
+    private successAction (value) {
+        this.hubMarkdownEditor.clearAutosavedValue();
+        this.$templateCache.removeAll();
+        this.$route.reload();
+        this.$mdDialog.hide(value)
+    }
+
+    public cancel():void {
+        this.$mdDialog.cancel();
     }
 
     public static promiseRejected(reason):void {
