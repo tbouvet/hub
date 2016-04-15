@@ -7,9 +7,8 @@
  */
 package org.seedstack.hub.domain.model.component;
 
-import org.mongodb.morphia.annotations.Entity;
-import org.mongodb.morphia.annotations.Id;
-import org.mongodb.morphia.annotations.PrePersist;
+import org.mongodb.morphia.annotations.*;
+import org.mongodb.morphia.utils.IndexType;
 import org.seedstack.business.domain.BaseAggregateRoot;
 import org.seedstack.hub.domain.model.document.DocumentId;
 import org.seedstack.hub.domain.model.user.UserId;
@@ -19,6 +18,9 @@ import javax.validation.constraints.NotNull;
 import java.util.*;
 
 @Entity(value = "components")
+@Indexes({
+        @Index(fields = {@Field(value = "$**", type = IndexType.TEXT)})
+})
 public class Component extends BaseAggregateRoot<ComponentId> {
     @Id
     @NotNull
@@ -27,7 +29,6 @@ public class Component extends BaseAggregateRoot<ComponentId> {
     private String name;
     @NotNull
     private Owner owner;
-
     private Description description;
     @NotNull
     private State state = State.PENDING;

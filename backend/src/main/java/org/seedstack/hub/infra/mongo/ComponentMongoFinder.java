@@ -44,7 +44,7 @@ class ComponentMongoFinder extends AbstractMongoFinder implements ComponentFinde
         Query<Component> query = datastore.find(Component.class);
         addSort(sort, query);
         if (searchName != null && !"".equals(searchName)) {
-            query = query.field("_id.name").containsIgnoreCase(searchName);
+            query = query.search(searchName);
         }
         query.field("state").equal(State.PUBLISHED);
         return findComponentCards(query, range);
