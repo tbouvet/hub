@@ -41,7 +41,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
 
-@Api
+@Api(tags = {"Wiki"})
 @Path("/components/{componentId}/wiki")
 public class WikiResource {
     @Inject

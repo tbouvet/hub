@@ -44,7 +44,7 @@ import javax.ws.rs.core.Response;
 import java.net.URI;
 import java.util.Date;
 
-@Api
+@Api(tags = {"Component"})
 @Path("/components/{componentId}")
 @Produces({"application/json", "application/hal+json"})
 @Rel(value = Rels.COMPONENT, home = true)
@@ -69,6 +69,7 @@ public class ComponentResource {
 
     @PathParam(COMPONENT_ID)
     private String componentId;
+
 
     @GET
     public ComponentDetails getComponentDetails() {
