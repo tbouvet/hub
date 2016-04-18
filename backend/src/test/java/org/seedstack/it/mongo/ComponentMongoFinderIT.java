@@ -76,8 +76,8 @@ public class ComponentMongoFinderIT {
 
     @Test
     public void testFindListWithSearchCriteria() {
-        Result<ComponentCard> componentCards = componentFinder.findPublishedCards(new Range(0, 20), SortType.NAME, "ponent1");
-        assertThat(componentCards.getResult()).hasSize(11);
+        Result<ComponentCard> componentCards = componentFinder.findPublishedCards(new Range(0, 20), SortType.NAME, "component1");
+        assertThat(componentCards.getResult()).hasSize(20);
     }
 
     @Test
