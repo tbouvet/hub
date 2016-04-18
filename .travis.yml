@@ -1,9 +1,13 @@
 sudo: false
 
 language: java
-
+env:
+  global:
+    - MONGODB_VERSION=2.6.10
 services: mongodb
-
+before_install:
+  - "mongo --eval 'db.runCommand({setParameter: 1, textSearchEnabled: true})' admin"
+  
 node_js: "0.12"
 
 jdk: oraclejdk8
