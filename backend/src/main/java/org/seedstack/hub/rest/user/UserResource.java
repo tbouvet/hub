@@ -30,7 +30,7 @@ import javax.ws.rs.core.MediaType;
 
 import static org.seedstack.hub.rest.Rels.*;
 
-@Api
+@Api(tags = {"User"})
 @Path("/users/{userId}")
 public class UserResource {
 

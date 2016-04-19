@@ -8,6 +8,7 @@
 package org.seedstack.it.rest;
 
 import com.jayway.restassured.response.Response;
+import org.assertj.core.api.Assertions;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.test.api.ArquillianResource;
@@ -23,6 +24,8 @@ import org.seedstack.hub.MockBuilder;
 import org.seedstack.hub.domain.model.component.Component;
 import org.seedstack.hub.domain.model.component.ComponentId;
 import org.seedstack.hub.domain.model.component.State;
+import org.seedstack.hub.rest.component.list.ComponentCard;
+import org.seedstack.hub.rest.shared.ResultHal;
 import org.seedstack.mongodb.morphia.MorphiaDatastore;
 import org.seedstack.seed.it.AbstractSeedWebIT;
 
@@ -64,17 +67,9 @@ public class ComponentsResourceIT extends AbstractSeedWebIT {
     @RunAsClient
     @Test
     public void get_with_pagination() throws JSONException {
-        Response response = httpGet("components?search=ponent1&offset=5&size=5");
-
-        String requestWithPagination = "{\"_links\":{" +
-                "\"self\":{\"href\":\"" + baseURL.getPath() + "components?search=ponent1&offset=5&size=5\"}," +
-                "\"next\":{\"href\":\"" + baseURL.getPath() + "components?search=ponent1&offset=10&size=5\"}" +
-                "},\"_embedded\":{" +
-                "\"components\":[" +
-                "{\"id\":\"Component14\"},{\"id\":\"Component15\"},{\"id\":\"Component16\"},{\"id\":\"Component17\"},{\"id\":\"Component18\"}" +
-                "]}}";
-
-        assertEquals(requestWithPagination, response.asString(), false);
+        Response response = httpGet("components?search=component1&offset=5&size=5");
+        ResultHal<ComponentCard> hal = response.as(ResultHal.class);
+        Assertions.assertThat(hal.getResultSize()).isEqualTo(23L);
     }
 
     @RunAsClient

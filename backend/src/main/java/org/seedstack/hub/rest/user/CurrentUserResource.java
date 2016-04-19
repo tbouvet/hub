@@ -37,7 +37,7 @@ import static org.seedstack.hub.rest.Rels.STAR;
 import static org.seedstack.hub.rest.Rels.STARS;
 import static org.seedstack.hub.rest.Rels.USER_COMPONENTS;
 
-@Api
+@Api(tags = {"User", "Component"})
 @Path("/user")
 public class CurrentUserResource {
     @Inject

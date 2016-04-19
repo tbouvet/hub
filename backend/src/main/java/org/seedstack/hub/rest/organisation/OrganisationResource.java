@@ -31,7 +31,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.HashSet;
 
-@Api
+@Api(tags = {"Organisation"})
 @Rel(value = Rels.ORGANISATIONS, home = true)
 @Path("/organisations")
 @Produces({"application/json", "application/hal+json"})
