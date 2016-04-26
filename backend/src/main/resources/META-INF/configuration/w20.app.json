@@ -21,10 +21,7 @@
         "type": "test"
       },
       "security": {
-        "autoLogin": true,
-        "redirectAfterLogout": "/",
-        "redirectAfterLogin": "/",
-        "persistentRestrictions": false
+        "autoLogin": true
       },
       "utils": {},
       "hypermedia": {

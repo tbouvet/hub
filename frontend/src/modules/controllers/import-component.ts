@@ -5,6 +5,7 @@ import IResource = angular.resource.IResource;
 import {GithubService} from "../services/github-service";
 import ILocationService = angular.ILocationService;
 
+
 enum RepositoryType {
     GIT = <any> 'GIT',
     SVN = <any> 'SVN'
@@ -81,6 +82,10 @@ class GithubImportController {
     public searchedGithubComponents:Card[];
     public selectedRepositories:any[];
     public importing:boolean;
+    public importComplete:boolean;
+    public errorMessage:string;
+    public failedSources: {};
+    public importedComponents: any[];
     private SEARCH_LIMIT = 100;
 
     static $inject = [
@@ -102,6 +107,7 @@ class GithubImportController {
         this.searchedGithubComponents = [];
         this.selectedRepositories = [];
         this.importing = false;
+        this.importComplete = false;
     }
 
     private toast(message:string) {
@@ -114,16 +120,24 @@ class GithubImportController {
     }
 
     public searchGithubRepositories(query:string):void {
+        this.importComplete = false;
+        this.errorMessage = '';
         this.githubService.searchUserRepositories(query, this.SEARCH_LIMIT)
             .then((results) => {
-                this.searchedGithubComponents = results.map((result) => {
-                    return { avatar: result.owner['avatar_url'], full_name: result.full_name};
-                });
+                if (results.length) {
+                    this.searchedGithubComponents = results.map((result) => {
+                        return {avatar: result.owner['avatar_url'], full_name: result.full_name};
+                    });
+                } else if (results.message) {
+                    if (results.message.indexOf('API rate limit') !== -1) {
+                        this.errorMessage = 'Github API rate limit reached. Please use authenticated requests';
+                    }
+                }
             })
             .catch(ImportComponentController.promiseRejected);
     }
 
-    public toggleAll(): void {
+    public toggleAll():void {
         this.selectedRepositories = this.selectedRepositories.length ? [] : this.searchedGithubComponents;
     }
 
@@ -140,12 +154,21 @@ class GithubImportController {
                 this.searchedGithubComponents = [];
                 this.selectedRepositories = [];
                 this.githubSearchQuery = '';
+                if (Object.getOwnPropertyNames(result.failedSources).length) {
+                    this.failedSources = result.failedSources;
+                }
+                if (result.componentCards.length) {
+                    this.importedComponents = result.componentCards;
+                }
                 this.toast('All components have been successfully imported!');
             })
             .catch((reason:any) => {
                 this.importing = false;
                 this.toast('Oh no ! An error occurred ! We could not import your component');
                 ImportComponentController.promiseRejected(reason);
+            })
+            .finally(() => {
+                this.importComplete = true;
             });
     }
 
@@ -155,7 +178,7 @@ class GithubImportController {
 
     private static formatGithubRepositories(results) {
         return results.map((c:any) => {
-            return { url: c.full_name, sourceType: 'GITHUB' };
+            return {url: c.full_name, sourceType: 'GITHUB'};
         });
     }
 }

@@ -39,7 +39,8 @@ class HubToolbar implements ng.IDirective {
         scope.query = this.$location.search().search || '';
 
         scope.toggleSidebar = () => {
-            this.eventService.emit('hub.sidenav.toggle');
+            this.$mdSidenav('sidebar').toggle();
+            //this.eventService.emit('hub.sidenav.toggle');
         };
 
         scope.routeToSearchView = (query: string) => {

@@ -8,7 +8,7 @@
 
 [org.seedstack]
 mongodb.clients = main
-w20.pretty-urls = false
+w20.pretty-urls = true
 w20.masterpage-template = META-INF/resources/index.html
 
 [org.seedstack.seed.core]

@@ -14,7 +14,7 @@
         <div flex layout-xs="column" layout-align-xs="center center" id="component-detail-title">
             <div layout="column" layout-align="center" layout-align-xs="center center" class="md-list-item-text"
                  style="margin-left: 20px;">
-                <h1 class="md-display-1">
+                <h1>
                     {{ $ctrl.component.name }}
                 </h1>
                 <h2 style="margin-top: 0;" class="md-subhead muted">
@@ -65,23 +65,17 @@
             </md-button>
         </div>
     </div>
-    <div flex layout="row" layout-align="start center" layout-align-xs="center center" layout-wrap>
-        <md-button ng-class="$ctrl.detailsView === 'identity' ? 'md-primary' : 'md-accent'" ng-click="$ctrl.navigateToTab('identity')">Info</md-button>
-        <md-button ng-class="$ctrl.detailsView === 'docs' ? 'md-primary' : 'md-accent'" ng-click="$ctrl.navigateToTab('docs')">Docs</md-button>
-        <md-button ng-class="$ctrl.detailsView === 'wiki' ? 'md-primary' : 'md-accent'" ng-click="$ctrl.navigateToTab('wiki')">Wiki</md-button>
-        <md-button ng-class="$ctrl.detailsView === 'source' ? 'md-primary' : 'md-accent'" ng-click="$ctrl.navigateToTab('sources')">Source</md-button>
-        <md-button ng-class="$ctrl.detailsView === 'issues' ? 'md-primary' : 'md-accent'" ng-click="$ctrl.navigateToTab('issues')">Issues</md-button>
-        <md-button ng-class="$ctrl.detailsView === 'help' ? 'md-primary' : 'md-accent'" ng-click="$ctrl.navigateToTab('help')">Help</md-button>
-    </div>
-    <section ng-switch="$ctrl.detailsView">
-        <div ng-switch-when="identity">
-            <div ng-include="'src/views/details/identity.tpl.html'"></div>
-        </div>
-        <div ng-switch-when="docs">
-            <div ng-include="'src/views/details/docs.tpl.html'"></div>
-        </div>
-        <div ng-switch-when="wiki">
-            <div ng-include="'src/views/details/wiki.tpl.html'"></div>
-        </div>
-    </section>
+    <md-content class="md-whiteframe-1dp">
+        <md-tabs md-selected="$ctrl.selectedTabIndex" md-dynamic-height md-border-bottom>
+            <md-tab label="Info">
+                <div ng-include="'src/views/details/identity.tpl.html'"></div>
+            </md-tab>
+            <md-tab label="Docs">
+                <div ng-include="'src/views/details/docs.tpl.html'"></div>
+            </md-tab>
+            <md-tab label="Wiki">
+                <div ng-include="'src/views/details/wiki.tpl.html'"></div>
+            </md-tab>
+        </md-tabs>
+    </md-content>
 </div>
