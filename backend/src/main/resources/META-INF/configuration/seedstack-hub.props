@@ -14,10 +14,12 @@ w20.masterpage-template = META-INF/resources/index.html
 [org.seedstack.seed.core]
 application-id = seedstack-hub
 release = 1.0.0
-
+[org.seedstack.seed.security.sessions]
+enabled = true
 [org.seedstack.seed.security.urls]
-/swagger.json = anon
-/** = authcBasic
+/login = authc
+/logout =  logout
+/** = authc
 /swagger.json = anon
 
 [org.seedstack.seed.security.users]

@@ -51,7 +51,8 @@ public class WikiResourceIT extends AbstractSeedWebIT {
 
     @Deployment
     public static WebArchive createDeployment() {
-        return ShrinkWrap.create(WebArchive.class);
+        return ShrinkWrap.create(WebArchive.class)
+                .addAsResource("META-INF/configuration/seedstack-hub-test.override.props", "META-INF/configuration/aseedstack-hub.props");
     }
 
     @RunAsClient
