@@ -19,6 +19,7 @@ import org.slf4j.Logger;
 
 import javax.inject.Inject;
 import javax.ws.rs.*;
+import javax.ws.rs.container.Suspended;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 import java.time.Duration;
