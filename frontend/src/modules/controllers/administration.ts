@@ -43,7 +43,7 @@ class AdminController {
     }
 
     public view (card: Card): void {
-        this.$location.path('hub/component/' + card.id);
+        this.$location.path('hub/component/' + card.id).search('tab', 'info');
     }
 
     private static promiseRejected (reason): void {

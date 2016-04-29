@@ -71,7 +71,7 @@ class SearchController {
     }
 
     public view(card:Card):void {
-        this.$location.path('hub/component/' + card.id);
+        this.$location.path('hub/component/' + card.id).search('tab', 'info');
     }
 }
 

@@ -35,12 +35,10 @@ class HubToolbar implements ng.IDirective {
             scope.userPrincipals = this.authenticationService.subjectPrincipals();
         });
 
-
         scope.query = this.$location.search().search || '';
 
         scope.toggleSidebar = () => {
             this.$mdSidenav('sidebar').toggle();
-            //this.eventService.emit('hub.sidenav.toggle');
         };
 
         scope.routeToSearchView = (query: string) => {

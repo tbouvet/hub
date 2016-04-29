@@ -25,6 +25,7 @@ gulp.task('copy', ['clean', 'bower'], function () {
             'src/**/*',
             '!src/**/*.ts',
             '!src/**/*.less',
+            'login.html',
             'w20.app.json'],
         {base: './'})
         .pipe(gulp.dest('dist'));

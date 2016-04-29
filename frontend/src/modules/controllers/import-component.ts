@@ -5,7 +5,6 @@ import IResource = angular.resource.IResource;
 import {GithubService} from "../services/github-service";
 import ILocationService = angular.ILocationService;
 
-
 enum RepositoryType {
     GIT = <any> 'GIT',
     SVN = <any> 'SVN'
@@ -27,6 +26,7 @@ class QuickImportController {
     public repositoryTypes:RepositoryType[] = [RepositoryType.GIT, RepositoryType.SVN];
     public repository:IRepository = <any>{};
     public importing:boolean = false;
+    public failedSources:{};
     public failure:boolean = false;
     public success:boolean = false;
     public newComponent:Card;
@@ -55,13 +55,16 @@ class QuickImportController {
         this.api('home').enter('components', {}, action).save({}, formParam)
             .$promise
             .then(newComponent => {
-                if (newComponent) {
+                if (newComponent && newComponent['componentCards'][0]) {
                     this.success = true;
-                    this.newComponent = newComponent;
+                    this.newComponent = newComponent['componentCards'][0];
                 }
             })
             .catch(reason => {
                 this.failure = true;
+                if (reason.data && reason.data.failedSources) {
+                    this.failedSources = reason.data.failedSources;
+                }
                 ImportComponentController.promiseRejected(reason);
             });
     };
@@ -81,11 +84,12 @@ class GithubImportController {
     public githubSearchQuery:string;
     public searchedGithubComponents:Card[];
     public selectedRepositories:any[];
+    public searching:boolean;
     public importing:boolean;
     public importComplete:boolean;
     public errorMessage:string;
-    public failedSources: {};
-    public importedComponents: any[];
+    public failedSources:{};
+    public importedComponents:any[];
     private SEARCH_LIMIT = 100;
 
     static $inject = [
@@ -119,7 +123,14 @@ class GithubImportController {
         );
     }
 
+    public setUserToken (token: string) {
+        if (token) {
+            this.githubService.setUserToken(token);
+        }
+    }
+
     public searchGithubRepositories(query:string):void {
+        this.searching = true;
         this.importComplete = false;
         this.errorMessage = '';
         this.githubService.searchUserRepositories(query, this.SEARCH_LIMIT)
@@ -134,7 +145,10 @@ class GithubImportController {
                     }
                 }
             })
-            .catch(ImportComponentController.promiseRejected);
+            .catch(ImportComponentController.promiseRejected)
+            .finally(() => {
+                this.searching = false;
+            });
     }
 
     public toggleAll():void {
@@ -157,14 +171,14 @@ class GithubImportController {
                 if (Object.getOwnPropertyNames(result.failedSources).length) {
                     this.failedSources = result.failedSources;
                 }
-                if (result.componentCards.length) {
-                    this.importedComponents = result.componentCards;
+                if (result['componentCards'].length) {
+                    this.importedComponents = result['componentCards'];
                 }
                 this.toast('All components have been successfully imported!');
             })
             .catch((reason:any) => {
                 this.importing = false;
-                this.toast('Oh no ! An error occurred ! We could not import your component');
+                this.toast('Oh no ! An error occurred ! We could not import your components');
                 ImportComponentController.promiseRejected(reason);
             })
             .finally(() => {

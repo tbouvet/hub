@@ -5,7 +5,6 @@ import IQResolveReject = angular.IQResolveReject; //
 
 const GITHUB_API = 'https://api.github.com/';
 const GITHUB_API_VERSION = 'application/vnd.github.v3+json';
-const GITHUB_TOKEN = "";
 
 interface SourceService {
     searchUserRepositories(user:string): ng.IPromise<any>;
@@ -23,15 +22,33 @@ enum GithubOrder {
 }
 
 export class GithubService implements SourceService {
+
+    private GITHUB_TOKEN: string;
+
     static $inject = ['$q', '$httpParamSerializer'];
     constructor(private $q:ng.IQService, private $httpParamSerializer) {}
 
-    // todo need to authenticate to fix rate limit
+    public setUserToken (token: string): void {
+       this.GITHUB_TOKEN = token;
+    }
+
+    public getUserToken (): string {
+        return this.GITHUB_TOKEN;
+    }
+
     public searchUserRepositories(user:string, per_page?:number, sort?:GithubSort, order?:GithubOrder):ng.IPromise<any> {
         return this.$q((resolve, reject) => {
             if (user) {
-                var url: string = GITHUB_API + 'users/'+ user +'/repos?' + this.$httpParamSerializer({sort: sort, order: order, per_page: per_page || 50 });
-                var xhr: XMLHttpRequest = this.createCORSRequest('GET', url);
+                var params = {
+                    sort: sort,
+                    order: order,
+                    per_page: per_page || 50
+                };
+                if (this.GITHUB_TOKEN) {
+                    params['access_token'] = this.GITHUB_TOKEN;
+                }
+                var url:string = GITHUB_API + 'users/' + user + '/repos?' + this.$httpParamSerializer(params);
+                var xhr:XMLHttpRequest = this.createCORSRequest('GET', url);
                 if (!xhr) {
                     console.info('CORS not supported');
                     resolve();

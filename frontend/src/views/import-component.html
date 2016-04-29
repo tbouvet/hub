@@ -17,7 +17,6 @@
     <md-content class="md-whiteframe-1dp">
         <md-tabs md-dynamic-height md-border-bottom>
             <md-tab label="Quick">
-
                 <section ng-controller="QuickImportController as $qctrl">
                     <md-content class="md-padding">
                         <form name="quickImportForm" ng-submit="$qctrl.confirm($qctrl.repository)">
@@ -64,13 +63,24 @@
                                 Hold tight ! Your component is being added.
                             </div>
                             <div ng-show="$qctrl.failure"
-                                 flex layout="row"
-                                 style="min-height: 150px;" ng-cloak
+                                 layout="column"
                                  layout-align="center center">
-                                <md-icon style="font-size: 130px; height: 130px; margin: 0 100px"
-                                         class="material-icons">warning
-                                </md-icon>
-                                <p>An error occured. We could not import your component.</p>
+                                <md-list>
+                                    <md-subheader ng-if="$qctrl.failedSources" class="md-no-sticky">
+                                        <md-icon md-font-set="material-icons">warning</md-icon> Failure
+                                    </md-subheader>
+                                    <md-list-item ng-repeat="(repository, messages) in $qctrl.failedSources" class="md-3-line">
+                                        <div class="md-list-item-text" layout="column">
+                                            <h3 style="font-weight: bold;">{{ repository }}</h3>
+                                            <ul style="color: red">
+                                                <li ng-repeat="message in messages track by $index">{{ message }}</li>
+                                            </ul>
+                                        </div>
+                                    </md-list-item>
+                                </md-list>
+                                <md-button class="md-raised md-primary"
+                                           ng-click="quickImportForm.$setPristine(); $qctrl.terminate()">OK
+                                </md-button>
                             </div>
                             <div ng-cloak ng-show="$qctrl.success" layout="column" layout-align="center center">
                                 <h2 class="md-headline">New component imported !</h2>
@@ -104,6 +114,9 @@
                             </md-input-container>
                             <div ng-if="$ctrl.errorMessage" style="color:red">
                                 {{$ctrl.errorMessage }}
+                            </div>
+                            <div ng-if="$ctrl.searching">
+                                Searching...
                             </div>
                         </form>
                         <md-list ng-if="$ctrl.searchedGithubComponents.length > 0 && !$ctrl.importing" flex>
@@ -147,9 +160,16 @@
                         </div>
                         <div ng-if="$ctrl.importComplete">
                             <md-list>
-                                <md-subheader ng-if="$ctrl.failedSources" class="md-no-sticky"> Failure </md-subheader>
-                                <md-list-item ng-repeat="failed in $ctrl.failedSources" class="secondary-button-padding">
-
+                                <md-subheader ng-if="$ctrl.failedSources" class="md-no-sticky">
+                                    <md-icon md-font-set="material-icons">warning</md-icon> Failure
+                                </md-subheader>
+                                <md-list-item ng-repeat="(repository, messages) in $ctrl.failedSources" class="md-3-line">
+                                    <div class="md-list-item-text" layout="column">
+                                        <h3 style="font-weight: bold;">{{ repository }}</h3>
+                                        <ul style="color: red">
+                                            <li ng-repeat="message in messages track by $index">{{ message }}</li>
+                                        </ul>
+                                    </div>
                                 </md-list-item>
                                 <md-divider ng-if="$ctrl.failedSources"></md-divider>
                                 <md-subheader ng-if="$ctrl.importedComponents" class="md-no-sticky"> Imported components</md-subheader>

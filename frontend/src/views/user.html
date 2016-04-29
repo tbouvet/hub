@@ -12,12 +12,15 @@
         <md-content class="md-whiteframe-1dp" style="width: 100%">
             <md-toolbar>
                 <div class="md-toolbar-tools">
-                    <img ng-src="{{ $ctrl.user._links['users/icon'].href }}" err-src="src/img/default-user.png" class="md-avatar user-profile-icon" alt="User icon"/>
+                    <img ng-src="{{ $ctrl.user._links['users/icon'].href }}"
+                         err-src="src/img/default-user.png"
+                         class="md-avatar user-profile-icon"
+                         alt="User icon"/>
                     <h2>
                         {{ $ctrl.user.name }}
                     </h2>
                     <div flex></div>
-                    <md-button ng-if="$ctrl.userIsOwner" ng-href="#!/hub/update-profile">Update profile</md-button>
+                    <md-button ng-if="$ctrl.userIsOwner" ng-href="hub/update-profile">Update profile</md-button>
                 </div>
             </md-toolbar>
             <md-content style="min-height: 85px; overflow-x: hidden;">

@@ -15,7 +15,7 @@
             "description": "Toolbar logo URL",
             "type": "string"
           },
-          "name": {
+          "brand": {
             "description": "Name of the organization to display next to logo",
             "type": "string"
           }

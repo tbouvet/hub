@@ -1,6 +1,6 @@
 <div id="component-detail-wiki" layout-padding layout="row" layout-xs="column" style="padding: 0">
-    <div id="component-detail-wiki-page" flex="70" flex-xs="100" flex-order-xs="2">
-        <md-content ng-if="$ctrl.component.$embedded('wiki').length" class="inherit-background" flex layout-padding style="padding: 0">
+    <div id="component-detail-wiki-page" flex="80" flex-xs="100" flex-order-xs="2">
+        <md-content ng-if="$ctrl.component.$embedded('wiki').length" class="inherit-background" flex layout-padding style="padding: 0; border-right: 1px solid #eeeeee">
             <div style="float: right" layout="row" layout-align="end center">
                 <md-button ng-click="$ctrl.editWiki($ctrl.activeWiki)"><i class="fa fa-pencil"></i> Edit </md-button>
             </div>
@@ -10,7 +10,7 @@
             <h3 class="md-title muted">No Wiki available</h3>
         </header>
     </div>
-    <div flex="30" flex-xs="100" layout-align="end center" layout-align-xs="center" flex-order-xs="1">
+    <div flex="20" flex-xs="100" layout-align="end center" layout-align-xs="center" flex-order-xs="1">
         <aside id="component-detail-wiki-list" layout="column" flex-xs="100">
             <section>
                 <md-content class="md-whiteframe-1dp" style="overflow: hidden; background-color: inherit">

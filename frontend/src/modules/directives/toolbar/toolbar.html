@@ -11,7 +11,7 @@
     <md-button class="md-icon-button" ng-click="toggleSidebar()">
         <md-icon aria-label="Menu" md-font-set="material-icons">reorder</md-icon>
     </md-button>
-    <h1 flex="25"><a ng-href="/#!/">Hub</a></h1></a>
+    <h1 flex="25"><a ng-href="/">Hub</a></h1>
     <md-autocomplete flex="40"
                      ng-model-options="{ debounce: 500 }"
                      md-items="item in []"
@@ -21,7 +21,7 @@
                      placeholder="Search components">
     </md-autocomplete>
     <div flex></div>
-    <div id="identity">
+    <div id="identity" hide-xs>
         <md-menu>
             <md-button style="width: 155px" aria-label="User actions" class="md-icon-button" ng-click="$mdOpenMenu($event)">
                 <md-icon aria-label="User-Menu" md-font-set="material-icons">person</md-icon>
@@ -36,11 +36,11 @@
             </md-menu-content>
         </md-menu>
     </div>
-    <div flex></div>
-    <div>
-         <span style="line-height: 4">
-            {{ config.name }}
-            <img style="width: 33px;" ng-src="{{ config.logoUrl }}" err-src="src/img/default-component.png">
-        </span>
+    <div flex hide-xs></div>
+    <div hide-xs>
+        <span>{{ config.brand }}</span>
+    </div>
+    <div style="margin-left: 10px">
+        <img style="width: 33px;" ng-src="{{ config.logoUrl }}" err-src="src/img/default-component.png">
     </div>
 </div>
