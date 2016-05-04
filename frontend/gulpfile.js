@@ -26,7 +26,9 @@ gulp.task('copy', ['clean', 'bower'], function () {
             '!src/**/*.ts',
             '!src/**/*.less',
             'login.html',
-            'w20.app.json'],
+            'w20.app.json',
+            'favicon.ico'
+        ],
         {base: './'})
         .pipe(gulp.dest('dist'));
 });
@@ -104,7 +106,8 @@ gulp.task('copy-dev', ['bower', 'clean'], function () {
             '!src/**/*.ts',
             '!src/**/*.less',
             '!w20.app.json',
-            '!index.html'],
+            '!index.html',
+            'login.html'],
         {base: './'})
         .pipe(gulp.dest('../backend/src/main/resources/META-INF/resources'));
 });

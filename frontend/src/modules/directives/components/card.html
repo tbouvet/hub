@@ -1,7 +1,7 @@
 <md-card ng-click="onClick({card:card})" flex="30" flex-xs="100" md-ink-ripple class="hub-card">
     <md-card-header>
         <md-card-avatar>
-            <img ng-src="{{ card.icon }}" err-src="src/img/default-component.png">
+            <img ng-src="{{ card.icon }}" err-src component="{{ ::card }}">
         </md-card-avatar>
         <md-card-header-text>
             <span class="md-title">{{ card.name }}</span>

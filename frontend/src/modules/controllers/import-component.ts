@@ -88,6 +88,7 @@ class GithubImportController {
     public importing:boolean;
     public importComplete:boolean;
     public errorMessage:string;
+    public showTokenInput:boolean;
     public failedSources:{};
     public importedComponents:any[];
     private SEARCH_LIMIT = 100;
@@ -105,7 +106,7 @@ class GithubImportController {
                 private $location:ng.ILocationService,
                 private $window:ng.IWindowService,
                 private $mdToast,
-                private githubService:GithubService,
+                public githubService:GithubService,
                 private $httpParamSerializer) {
         this.githubSearchQuery = '';
         this.searchedGithubComponents = [];
@@ -126,6 +127,10 @@ class GithubImportController {
     public setUserToken (token: string) {
         if (token) {
             this.githubService.setUserToken(token);
+            this.showTokenInput = false;
+            this.errorMessage = '';
+        } else {
+            this.toast('Token is empty');
         }
     }
 
@@ -142,6 +147,9 @@ class GithubImportController {
                 } else if (results.message) {
                     if (results.message.indexOf('API rate limit') !== -1) {
                         this.errorMessage = 'Github API rate limit reached. Please use authenticated requests';
+                        this.showTokenInput = true;
+                    } else {
+                        this.errorMessage = results.message;
                     }
                 }
             })

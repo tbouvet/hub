@@ -1,4 +1,4 @@
-<div id="component-detail-info" layout-padding layout="row" layout-xs="column" style="padding: 0">
+<div id="component-detail-info" flex layout-padding layout="row" layout-xs="column" style="padding: 0">
     <div id="component-detail-readme" flex="80" flex-xs="100" flex-order-xs="2">
         <md-content class="inherit-background" flex style="padding: 0; border-right: 1px solid #eeeeee">
             <div class="markdown-body" ng-include="$ctrl.component.$embedded('readme')._links.self.href"></div>
@@ -29,6 +29,6 @@
     </div>
 </div>
 
-<div id="component-detail-comment" layout="column" layout-padding layout="row" layout-xs="column" style="margin-top: 20px;">
+<div flex id="component-detail-comment" layout="column" layout-padding layout="row" layout-xs="column" style="margin-top: 20px;">
     <div hub-comment component="$ctrl.component"></div>
 </div>

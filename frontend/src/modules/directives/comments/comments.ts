@@ -21,6 +21,7 @@ interface ICommentScope extends ng.IScope {
     submitComment(comment:string): void;
     newCommentText: string;
     loadNewComments(criterias):void;
+    criterias: { size: number, offset?: number }
     comments: IComment[];
     component: any;
     commentForm: ng.IFormController;
@@ -38,7 +39,7 @@ class HubComment implements ng.IDirective {
     };
     template = commentTemplate;
     link:ng.IDirectiveLinkFn = (scope:ICommentScope) => {
-        var criterias = { size: 10 };
+        scope.criterias = {size: 10};
         scope.comments = [];
         scope.newCommentText = '';
 
@@ -50,18 +51,24 @@ class HubComment implements ng.IDirective {
 
         scope.submitComment = (text:string) => {
             if (scope.component) {
-                scope.component.$links('comment', {componentId: scope.component.id}).save(text).$promise.then((comment:IComment) => {
-                    clearForm();
-                    scope.comments.push(comment);
-                }, (reject: any) => {
-                    throw new Error(reject);
-                });
+                scope.component.$links('comment', {componentId: scope.component.id}).save(text).$promise
+                    .then((comment:IComment) => {
+                        clearForm();
+                        if (scope.comments.length) {
+                            scope.comments.unshift(comment);
+                        } else {
+                            scope.loadNewComments(scope.criterias);
+                        }
+                    })
+                    .catch((reject:any) => {
+                        throw new Error(reject);
+                    });
             }
         };
 
         var nextLink:Function;
 
-        scope.loadNewComments = () => {
+        scope.loadNewComments = (criterias) => {
             if (scope.component) {
                 var fetchFunction = nextLink ? nextLink : scope.component.$links('comment', {componentId: scope.component.id});
                 if (fetchFunction.get) {

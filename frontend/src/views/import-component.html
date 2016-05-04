@@ -67,9 +67,11 @@
                                  layout-align="center center">
                                 <md-list>
                                     <md-subheader ng-if="$qctrl.failedSources" class="md-no-sticky">
-                                        <md-icon md-font-set="material-icons">warning</md-icon> Failure
+                                        <md-icon md-font-set="material-icons">warning</md-icon>
+                                        Failure
                                     </md-subheader>
-                                    <md-list-item ng-repeat="(repository, messages) in $qctrl.failedSources" class="md-3-line">
+                                    <md-list-item ng-repeat="(repository, messages) in $qctrl.failedSources"
+                                                  class="md-3-line">
                                         <div class="md-list-item-text" layout="column">
                                             <h3 style="font-weight: bold;">{{ repository }}</h3>
                                             <ul style="color: red">
@@ -99,27 +101,74 @@
             <md-tab label="Github">
                 <section ng-controller="GithubImportController as $ctrl">
                     <md-content class="md-padding">
-                        <h1><i class="fa fa-github"></i> Github </h1>
-
-                        <form name="searchGithubForm">
+                        <div layout="row">
+                            <div>
+                                <h1>
+                                    <i class="fa fa-github"></i> Github
+                                </h1>
+                            </div>
+                            <div ng-if="$ctrl.githubService.getUserToken()" style="padding-top: 8px; margin-left: 10px">
+                                 <p style="color: green">
+                                    Using token
+                                </p>
+                            </div>
+                            <div flex></div>
+                            <div>
+                                <md-button ng-if="!$ctrl.showTokenInput" ng-click="$ctrl.showTokenInput = true"> set
+                                    token
+                                </md-button>
+                            </div>
+                        </div>
+                        <form name="searchGithubForm"
+                              ng-if="!$ctrl.showTokenInput"
+                              ng-submit="$ctrl.searchGithubRepositories($ctrl.githubSearchQuery)">
                             <md-input-container class="md-block">
                                 <label for="searchGithub">Enter user to list its public repositories</label>
                                 <input md-no-asterisk
                                        id="searchGithub"
                                        name="searchGithub"
                                        md-autofocus
-                                       ng-model-options="{ debounce: 500 }"
-                                       ng-model="$ctrl.githubSearchQuery"
-                                       ng-change="$ctrl.searchGithubRepositories($ctrl.githubSearchQuery)">
+                                       ng-model="$ctrl.githubSearchQuery">
                             </md-input-container>
-                            <div ng-if="$ctrl.errorMessage" style="color:red">
-                                {{$ctrl.errorMessage }}
-                            </div>
-                            <div ng-if="$ctrl.searching">
-                                Searching...
-                            </div>
                         </form>
-                        <md-list ng-if="$ctrl.searchedGithubComponents.length > 0 && !$ctrl.importing" flex>
+
+                        <span ng-if="$ctrl.errorMessage" style="color:red">{{$ctrl.errorMessage }}</span>
+
+                        <div ng-if="$ctrl.showTokenInput">
+                            <div layout="row" layout-align="start center">
+                                <form flex ng-submit="$ctrl.setUserToken($ctrl.githubAccessToken)">
+                                    <md-input-container flex class="md-block">
+                                        <label for="searchGithub">Paste Github access token here</label>
+                                        <input md-no-asterisk
+                                               id="githubAccessToken"
+                                               name="githubAccessToken"
+                                               ng-model="$ctrl.githubAccessToken">
+                                    </md-input-container>
+                                    <div layout="row" layout-align="end center">
+                                        <md-button class="md-raised"
+                                                   ng-click="$ctrl.showTokenInput = false">
+                                            Cancel
+                                        </md-button>
+                                        <md-button type="submit"
+                                                   class="md-raised md-primary">
+                                            Set
+                                        </md-button>
+                                    </div>
+
+                                </form>
+                            </div>
+                        </div>
+                        <div ng-if="$ctrl.searching" layout="row">
+                            <div>
+                                <md-progress-circular md-mode="indeterminate"></md-progress-circular>
+                            </div>
+                            <p>
+                                Searching...
+                            </p>
+                        </div>
+                        <md-list ng-if="$ctrl.searchedGithubComponents.length > 0 && !$ctrl.importing && !$ctrl.showTokenInput"
+                                 flex
+                                 id="github-search-list">
 
                             <div layout="row" layout-align="start center">
                                 <md-input-container class="md-block" flex>
@@ -142,7 +191,9 @@
                                     ng-repeat="searchedComponent in $ctrl.searchedGithubComponents | filter:{full_name: searchFilter }"
                                     class="md-1-line">
                                 <div class="md-list-item-text" layout="row">
-                                    <img ng-src="{{ searchedComponent.avatar }}" err-src="src/img/default-component.png"
+                                    <img ng-src="{{ searchedComponent.avatar }}"
+                                         err-src
+                                         component-name="{{ searchedComponent.name }}"
                                          class="md-avatar" alt="User picture"/>
 
                                     <h3 class="md-subhead">{{ searchedComponent.full_name }}</h3>
@@ -155,15 +206,22 @@
                                 </div>
                             </md-list-item>
                         </md-list>
-                        <div ng-if="$ctrl.importing">
-                            <md-progress-circular md-mode="indeterminate"></md-progress-circular>
+                        <div ng-if="$ctrl.importing" layout="row">
+                            <div>
+                                <md-progress-circular md-mode="indeterminate"></md-progress-circular>
+                            </div>
+                            <p>
+                                Importing components...
+                            </p>
                         </div>
                         <div ng-if="$ctrl.importComplete">
                             <md-list>
                                 <md-subheader ng-if="$ctrl.failedSources" class="md-no-sticky">
-                                    <md-icon md-font-set="material-icons">warning</md-icon> Failure
+                                    <md-icon md-font-set="material-icons">warning</md-icon>
+                                    Failure
                                 </md-subheader>
-                                <md-list-item ng-repeat="(repository, messages) in $ctrl.failedSources" class="md-3-line">
+                                <md-list-item ng-repeat="(repository, messages) in $ctrl.failedSources"
+                                              class="md-3-line">
                                     <div class="md-list-item-text" layout="column">
                                         <h3 style="font-weight: bold;">{{ repository }}</h3>
                                         <ul style="color: red">
@@ -172,9 +230,13 @@
                                     </div>
                                 </md-list-item>
                                 <md-divider ng-if="$ctrl.failedSources"></md-divider>
-                                <md-subheader ng-if="$ctrl.importedComponents" class="md-no-sticky"> Imported components</md-subheader>
+                                <md-subheader ng-if="$ctrl.importedComponents" class="md-no-sticky"> Imported
+                                    components
+                                </md-subheader>
                                 <md-list-item ng-repeat="card in $ctrl.importedComponents" class="md-1-line">
-                                    <img ng-src="{{ card.icon }}" err-src="src/img/default-component.png" style="width: 45px; margin-right: 10px">
+                                    <img ng-src="{{ card.icon }}" err-src component="{{ ::card }}"
+                                         style="width: 45px; margin-right: 10px">
+
                                     <div class="md-list-item-text" layout="column">
                                         <h3>{{ card.name }}</h3>
                                     </div>

@@ -93,6 +93,18 @@ md-card[md-ink-ripple] {
     box-shadow:0 1px 4px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.1) inset;
 }
 
+.component-card-icon {
+    width: 40px;
+    height: 40px;
+    margin-right: 10px;
+    color: white;
+    font-size: 1.5em;
+    text-align: center;
+    line-height: 1.9;
+    text-transform: uppercase;
+    border-radius: 50%;
+}
+
 .component-icon {
     width: 100px;
     max-width: 100%;
@@ -119,6 +131,10 @@ md-dialog.fullscreen-dialog {
     margin-right: 20px;
 }
 
+#github-search-list {
+    padding: 0 20%;
+}
+
 [role="tabpanel"],
 md-tabs {
     transition: none;
@@ -129,6 +145,10 @@ md-tabs {
         padding: 0;
     }
 
+    #github-search-list {
+        padding: inherit;
+    }
+
     md-backdrop.md-sidenav-backdrop {
         display: block;
     }
@@ -137,6 +157,10 @@ md-tabs {
 @media screen and (max-width: 960px) {
     #view {
         padding: 0;
+    }
+
+    #github-search-list {
+        padding: inherit;
     }
 
     #hub-sidenav > md-toolbar {
