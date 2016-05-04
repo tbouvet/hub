@@ -4,8 +4,9 @@ import IResource = angular.resource.IResource;
 import IResourceClass = angular.resource.IResourceClass;
 
 enum Sort {
-    DATE = <any> 'date',
-    POPULARITY = <any> 'popularity',
+    DATE = <any> 'DATE',
+    STARS = <any> 'STARS',
+    NAME = <any> 'NAME',
 }
 
 interface ISearchCriterias {
@@ -16,8 +17,7 @@ interface ISearchCriterias {
 
 class SearchController {
     public components:Card[];
-    public resultSize: number;
-    public noResults: boolean;
+    public resultSize: number = 0;
 
     static $inject = ['HomeService', '$location'];
 
@@ -31,6 +31,12 @@ class SearchController {
         sort: Sort.DATE,
         size: 12
     };
+
+    public onSortChange(): void {
+        this.nextPage = undefined;
+        this.components = [];
+        this.loadNewCards(this.searchCriterias);
+    }
 
     private nextPage:Function;
 
@@ -50,7 +56,6 @@ class SearchController {
         if (fetchFunction.get) {
             fetchFunction.get(searchCriterias).$promise
                 .then((results:any) => {
-                    this.noResults = false;
                     this.nextPage = results.$links('next') || angular.noop;
                     if (successCb) {
                         successCb(results);
@@ -60,14 +65,13 @@ class SearchController {
                     if (errorCb) {
                         errorCb();
                     }
-                    this.noResults = true;
                     throw new Error(rejected);
                 });
         }
     }
 
     public view(card:Card):void {
-        this.$location.path('hub/component/' + card.id);
+        this.$location.path('hub/component/' + card.id).search('tab', 'info');
     }
 }
 

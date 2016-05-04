@@ -17,7 +17,6 @@
     <md-content class="md-whiteframe-1dp">
         <md-tabs md-dynamic-height md-border-bottom>
             <md-tab label="Quick">
-
                 <section ng-controller="QuickImportController as $qctrl">
                     <md-content class="md-padding">
                         <form name="quickImportForm" ng-submit="$qctrl.confirm($qctrl.repository)">
@@ -26,7 +25,8 @@
                                     <label>Repository type</label>
                                     <md-select ng-model="$qctrl.repository.sourceType">
                                         <md-optgroup label="Repository type">
-                                            <md-option ng-repeat="option in $qctrl.repositoryTypes">{{ option }}</md-option>
+                                            <md-option ng-repeat="option in $qctrl.repositoryTypes">{{ option }}
+                                            </md-option>
                                         </md-optgroup>
                                     </md-select>
                                 </md-input-container>
@@ -40,35 +40,58 @@
                                            required
                                            vcs-url-validator
                                            repository="$qctrl.repository"/>
+
                                     <div ng-messages="form.url.$error">
                                         <div ng-message="url">The URL does not appear to be valid.</div>
                                         <div ng-message="required">You did not enter a URL.</div>
-                                        <div ng-message="isRepoUrl">The URL does not appear to be a valid .git URL.</div>
+                                        <div ng-message="isRepoUrl">The URL does not appear to be a valid .git URL.
+                                        </div>
                                     </div>
                                 </md-input-container>
                             </div>
                             <div ng-hide="$qctrl.importing" layout="row">
                                 <span flex></span>
-                                <md-button type="submit" class="md-primary" ng-disabled="quickImportForm.$invalid" style="margin-right:20px;">
+                                <md-button type="submit" class="md-primary" ng-disabled="quickImportForm.$invalid"
+                                           style="margin-right:20px;">
                                     Add component
                                 </md-button>
                             </div>
-                            <div ng-show="$qctrl.importing && ($qctrl.success === $qctrl.failure)" flex layout="row" layout-align="center center">
-                                <md-progress-circular md-diameter="150px" class="md-hue-1t" md-mode="indeterminate"></md-progress-circular>
+                            <div ng-show="$qctrl.importing && ($qctrl.success === $qctrl.failure)" flex layout="row"
+                                 layout-align="center center">
+                                <md-progress-circular md-diameter="150px" class="md-hue-1t"
+                                                      md-mode="indeterminate"></md-progress-circular>
                                 Hold tight ! Your component is being added.
                             </div>
                             <div ng-show="$qctrl.failure"
-                                 flex layout="row"
-                                 style="min-height: 150px;" ng-cloak
+                                 layout="column"
                                  layout-align="center center">
-                                <md-icon style="font-size: 130px; height: 130px; margin: 0 100px" class="material-icons">warning</md-icon>
-                                <p>An error occured. We could not import your component.</p>
+                                <md-list>
+                                    <md-subheader ng-if="$qctrl.failedSources" class="md-no-sticky">
+                                        <md-icon md-font-set="material-icons">warning</md-icon>
+                                        Failure
+                                    </md-subheader>
+                                    <md-list-item ng-repeat="(repository, messages) in $qctrl.failedSources"
+                                                  class="md-3-line">
+                                        <div class="md-list-item-text" layout="column">
+                                            <h3 style="font-weight: bold;">{{ repository }}</h3>
+                                            <ul style="color: red">
+                                                <li ng-repeat="message in messages track by $index">{{ message }}</li>
+                                            </ul>
+                                        </div>
+                                    </md-list-item>
+                                </md-list>
+                                <md-button class="md-raised md-primary"
+                                           ng-click="quickImportForm.$setPristine(); $qctrl.terminate()">OK
+                                </md-button>
                             </div>
                             <div ng-cloak ng-show="$qctrl.success" layout="column" layout-align="center center">
                                 <h2 class="md-headline">New component imported !</h2>
-                                <hub-card card="$qctrl.newComponent" on-click="$qctrl.view($qctrl.newComponent)" style="width: 265px;"></hub-card>
+                                <hub-card card="$qctrl.newComponent" on-click="$qctrl.view($qctrl.newComponent)"
+                                          style="width: 265px;"></hub-card>
                                 <p> Note that your component needs to be published before being visible to others. </p>
-                                <md-button class="md-raised md-primary" ng-click="quickImportForm.$setPristine(); $qctrl.terminate()">OK</md-button>
+                                <md-button class="md-raised md-primary"
+                                           ng-click="quickImportForm.$setPristine(); $qctrl.terminate()">OK
+                                </md-button>
                             </div>
                         </form>
                     </md-content>
@@ -78,20 +101,74 @@
             <md-tab label="Github">
                 <section ng-controller="GithubImportController as $ctrl">
                     <md-content class="md-padding">
-                        <h1> <i class="fa fa-github"></i> Github </h1>
-                        <form name="searchGithubForm">
+                        <div layout="row">
+                            <div>
+                                <h1>
+                                    <i class="fa fa-github"></i> Github
+                                </h1>
+                            </div>
+                            <div ng-if="$ctrl.githubService.getUserToken()" style="padding-top: 8px; margin-left: 10px">
+                                 <p style="color: green">
+                                    Using token
+                                </p>
+                            </div>
+                            <div flex></div>
+                            <div>
+                                <md-button ng-if="!$ctrl.showTokenInput" ng-click="$ctrl.showTokenInput = true"> set
+                                    token
+                                </md-button>
+                            </div>
+                        </div>
+                        <form name="searchGithubForm"
+                              ng-if="!$ctrl.showTokenInput"
+                              ng-submit="$ctrl.searchGithubRepositories($ctrl.githubSearchQuery)">
                             <md-input-container class="md-block">
                                 <label for="searchGithub">Enter user to list its public repositories</label>
                                 <input md-no-asterisk
                                        id="searchGithub"
                                        name="searchGithub"
                                        md-autofocus
-                                       ng-model-options="{ debounce: 500 }"
-                                       ng-model="$ctrl.githubSearchQuery"
-                                       ng-change="$ctrl.searchGithubRepositories($ctrl.githubSearchQuery)">
+                                       ng-model="$ctrl.githubSearchQuery">
                             </md-input-container>
                         </form>
-                        <md-list ng-if="$ctrl.searchedGithubComponents.length > 0 && !$ctrl.importing" flex>
+
+                        <span ng-if="$ctrl.errorMessage" style="color:red">{{$ctrl.errorMessage }}</span>
+
+                        <div ng-if="$ctrl.showTokenInput">
+                            <div layout="row" layout-align="start center">
+                                <form flex ng-submit="$ctrl.setUserToken($ctrl.githubAccessToken)">
+                                    <md-input-container flex class="md-block">
+                                        <label for="searchGithub">Paste Github access token here</label>
+                                        <input md-no-asterisk
+                                               id="githubAccessToken"
+                                               name="githubAccessToken"
+                                               ng-model="$ctrl.githubAccessToken">
+                                    </md-input-container>
+                                    <div layout="row" layout-align="end center">
+                                        <md-button class="md-raised"
+                                                   ng-click="$ctrl.showTokenInput = false">
+                                            Cancel
+                                        </md-button>
+                                        <md-button type="submit"
+                                                   class="md-raised md-primary">
+                                            Set
+                                        </md-button>
+                                    </div>
+
+                                </form>
+                            </div>
+                        </div>
+                        <div ng-if="$ctrl.searching" layout="row">
+                            <div>
+                                <md-progress-circular md-mode="indeterminate"></md-progress-circular>
+                            </div>
+                            <p>
+                                Searching...
+                            </p>
+                        </div>
+                        <md-list ng-if="$ctrl.searchedGithubComponents.length > 0 && !$ctrl.importing && !$ctrl.showTokenInput"
+                                 flex
+                                 id="github-search-list">
 
                             <div layout="row" layout-align="start center">
                                 <md-input-container class="md-block" flex>
@@ -108,12 +185,17 @@
                                 {{ $ctrl.searchedGithubComponents.length }} components found
                             </md-subheader>
                             <md-list-item>
-                                <md-button class="md-secondary" ng-click="$ctrl.toggleAll()"> Toggle all </md-button>
+                                <md-button class="md-secondary" ng-click="$ctrl.toggleAll()"> Toggle all</md-button>
                             </md-list-item>
-                            <md-list-item ng-repeat="searchedComponent in $ctrl.searchedGithubComponents | filter:{full_name: searchFilter }"
-                                          class="md-1-line">
+                            <md-list-item
+                                    ng-repeat="searchedComponent in $ctrl.searchedGithubComponents | filter:{full_name: searchFilter }"
+                                    class="md-1-line">
                                 <div class="md-list-item-text" layout="row">
-                                    <img ng-src="{{ searchedComponent.avatar }}" err-src="src/img/default-component.png" class="md-avatar" alt="User picture"/>
+                                    <img ng-src="{{ searchedComponent.avatar }}"
+                                         err-src
+                                         component-name="{{ searchedComponent.name }}"
+                                         class="md-avatar" alt="User picture"/>
+
                                     <h3 class="md-subhead">{{ searchedComponent.full_name }}</h3>
                                     <md-checkbox class="md-secondary"
                                                  aria-label="add to import list"
@@ -124,7 +206,43 @@
                                 </div>
                             </md-list-item>
                         </md-list>
-                        <md-progress-circular ng-if="$ctrl.importing" md-mode="indeterminate"></md-progress-circular>
+                        <div ng-if="$ctrl.importing" layout="row">
+                            <div>
+                                <md-progress-circular md-mode="indeterminate"></md-progress-circular>
+                            </div>
+                            <p>
+                                Importing components...
+                            </p>
+                        </div>
+                        <div ng-if="$ctrl.importComplete">
+                            <md-list>
+                                <md-subheader ng-if="$ctrl.failedSources" class="md-no-sticky">
+                                    <md-icon md-font-set="material-icons">warning</md-icon>
+                                    Failure
+                                </md-subheader>
+                                <md-list-item ng-repeat="(repository, messages) in $ctrl.failedSources"
+                                              class="md-3-line">
+                                    <div class="md-list-item-text" layout="column">
+                                        <h3 style="font-weight: bold;">{{ repository }}</h3>
+                                        <ul style="color: red">
+                                            <li ng-repeat="message in messages track by $index">{{ message }}</li>
+                                        </ul>
+                                    </div>
+                                </md-list-item>
+                                <md-divider ng-if="$ctrl.failedSources"></md-divider>
+                                <md-subheader ng-if="$ctrl.importedComponents" class="md-no-sticky"> Imported
+                                    components
+                                </md-subheader>
+                                <md-list-item ng-repeat="card in $ctrl.importedComponents" class="md-1-line">
+                                    <img ng-src="{{ card.icon }}" err-src component="{{ ::card }}"
+                                         style="width: 45px; margin-right: 10px">
+
+                                    <div class="md-list-item-text" layout="column">
+                                        <h3>{{ card.name }}</h3>
+                                    </div>
+                                </md-list-item>
+                            </md-list>
+                        </div>
                     </md-content>
                 </section>
             </md-tab>

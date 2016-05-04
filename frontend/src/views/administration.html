@@ -22,7 +22,7 @@
                     <md-subheader class="md-no-sticky">{{ $ctrl.pendingComponents.length }} components</md-subheader>
                     <md-list-item ng-repeat="pendingComponent in $ctrl.pendingComponents"
                                   ng-click="$ctrl.view(pendingComponent)" class="md-3-line">
-                        <img ng-src="{{ pendingComponent.icon }}" err-src="src/img/default-component.png" class="md-avatar" alt="Component icon"/>
+                        <img ng-src="{{ pendingComponent.icon }}" err-src component="{{ ::pendingComponent }}" class="md-avatar" alt="Component icon"/>
                         <div class="md-list-item-text" layout="column">
                             <h3>{{ pendingComponent.name }}</h3>
                             <h4>{{ pendingComponent.summary }}</h4>

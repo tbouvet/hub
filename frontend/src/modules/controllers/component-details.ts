@@ -20,12 +20,19 @@ var displayDocName = ['$window', function ($window) {
 
 class ComponentDetailsController {
     public component:any;
-    public detailsView:string;
+    public selectedTabIndex:number;
     public activeWiki:Object;
     public activeDoc:Object;
+    public tabMap = {
+        'info': 0,
+        'docs': 1,
+        'wiki': 2
+    };
+    public reverseTabMap = this.reverse(this.tabMap);
 
     static $inject = [
         'HomeService',
+        '$scope',
         '$location',
         '$routeParams',
         '$http',
@@ -36,6 +43,7 @@ class ComponentDetailsController {
     ];
 
     constructor(private api:any,
+                private $scope,
                 private $location:ng.ILocationService,
                 private $routeParams:any,
                 private $http:IHttpService,
@@ -43,8 +51,6 @@ class ComponentDetailsController {
                 private $mdDialog,
                 private $mdMedia,
                 private $window) {
-
-        this.getTab();
 
         this.getComponent().$promise.then((component:any) => {
             this.component = component;
@@ -58,22 +64,28 @@ class ComponentDetailsController {
             if (wiki && wiki.length) {
                 this.activeWiki = wiki[0];
             }
+
+            this.selectedTabIndex = this.getTabIndex(this.$routeParams.tab);
+
+            $scope.$on('$locationChangeSuccess', () => {
+                this.selectedTabIndex = this.getTabIndex(this.$routeParams.tab);
+            });
+
+            $scope.$watch(() => this.selectedTabIndex, current => {
+                this.setLocationSearch(this.reverseTabMap[current]);
+            });
         });
     }
 
-    public navigateToTab(tab:string) {
+    private setLocationSearch(tab:string) {
         this.$location.search('tab', tab);
-        this.getTab(tab);
     }
 
-    public getTab(tab?: string) {
-        if (tab) {
-            this.detailsView = tab;
-        } else {
-            this.detailsView = this.$routeParams.tab ? this.$routeParams.tab : 'identity';
-        }
-
+    private getTabIndex (tabParam) {
+        var tab = tabParam ? tabParam : 'info';
+        return this.tabMap[tab];
     }
+
 
     public getComponent():IResource {
         return this.api('home').enter('component', {componentId: this.$routeParams.id}).get();
@@ -201,8 +213,6 @@ class ComponentDetailsController {
                 wiki: wiki,
                 component: this.component
             }
-        }).then(html => {
-
         });
     }
 
@@ -220,6 +230,17 @@ class ComponentDetailsController {
 
     public static promiseRejected(reason):void {
         throw new Error(reason.statusText || reason.data || reason);
+    }
+
+    private reverse (tabMap) {
+        var reverseTabMap = {};
+
+        for (var prop in tabMap) {
+            if(tabMap.hasOwnProperty(prop)) {
+                reverseTabMap[tabMap[prop]] = prop;
+            }
+        }
+        return reverseTabMap;
     }
 }
 

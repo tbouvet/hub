@@ -1,5 +1,12 @@
 {
-  "hub": {},
+  "/src/hub.w20.json": {
+    "modules": {
+      "toolbar": {
+        "logoUrl": "http://seedstack.org/img/logos/seedstack-logo-round.svg",
+        "brand": "SeedStack"
+      }
+    }
+  },
 
   "w20-core": {
     "modules": {
@@ -21,10 +28,7 @@
         "type": "test"
       },
       "security": {
-        "autoLogin": true,
-        "redirectAfterLogout": "/",
-        "redirectAfterLogin": "/",
-        "persistentRestrictions": false
+        "autoLogin": true
       },
       "utils": {},
       "hypermedia": {

@@ -36,7 +36,7 @@ class HomeController {
     }
 
     public viewCard(card: Card): void {
-        this.location.path('hub/component/' + card.id);
+        this.location.path('hub/component/' + card.id).search('tab', 'info');
     }
 }
 

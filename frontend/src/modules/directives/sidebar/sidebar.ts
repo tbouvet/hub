@@ -35,7 +35,6 @@ class HubSidebar implements ng.IDirective {
             } else {
                 this.$location.path(path);
             }
-
         };
 
         this.eventService.on('w20.security.authenticated', () => {
@@ -43,7 +42,6 @@ class HubSidebar implements ng.IDirective {
         });
 
         this.eventService.on('hub.sidenav.toggle', () => {
-            scope.keepVisible = !scope.keepVisible;
             this.$mdSidenav('sidebar').toggle();
         });
     }

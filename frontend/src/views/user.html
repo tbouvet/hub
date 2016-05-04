@@ -12,25 +12,19 @@
         <md-content class="md-whiteframe-1dp" style="width: 100%">
             <md-toolbar>
                 <div class="md-toolbar-tools">
-                    <img ng-src="{{ $ctrl.user._links['users/icon'].href }}" err-src="src/img/default-user.png" class="md-avatar user-profile-icon" alt="User icon"/>
+                    <img ng-src="{{ $ctrl.user._links['users/icon'].href }}"
+                         err-src="src/img/default-user.png"
+                         class="md-avatar user-profile-icon"
+                         alt="User icon"/>
                     <h2>
                         {{ $ctrl.user.name }}
                     </h2>
                     <div flex></div>
-                    <md-button ng-if="$ctrl.userIsOwner" ng-href="#!/hub/update-profile">Update profile</md-button>
+                    <md-button ng-if="$ctrl.userIsOwner" ng-href="hub/update-profile">Update profile</md-button>
                 </div>
             </md-toolbar>
-            <md-content style="min-height: 85px; overflow-x: hidden;">
-                <div layout="row" layout-align="end center" layout-padding>
-                    <div style="margin-right: 20px;">
-                        <md-icon md-font-set="material-icons">star_rate</md-icon>
-                        10
-                    </div>
-                    <div>
-                        <md-icon md-font-set="material-icons">extension</md-icon>
-                        {{ $ctrl.userComponentsCount }}
-                    </div>
-                </div>
+            <md-content style="min-height: 60px; overflow-x: hidden;">
+                <div layout="row" layout-align="end center" layout-padding></div>
             </md-content>
         </md-content>
 
@@ -62,7 +56,7 @@
                             <md-list-item
                                     ng-repeat="userComponent in $ctrl.userComponents | filterPendingIfNotOwner:$ctrl.userIsOwner | filter:($ctrl.pendingOnly || '') && {state: 'PENDING'}"
                                     ng-click="$ctrl.view(userComponent)" class="md-3-line">
-                                <img ng-src="{{ userComponent.icon._links.self.href }}" err-src="src/img/default-component.png" class="md-avatar" alt="Component icon"/>
+                                <img ng-src="{{ userComponent.icon._links.self.href }}" err-src component="{{ ::userComponent }}" class="md-avatar" alt="Component icon"/>
 
                                 <div class="md-list-item-text" layout="column" flex>
                                     <h3>{{ userComponent.name }} </h3>
@@ -94,7 +88,8 @@
                             <md-subheader class="md-no-sticky">{{ $ctrl.favoriteComponentsCount }}</md-subheader>
                             <md-list-item ng-repeat="favoriteComponent in $ctrl.favoriteComponents"
                                           ng-click="$ctrl.view(favoriteComponent)" class="md-3-line">
-                                <img ng-src="{{ favoriteComponent.icon._links.self.href }}" err-src="src/img/default-component.png" class="md-avatar" alt="Component icon"/>
+                                <img ng-src="{{ favoriteComponent.icon._links.self.href }}"
+                                     err-src component="{{ ::favoriteComponent }}" class="md-avatar" alt="Component icon"/>
                                 <div class="md-list-item-text" layout="column">
                                     <h3>{{ favoriteComponent.name }}</h3>
                                     <h4>{{ favoriteComponent.summary }}</h4>

@@ -26,6 +26,7 @@ class QuickImportController {
     public repositoryTypes:RepositoryType[] = [RepositoryType.GIT, RepositoryType.SVN];
     public repository:IRepository = <any>{};
     public importing:boolean = false;
+    public failedSources:{};
     public failure:boolean = false;
     public success:boolean = false;
     public newComponent:Card;
@@ -54,13 +55,16 @@ class QuickImportController {
         this.api('home').enter('components', {}, action).save({}, formParam)
             .$promise
             .then(newComponent => {
-                if (newComponent) {
+                if (newComponent && newComponent['componentCards'][0]) {
                     this.success = true;
-                    this.newComponent = newComponent;
+                    this.newComponent = newComponent['componentCards'][0];
                 }
             })
             .catch(reason => {
                 this.failure = true;
+                if (reason.data && reason.data.failedSources) {
+                    this.failedSources = reason.data.failedSources;
+                }
                 ImportComponentController.promiseRejected(reason);
             });
     };
@@ -80,7 +84,13 @@ class GithubImportController {
     public githubSearchQuery:string;
     public searchedGithubComponents:Card[];
     public selectedRepositories:any[];
+    public searching:boolean;
     public importing:boolean;
+    public importComplete:boolean;
+    public errorMessage:string;
+    public showTokenInput:boolean;
+    public failedSources:{};
+    public importedComponents:any[];
     private SEARCH_LIMIT = 100;
 
     static $inject = [
@@ -96,12 +106,13 @@ class GithubImportController {
                 private $location:ng.ILocationService,
                 private $window:ng.IWindowService,
                 private $mdToast,
-                private githubService:GithubService,
+                public githubService:GithubService,
                 private $httpParamSerializer) {
         this.githubSearchQuery = '';
         this.searchedGithubComponents = [];
         this.selectedRepositories = [];
         this.importing = false;
+        this.importComplete = false;
     }
 
     private toast(message:string) {
@@ -113,17 +124,42 @@ class GithubImportController {
         );
     }
 
-    public searchGithubRepositories(query:string):void {
-        this.githubService.searchUserRepositories(query, this.SEARCH_LIMIT)
-            .then((results) => {
-                this.searchedGithubComponents = results.map((result) => {
-                    return { avatar: result.owner['avatar_url'], full_name: result.full_name};
-                });
-            })
-            .catch(ImportComponentController.promiseRejected);
+    public setUserToken (token: string) {
+        if (token) {
+            this.githubService.setUserToken(token);
+            this.showTokenInput = false;
+            this.errorMessage = '';
+        } else {
+            this.toast('Token is empty');
+        }
     }
 
-    public toggleAll(): void {
+    public searchGithubRepositories(query:string):void {
+        this.searching = true;
+        this.importComplete = false;
+        this.errorMessage = '';
+        this.githubService.searchUserRepositories(query, this.SEARCH_LIMIT)
+            .then((results) => {
+                if (results.length) {
+                    this.searchedGithubComponents = results.map((result) => {
+                        return {avatar: result.owner['avatar_url'], full_name: result.full_name};
+                    });
+                } else if (results.message) {
+                    if (results.message.indexOf('API rate limit') !== -1) {
+                        this.errorMessage = 'Github API rate limit reached. Please use authenticated requests';
+                        this.showTokenInput = true;
+                    } else {
+                        this.errorMessage = results.message;
+                    }
+                }
+            })
+            .catch(ImportComponentController.promiseRejected)
+            .finally(() => {
+                this.searching = false;
+            });
+    }
+
+    public toggleAll():void {
         this.selectedRepositories = this.selectedRepositories.length ? [] : this.searchedGithubComponents;
     }
 
@@ -140,12 +176,21 @@ class GithubImportController {
                 this.searchedGithubComponents = [];
                 this.selectedRepositories = [];
                 this.githubSearchQuery = '';
+                if (Object.getOwnPropertyNames(result.failedSources).length) {
+                    this.failedSources = result.failedSources;
+                }
+                if (result['componentCards'].length) {
+                    this.importedComponents = result['componentCards'];
+                }
                 this.toast('All components have been successfully imported!');
             })
             .catch((reason:any) => {
                 this.importing = false;
-                this.toast('Oh no ! An error occurred ! We could not import your component');
+                this.toast('Oh no ! An error occurred ! We could not import your components');
                 ImportComponentController.promiseRejected(reason);
+            })
+            .finally(() => {
+                this.importComplete = true;
             });
     }
 
@@ -155,7 +200,7 @@ class GithubImportController {
 
     private static formatGithubRepositories(results) {
         return results.map((c:any) => {
-            return { url: c.full_name, sourceType: 'GITHUB' };
+            return {url: c.full_name, sourceType: 'GITHUB'};
         });
     }
 }

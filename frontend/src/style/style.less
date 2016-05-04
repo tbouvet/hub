@@ -17,35 +17,35 @@ html, body  {
     line-height: 1.2em;
 }
 
-
 #home {
     background-color: inherit;
 }
 
-#sidebar {
-    margin-top: 64px;
-    position: absolute;
-    button {
-        text-align: left !important;
-    }
+#hub-toolbar {
+    z-index: 70;
+}
 
-    md-sidenav&,
-    md-sidenav.md-locked-open&,
-    md-sidenav.md-closed.md-locked-open-add-active& {
+#hub-sidenav {
+    button {  text-align: left !important; }
+    md-sidenav&, md-sidenav.md-locked-open&, md-sidenav.md-closed.md-locked-open-add-active& {
         width: 200px !important;
         max-width: 200px !important;
     }
 }
 
+#hub-sidenav > md-toolbar {
+    margin-top: 64px;
+}
+
 md-backdrop.md-sidenav-backdrop{
-    opacity: 0 !important;
+    display: none;
 }
 
 #view {
     height: 100%;
     background-color: #fafafa; /* #fafafa or #EEEEEE ? */
-    padding-left: 220px;
-    padding-right: 18%;
+    padding-left: 15%;
+    padding-right: 15%;
 }
 
 #main-speed-dial {
@@ -53,7 +53,6 @@ md-backdrop.md-sidenav-backdrop{
     bottom: 20px;
     right: 60px;
 }
-
 
 md-card[md-ink-ripple] {
     cursor: pointer;
@@ -94,6 +93,18 @@ md-card[md-ink-ripple] {
     box-shadow:0 1px 4px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.1) inset;
 }
 
+.component-card-icon {
+    width: 40px;
+    height: 40px;
+    margin-right: 10px;
+    color: white;
+    font-size: 1.5em;
+    text-align: center;
+    line-height: 1.9;
+    text-transform: uppercase;
+    border-radius: 50%;
+}
+
 .component-icon {
     width: 100px;
     max-width: 100%;
@@ -120,9 +131,27 @@ md-dialog.fullscreen-dialog {
     margin-right: 20px;
 }
 
+#github-search-list {
+    padding: 0 20%;
+}
+
 [role="tabpanel"],
 md-tabs {
     transition: none;
+}
+
+@media screen and (max-width: 1200px) {
+    #view {
+        padding: 0;
+    }
+
+    #github-search-list {
+        padding: inherit;
+    }
+
+    md-backdrop.md-sidenav-backdrop {
+        display: block;
+    }
 }
 
 @media screen and (max-width: 960px) {
@@ -130,9 +159,15 @@ md-tabs {
         padding: 0;
     }
 
-    #sidebar {
+    #github-search-list {
+        padding: inherit;
+    }
+
+    #hub-sidenav > md-toolbar {
         margin-top: 56px;
     }
+
+
 }
 
 @import "markdown";
