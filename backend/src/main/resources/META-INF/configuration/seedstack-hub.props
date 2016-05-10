@@ -17,10 +17,10 @@ release = 1.0.0
 [org.seedstack.seed.security.sessions]
 enabled = true
 [org.seedstack.seed.security.urls]
+/swagger.json = anon
 /login = authc
 /logout =  logout
 /** = authc
-/swagger.json = anon
 
 [org.seedstack.seed.security.users]
 simple = password
