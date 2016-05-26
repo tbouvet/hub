@@ -30,6 +30,10 @@
         <seedstack.version>16.4-SNAPSHOT</seedstack.version>
         <mongodb-driver.version>3.2.2</mongodb-driver.version>
         <juel.version>2.2.7</juel.version>
+
+        <docker.host>localhost</docker.host> 
+        <docker.port>2375</docker.port> 
+        <docker.cert/> 
     </properties>
 
     <dependencyManagement>
@@ -443,5 +447,43 @@
                 </repository>
             </repositories>
         </profile>
+		<profile>
+			<id>docker</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>io.fabric8</groupId>
+						<artifactId>docker-maven-plugin</artifactId>
+						<version>0.14.0</version>
+						<configuration>
+							<dockerHost>tcp://${docker.host}:${docker.port}</dockerHost>
+							<certPath>${docker.cert}</certPath>
+							<sourceDirectory>/</sourceDirectory>
+							<images>
+								<image>
+									<alias>hub</alias>
+									<name>seedstack/hub</name>
+									<build>
+										<from>java:alpine</from>
+										<assembly>
+											<basedir>/opt</basedir>
+											<descriptor>assembly/docker.xml</descriptor>
+										</assembly>
+										<tags>
+											<tag>${project.version}</tag>
+										</tags>
+										<maintainer>thierry.bouvet@mpsa.com</maintainer>
+										<ports>
+											<port>8080</port>
+										</ports>
+										<cmd>exec java $JAVA_OPTS -jar /opt/hub-capsule.jar</cmd>
+									</build>
+								</image>
+							</images>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
     </profiles>
 </project>
