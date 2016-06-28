@@ -33,21 +33,20 @@ public class UserResourceIT extends AbstractSeedWebIT {
 
     @Deployment
     public static WebArchive createDeployment() {
-        return ShrinkWrap.create(WebArchive.class)
-                .addAsResource("META-INF/configuration/seedstack-hub-test.override.props", "META-INF/configuration/aseedstack-hub.props");
+        return ShrinkWrap.create(WebArchive.class);
     }
 
     @RunAsClient
     @Test
     public void get_user_card() throws JSONException {
-        Response response = httpGet("users/adrienlauer");
+        Response response = httpGet("users/user2");
 
-        String requestWithPagination = "{\"name\":\"adrienlauer\",\"emails\":[\"adrien.lauer@mpsa.com\"],\"" +
+        String requestWithPagination = "{\"name\":\"user2\",\"emails\":[\"user2@email.com\"],\"" +
                 "_links\":{" +
-                "\"users/icon\":{\"href\":\"" + baseURL.getPath() + "users/adrienlauer/icon\"}," +
-                "\"self\":{\"href\":\"" + baseURL.getPath() + "users/adrienlauer\"}," +
-                "\"users/components\":{\"href\":\"" + baseURL.getPath() + "users/adrienlauer/components\"}," +
-                "\"users/stars\":{\"href\":\"" + baseURL.getPath() + "users/adrienlauer/stars\"}}" +
+                "\"users/icon\":{\"href\":\"" + baseURL.getPath() + "api/users/user2/icon\"}," +
+                "\"self\":{\"href\":\"" + baseURL.getPath() + "api/users/user2\"}," +
+                "\"users/components\":{\"href\":\"" + baseURL.getPath() + "api/users/user2/components\"}," +
+                "\"users/stars\":{\"href\":\"" + baseURL.getPath() + "api/users/user2/stars\"}}" +
                 "}";
 
         assertThat(response.getStatusCode()).isEqualTo(200);
@@ -60,18 +59,18 @@ public class UserResourceIT extends AbstractSeedWebIT {
     public void manage_icon() throws JSONException {
         byte[] bytes = "icon bytes".getBytes();
         assertThat(httpMethod(MediaType.MULTIPART_FORM_DATA).multiPart("file", bytes, MediaType.APPLICATION_OCTET_STREAM)
-                .post(baseURL.toString() + "users/adrienlauer/icon").getStatusCode()).isEqualTo(200);
+                .post(baseURL.toString() + "users/user2/icon").getStatusCode()).isEqualTo(200);
 
-        Response response = httpGet("users/adrienlauer/icon");
+        Response response = httpGet("users/user2/icon");
         assertThat(response.getStatusCode()).isEqualTo(200);
         assertThat(response.as(byte[].class)).isEqualTo(bytes);
 
-        assertThat(httpMethod().delete(baseURL.toString() + "users/adrienlauer/icon").getStatusCode()).isEqualTo(204);
+        assertThat(httpMethod().delete(baseURL.toString() + "api/users/user2/icon").getStatusCode()).isEqualTo(204);
     }
 
     private Response httpGet(String path) {
         return httpMethod()
-                .get(baseURL.toString() + path);
+                .get(baseURL.toString() + "api/" + path);
     }
 
     private RequestSpecification httpMethod() {
@@ -81,13 +80,7 @@ public class UserResourceIT extends AbstractSeedWebIT {
     private RequestSpecification httpMethod(String mediaType) {
         return expect()
                 .given()
-                .auth().basic("adrienlauer", "password")
+                .auth().basic("user2", "password")
                 .header("Content-Type", mediaType);
-    }
-
-    private Response httpPOST(String path, Object body) {
-        return httpMethod()
-                .body(body)
-                .post(baseURL.toString() + path);
     }
 }

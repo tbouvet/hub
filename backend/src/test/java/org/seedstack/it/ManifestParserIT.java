@@ -36,7 +36,7 @@ public class ManifestParserIT {
         assertThat(manifest.getReleases().get(0).getUrl()).isEqualTo("https://github.com/seedstack/mongodb-addon/releases/tag/v1.0.0");
         assertThat(manifest.getReleases().get(0).getDate()).isEqualTo("2015-11-17");
 
-        assertThat(manifest.getOwner()).isEqualTo("adrien.lauer@mpsa.com");
+        assertThat(manifest.getOwner()).isEqualTo("user2@email.com");
         assertThat(manifest.getUrl()).isEqualTo("https://github.com/seedstack/mongodb-addon");
         assertThat(manifest.getIssues()).isEqualTo("https://github.com/seedstack/mongodb-addon/issues");
         assertThat(manifest.getSummary()).isEqualTo("This is the awesome component 1.");

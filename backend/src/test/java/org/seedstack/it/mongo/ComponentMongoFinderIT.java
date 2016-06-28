@@ -139,16 +139,16 @@ public class ComponentMongoFinderIT {
         // Given these 3 comments
         ComponentId c1 = new ComponentId("Component1");
         Component component = componentRepository.load(c1);
-        component.addComment(new Comment("pith", "So cool this component", getDate(LocalDate.of(2015, 10, 11))));
-        component.addComment(new Comment("kavi87", "Nice version !", getDate(LocalDate.of(2016, 2, 22))));
-        component.addComment(new Comment("adrienlauer", "Thanks for this component", getDate(LocalDate.of(2016, 4, 8))));
+        component.addComment(new Comment("user3", "So cool this component", getDate(LocalDate.of(2015, 10, 11))));
+        component.addComment(new Comment("user1", "Nice version !", getDate(LocalDate.of(2016, 2, 22))));
+        component.addComment(new Comment("user2", "Thanks for this component", getDate(LocalDate.of(2016, 4, 8))));
         componentRepository.persist(component);
 
         List<Comment> comments = componentFinder.findComments(c1, new Range(2,2)).getResult();
 
         // Expecting to find the last comment, i.e the first published comment
         assertThat(comments).hasSize(1);
-        assertThat(comments.get(0).getAuthor()).isEqualTo("pith");
+        assertThat(comments.get(0).getAuthor()).isEqualTo("user3");
         assertThat(comments.get(0).getText()).isEqualTo("So cool this component");
         assertThat(comments.get(0).getPublicationDate()).isEqualTo(getDate(LocalDate.of(2015, 10, 11)));
     }

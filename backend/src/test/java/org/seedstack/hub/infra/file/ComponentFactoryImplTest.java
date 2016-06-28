@@ -55,11 +55,11 @@ public class ComponentFactoryImplTest {
     public void setUp() throws Exception {
         manifest = new Manifest();
         manifest.setId("component1");
-        manifest.setOwner("pith@gmail.com");
+        manifest.setOwner("user3@gmail.com");
 
         new NonStrictExpectations() {{
-            userRepository.findByEmail("pith@gmail.com");
-            result = Optional.of(new User(new UserId("pith"), "pith@gmail.com"));
+            userRepository.findByEmail("user3@gmail.com");
+            result = Optional.of(new User(new UserId("user3"), "user3@gmail.com"));
         }};
     }
 
@@ -68,7 +68,7 @@ public class ComponentFactoryImplTest {
         Component component = underTest.createComponent(manifest);
 
         assertThat(component.getId()).isEqualTo(new ComponentId("component1"));
-        assertThat(component.getOwner()).isEqualTo(new Owner("pith"));
+        assertThat(component.getOwner()).isEqualTo(new Owner("user3"));
         assertThat(component.getDescription()).isNotNull();
         assertThat(component.getDescription().getComponentUrl()).isNull();
         assertThat(component.getDocs()).isNotNull();
@@ -88,16 +88,16 @@ public class ComponentFactoryImplTest {
 
     @Test
     public void create_minimal_component_from_manifest_with_maintainers() {
-        manifest.setMaintainers(Lists.newArrayList("kavi87@gmail.com", "adrienlauer@gmail.com"));
+        manifest.setMaintainers(Lists.newArrayList("user1@gmail.com", "user2@gmail.com"));
         new Expectations() {{
-            userRepository.findByEmail("kavi87@gmail.com");
-            result = Optional.of(new User(new UserId("kavi87"), "kavi87@gmail.com"));
-            userRepository.findByEmail("adrienlauer@gmail.com");
-            result = Optional.of(new User(new UserId("adrienlauer"), "adrienlauer@gmail.com"));
+            userRepository.findByEmail("user1@gmail.com");
+            result = Optional.of(new User(new UserId("user1"), "user1@gmail.com"));
+            userRepository.findByEmail("user2@gmail.com");
+            result = Optional.of(new User(new UserId("user2"), "user2@gmail.com"));
         }};
         Component component = underTest.createComponent(manifest);
 
-        assertThat(component.getMaintainers()).containsOnly(new UserId("kavi87"), new UserId("adrienlauer"));
+        assertThat(component.getMaintainers()).containsOnly(new UserId("user1"), new UserId("user2"));
     }
 
     @Test

@@ -1,0 +1,21 @@
+<md-card ng-click="onClick({card:card})" flex="33" flex-xs="100" md-ink-ripple class="hub-card">
+    <md-card-header>
+        <md-card-avatar>
+            <img ng-src="{{ card.icon }}" err-src component="{{ ::card }}">
+        </md-card-avatar>
+        <md-card-header-text>
+            <span class="md-title">{{ card.name }}</span>
+            <span class="md-subhead">By {{ card.owner }}</span>
+        </md-card-header-text>
+    </md-card-header>
+    <md-card-content>
+        <p>
+            {{ card.summary }}
+        </p>
+    </md-card-content>
+    <md-card-actions layout="row" layout-align="end center">
+        <div>
+            {{ card.stars }} <md-icon class="material-icons md-18">star</md-icon>
+        </div>
+    </md-card-actions>
+</md-card>

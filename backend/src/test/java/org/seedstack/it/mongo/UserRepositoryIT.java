@@ -24,13 +24,13 @@ public class UserRepositoryIT {
 
     @Test
     public void testFindByEmail() {
-        assertThat(userRepository.findByName("admin")).isEqualTo(userRepository.findByEmail("admin@ext.mpsa.com"));
-        assertThat(userRepository.findByName("simple")).isNotEqualTo(userRepository.findByEmail("admin@ext.mpsa.com"));
+        assertThat(userRepository.findByName("admin")).isEqualTo(userRepository.findByEmail("admin@email.com"));
+        assertThat(userRepository.findByName("user1")).isNotEqualTo(userRepository.findByEmail("admin@email.com"));
         assertThat(userRepository.findByName("zzz").isPresent()).isFalse();
     }
     @Test
     public void testFindByEmailWithMultipleEmails() {
-        assertThat(userRepository.findByName("simple")).isEqualTo(userRepository.findByEmail("simple@ext.mpsa.com"));
-        assertThat(userRepository.findByName("simple")).isEqualTo(userRepository.findByEmail("simple@gmail.com"));
+        assertThat(userRepository.findByName("simple")).isEqualTo(userRepository.findByEmail("simple@email.com"));
+        assertThat(userRepository.findByName("simple")).isEqualTo(userRepository.findByEmail("simple@email.org"));
     }
 }

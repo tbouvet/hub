@@ -51,8 +51,7 @@ public class WikiResourceIT extends AbstractSeedWebIT {
 
     @Deployment
     public static WebArchive createDeployment() {
-        return ShrinkWrap.create(WebArchive.class)
-                .addAsResource("META-INF/configuration/seedstack-hub-test.override.props", "META-INF/configuration/aseedstack-hub.props");
+        return ShrinkWrap.create(WebArchive.class);
     }
 
     @RunAsClient
@@ -60,8 +59,8 @@ public class WikiResourceIT extends AbstractSeedWebIT {
     public void create_wiki_page() throws JSONException {
         httpPost("components/Component1/wiki", "Page1", "# Hello World\\n", "creation");
         assertThat(httpGet("components/Component1/wiki/page1", 200).asString()).isEqualTo("<h1><a></a>Hello World</h1>");
-        assertEquals("{\"_embedded\":{\"revisions\":[{\"author\":\"adrienlauer\",\"message\":\"creation\"}]}}}", httpGet("components/Component1/wiki/page1/info", 200).asString(), false);
-        assertEquals("{\"_embedded\":{\"wiki\":[{\"title\":\"Page1\",\"_links\":{\"self\":{\"href\":\"" + baseURL.getPath() + "components/Component1/wiki/page1\"}}}]}}", httpGet("components/Component1", 200).asString(), false);
+        assertEquals("{\"_embedded\":{\"revisions\":[{\"author\":\"user2\",\"message\":\"creation\"}]}}}", httpGet("components/Component1/wiki/page1/info", 200).asString(), false);
+        assertEquals("{\"_embedded\":{\"wiki\":[{\"title\":\"Page1\",\"_links\":{\"self\":{\"href\":\"" + baseURL.getPath() + "api/components/Component1/wiki/page1\"}}}]}}", httpGet("components/Component1", 200).asString(), false);
     }
 
     @RunAsClient
@@ -70,7 +69,7 @@ public class WikiResourceIT extends AbstractSeedWebIT {
         httpPost("components/Component1/wiki", "page2", "# Hello World\\n", "creation");
         httpPut("components/Component1/wiki/page2", "# Hello World!\\n", "update");
         assertThat(httpGet("components/Component1/wiki/page2", 200).asString()).isEqualTo("<h1><a></a>Hello World!</h1>");
-        assertEquals("{\"_embedded\":{\"revisions\":[{\"author\":\"adrienlauer\",\"message\":\"creation\"},{\"author\":\"adrienlauer\",\"message\":\"update\"}]}}", httpGet("components/Component1/wiki/page2/info", 200).asString(), false);
+        assertEquals("{\"_embedded\":{\"revisions\":[{\"author\":\"user2\",\"message\":\"creation\"},{\"author\":\"user2\",\"message\":\"update\"}]}}", httpGet("components/Component1/wiki/page2/info", 200).asString(), false);
     }
 
     @RunAsClient
@@ -87,7 +86,7 @@ public class WikiResourceIT extends AbstractSeedWebIT {
     public void get_revision_details() throws JSONException {
         httpPost("components/Component1/wiki", "page4", "# Hello World\\n", "creation");
         assertThat(httpGet("components/Component1/wiki/page4", 200).asString()).isEqualTo("<h1><a></a>Hello World</h1>");
-        assertEquals("{\"author\":\"adrienlauer\",\"message\":\"creation\"}", httpGet("components/Component1/wiki/page4/revisions/0", 200).asString(), false);
+        assertEquals("{\"author\":\"user2\",\"message\":\"creation\"}", httpGet("components/Component1/wiki/page4/revisions/0", 200).asString(), false);
     }
 
     @RunAsClient
@@ -104,39 +103,39 @@ public class WikiResourceIT extends AbstractSeedWebIT {
         return expect()
                 .statusCode(expectedCode)
                 .given()
-                .auth().basic("adrienlauer", "password")
+                .auth().basic("user2", "password")
                 .header("Content-Type", "application/hal+json")
-                .get(baseURL.toString() + path);
+                .get(baseURL.toString() + "api/" + path);
     }
 
     private Response httpPost(String path, String title, String contents, String message) {
         return expect()
                 .statusCode(201)
                 .given()
-                .auth().basic("adrienlauer", "password")
+                .auth().basic("user2", "password")
                 .header("Content-Type", "application/json")
                 .queryParam("message", message)
                 .body("{\"title\": \"" + title + "\", \"source\": \"" + contents + "\"}")
-                .post(baseURL.toString() + path);
+                .post(baseURL.toString() + "api/" + path);
     }
 
     private Response httpPut(String path, String contents, String message) {
         return expect()
                 .statusCode(200)
                 .given()
-                .auth().basic("adrienlauer", "password")
+                .auth().basic("user2", "password")
                 .header("Content-Type", "application/json")
                 .queryParam("message", message)
                 .body("{\"source\": \"" + contents + "\"}")
-                .put(baseURL.toString() + path);
+                .put(baseURL.toString() + "api/" + path);
     }
 
     private Response httpDelete(String path) {
         return expect()
                 .statusCode(200)
                 .given()
-                .auth().basic("adrienlauer", "password")
-                .delete(baseURL.toString() + path);
+                .auth().basic("user2", "password")
+                .delete(baseURL.toString() + "api/" + path);
     }
 
     @After

@@ -41,8 +41,8 @@ public class ComponentRepositoryIT {
         Release release = new Release(new Version(1, 0, 0, "M2"));
         release.setUrl(new URL("http://component.com/release/1.0.0"));
         release.setDate(LocalDateTime.now());
-        component.addComment(new Comment("pith", "some text", new Date()));
-        component.addMaintainer(new UserId("pith"));
+        component.addComment(new Comment("user3", "some text", new Date()));
+        component.addMaintainer(new UserId("user3"));
         component.addRelease(release);
         componentRepository.persist(component);
         Assertions.assertThat(componentRepository.load(componentId)).isNotNull();

@@ -1,7 +1,7 @@
 var home = {
     "resources": {
         "components": {
-            "href-template": "/components{?search,sort,pageIndex,pageSize}",
+            "href-template": "/api/components{?search,sort,pageIndex,pageSize}",
             "href-vars": {
                 "search": "/doc/components/param/search",
                 "sort": "/doc/components/param/sort",
@@ -22,16 +22,16 @@ var home = {
                     "application/json": ""
                 }
             },
-            "href-template": "/components/{componentId}"
+            "href-template": "/api/components/{componentId}"
         },
         "popular": {
-            "href": "/popular"
+            "href": "/api/popular"
         },
         "recent": {
-            "href": "/recent"
+            "href": "/api/recent"
         },
         "user/components": {
-            "href-template": "/user/components{?search,sort,pageIndex,pageSize}",
+            "href-template": "/api/user/components{?search,sort,pageIndex,pageSize}",
             "href-vars": {
                 "search": "/doc/components/param/search",
                 "sort": "/doc/components/param/sort",
@@ -40,7 +40,7 @@ var home = {
             }
         },
         "stars": {
-            "href-template": "/user/stars{?search,sort,pageIndex,pageSize}",
+            "href-template": "/api/user/stars{?search,sort,pageIndex,pageSize}",
             "href-vars": {
                 "search": "/doc/components/param/search",
                 "sort": "/doc/components/param/sort",

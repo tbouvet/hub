@@ -1,0 +1,30 @@
+#
+# Copyright (c) 2015-2016, The SeedStack authors <http://seedstack.org>
+#
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this
+# file, You can obtain one at http://mozilla.org/MPL/2.0/.
+#
+
+#
+# Copyright (c) 2015-2016, The SeedStack authors <http://seedstack.org>
+#
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this
+# file, You can obtain one at http://mozilla.org/MPL/2.0/.
+#
+
+[org.seedstack]
+seed.security.realms = ConfigurationRealm
+
+[org.seedstack.seed.security.users]
+admin = password, admin
+user1 = password
+user2 = password
+user3 = password
+john = password
+
+[org.seedstack.mongodb.client.main]
+hosts = localhost
+databases = hub-test
+alias.hub-test = hub

@@ -13,8 +13,6 @@ addons:
 
 services: mongodb
 
-node_js: "0.12"
-
 jdk: oraclejdk8
 
 cache:
@@ -22,8 +20,9 @@ cache:
           - $HOME/.m2/repository
           - ./frontend/node_modules
 
+before_install: if [[ `npm -v` != 3* ]]; then npm i -g npm@3; fi
+
 install:
-  - npm install -g gulp-cli
   - echo "<settings><servers><server><id>bintray</id><username>\${env.BINTRAY_USER}</username><password>\${env.BINTRAY_KEY}</password></server></servers></settings>" > ~/.m2/settings.xml
   - if [[ $TRAVIS_PULL_REQUEST = false ]] && [[ $TRAVIS_BRANCH = master || $TRAVIS_BRANCH = dev-* ]] || [[ $TRAVIS_TAG = v* ]]; then export GOAL=deploy; else export GOAL=install; fi
   - if [[ $TRAVIS_TAG = v* ]]; then export ADDITIONAL_PROFILES=release; (cd backend && mvn -q -U org.seedstack:seedstack-maven-plugin:release); else export ADDITIONAL_PROFILES=snapshots; fi

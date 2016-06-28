@@ -1,0 +1,41 @@
+<main layout-padding layout="column" id="user-update">
+    <div flex layout="row" layout-sm="column" layout-xs="column">
+        <div flex="none">
+            <md-button class="md-accent" hub-history-back>
+                <md-icon md-font-set="material-icons">keyboard_backspace</md-icon>
+                Back
+            </md-button>
+        </div>
+    </div>
+
+    <section layout="row" layout-wrap layout-xs="column" layout-align="center center">
+        <md-content class="md-whiteframe-1dp" style="width: 100%">
+            <md-toolbar>
+                <div class="md-toolbar-tools">
+                    <img ng-src="{{ $ctrl.user._links['users/icon'].href }}" err-src="{{ '{hub}/img/default-user.png' | path }}" class="md-avatar user-profile-icon" alt="User icon"/>
+                    <h2>
+                        {{ $ctrl.user.name }} profile settings
+                    </h2>
+                </div>
+            </md-toolbar>
+            <md-content layout-padding style="min-height: 85px; overflow-x: hidden; margin-top: 65px;">
+                <form name="profileUpdateForm" ng-submit="$ctrl.uploadIcon(croppedDataUrl, picFile.name)">
+                    <md-button class="md-raised" ng-click="$ctrl.fileUploadSuccess = null" ngf-select ng-model="picFile" accept="image/*">Select icon</md-button>
+                    <md-card style="max-width: 330px" ng-show="picFile">
+                        <md-card-title>
+                            <md-card-title-media style="width: 100%;">
+                                <div class="md-media-lg card-media" ngf-drop ng-model="picFile" ngf-pattern="image/*" style="width: 300px; margin: 0 auto;">
+                                    <img-crop image="picFile  | ngfDataUrl" result-image="croppedDataUrl" ng-init="croppedDataUrl=''"></img-crop>
+                                </div>
+                            </md-card-title-media>
+                        </md-card-title>
+                        <md-card-actions layout="row" layout-align="end center">
+                            <md-button type="submit" ng-show="!$ctrl.fileUploadProgress">Submit</md-button>
+                        </md-card-actions>
+                    </md-card>
+                    <md-progress-circular ng-show="$ctrl.fileUploadProgress >= 0" md-diameter="20px" md-mode="determinate" value="{{ $ctrl.fileUploadProgress }}"></md-progress-circular>
+                </form>
+            </md-content>
+        </md-content>
+    </section>
+</main>

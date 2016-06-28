@@ -60,25 +60,25 @@ function search(array, query) {
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
 
-app.get('/', (req, res, next) => {
+app.get('/api', (req, res, next) => {
     return isJsonHome(req) ? res.json(home) : next();
 });
 
-app.get('/popular', (req, res, next) => {
+app.get('/api/popular', (req, res, next) => {
     return isHal(req) ? sendCards(cards, 0, 6, res) : next();
 });
 
-app.get('/recent', (req, res, next) => {
+app.get('/api/recent', (req, res, next) => {
     return isHal(req) ? sendCards(cards, 0, 6, res) : next();
 });
 
-app.get('/components', (req, res) => {
+app.get('/api/components', (req, res) => {
     var filteredCards = search(cards, req.query.search);
     sendCards(filteredCards, req.query.pageIndex, req.query.pageSize, res);
 });
 
 var componentId = 0;
-app.post('/components', (req, res) => {
+app.post('/api/components', (req, res) => {
     // Mock 404
     //res.status(404).send();
     var newComponent = cards[0];
@@ -86,37 +86,33 @@ app.post('/components', (req, res) => {
     setTimeout(() => { res.json(newComponent); }, 5000);
 });
 
-app.get('/components/:componentId', (req, res, next) => {
+app.get('/api/components/:componentId', (req, res, next) => {
     component.id = req.params.componentId;
     component.name = 'Name ' + req.params.componentId;
     res.json(component);
 });
 
-app.get('/components/*/files/images/*', (req, res, next) => {
+app.get('/api/components/*/files/images/*', (req, res, next) => {
     var img = fs.readFileSync('../hub/frontend/mock/images/ubuntu.png');
     res.writeHead(200, {'Content-Type': 'image/png' });
     res.end(img, 'binary');
 });
 
-app.get('/components/*/files/README.md', (req, res, next) => {
+app.get('/api/components/*/files/README.md', (req, res, next) => {
     var readme = fs.readFileSync('../hub/frontend/mock/docs/readme.html');
     res.writeHead(200, {'Content-Type': 'text/html' });
     res.end(readme);
 });
 
-app.get('/user/components', (req, res) => {
+app.get('/api/user/components', (req, res) => {
     sendCards(userComponent, req.query.pageIndex, req.query.pageSize, res);
 });
 
-app.get('/user/stars', (req, res) => {
+app.get('/api/user/stars', (req, res) => {
     sendCards(userComponent, req.query.pageIndex, req.query.pageSize, res);
 });
 
-if (dist === 'dist') {
-    app.use(express.static(__dirname + '/../dist'));
-} else {
-    app.use(express.static(__dirname + '/../.'));
-}
+app.use(express.static(__dirname + '/../work'));
 
 app.listen(3000, () => {
     console.log('Hub app listening on port 3000!');

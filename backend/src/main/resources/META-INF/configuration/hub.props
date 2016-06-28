@@ -1,0 +1,44 @@
+#
+# Copyright (c) 2015-2016, The SeedStack authors <http://seedstack.org>
+#
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this
+# file, You can obtain one at http://mozilla.org/MPL/2.0/.
+#
+
+[org.seedstack]
+mongodb.clients = main
+w20.masterpage-template = index.html
+
+[org.seedstack.seed.core]
+application-id = seedstack-hub
+release = 1.0.0
+
+[org.seedstack.seed.rest]
+path = /api
+jersey.property.jersey.config.servlet.filter.forwardOn404 = false
+
+[org.seedstack.seed.security]
+sessions.enabled = true
+
+[org.seedstack.seed.security.urls]
+/swagger.json = noSessionCreation, anon
+/favicon.ico = noSessionCreation, anon
+/logout =  logout
+/api/** = authc[permissive], authcBasic
+/** = authc
+
+[org.seedstack.mongodb.client.main]
+hosts = ${sys:mongoHosts}
+databases = hub
+
+[org.seedstack.hub.domain.model.*]
+# Sets Morphia as the default repository for all aggregates...
+default-repository = org.seedstack.mongodb.morphia.Morphia
+morphia.clientName = main
+morphia.dbName = hub
+
+[org.seedstack.hub.domain.model.user.User]
+# ... except for User which has its own custom repository
+default-repository =
+

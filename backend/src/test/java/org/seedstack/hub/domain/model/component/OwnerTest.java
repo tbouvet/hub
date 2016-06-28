@@ -27,11 +27,11 @@ public class OwnerTest {
     }
     @Test
     public void testOwnerIsUser() {
-        Owner owner = new Owner("pith");
+        Owner owner = new Owner("user3");
         Assertions.assertThat(owner.isUser()).isTrue();
         Assertions.assertThat(owner.getUserId().isPresent()).isTrue();
         Assertions.assertThat(owner.getUserId().orElseThrow(NullPointerException::new))
-                .isEqualTo(new UserId("pith"));
+                .isEqualTo(new UserId("user3"));
         Assertions.assertThat(owner.isOrganisation()).isFalse();
         Assertions.assertThat(owner.getOrganisationId().isPresent()).isFalse();
     }

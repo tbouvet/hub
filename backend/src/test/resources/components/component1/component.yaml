@@ -18,7 +18,7 @@ releases:
     url: https://github.com/seedstack/mongodb-addon/releases/tag/v1.0.1
     date: 2016-02-09
 
-owner: adrien.lauer@mpsa.com
+owner: user2@email.com
 url: https://github.com/seedstack/mongodb-addon
 issues: https://github.com/seedstack/mongodb-addon/issues
 summary: This is the awesome component 1.

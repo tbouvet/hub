@@ -1,0 +1,48 @@
+<md-dialog aria-label="Create new wiki" ng-cloak class="fullscreen-dialog">
+    <form>
+        <md-toolbar>
+            <div class="md-toolbar-tools">
+                <h2 ng-if="!$ctrl.locals.wiki">Create new wiki</h2>
+                <h2 ng-if="$ctrl.locals.wiki">Update wiki</h2>
+                <span flex></span>
+                <md-button class="md-icon-button" ng-click="$ctrl.cancel()">
+                    <md-icon md-font-set="material-icons">close</md-icon>
+                </md-button>
+            </div>
+        </md-toolbar>
+        <md-dialog-content>
+            <div class="md-dialog-content">
+                <md-input-container>
+                    <label for="wiki-page">Title</label>
+                    <input md-autofocus id="wiki-page" ng-model="$ctrl.wikiPageInfo.title" required>
+                </md-input-container>
+                <md-input-container>
+                    <label for="wiki-message">Message</label>
+                    <input id="wiki-message" ng-model="$ctrl.message">
+                </md-input-container>
+                <md-button ng-show="$ctrl.locals.wiki && !confirm" ng-click="confirm = true" class="md-warn">
+                    Delete wiki
+                </md-button>
+                <md-button ng-show="confirm" ng-click="$ctrl.deleteWiki()" class="md-warn">
+                    Confirm
+                </md-button>
+                <md-button ng-show="confirm" ng-click="confirm = false" class="md-primary">
+                    Cancel
+                </md-button>
+                <section>
+                    <label for="markdown-area">
+                        <textarea id="markdown-area" style="width:100%" required></textarea>
+                    </label>
+                </section>
+            </div>
+        </md-dialog-content>
+        <md-dialog-actions layout="row">
+            <md-button ng-click="$ctrl.createWiki($ctrl.message, $ctrl.wikiPageInfo)" ng-if="!$ctrl.locals.wiki">
+                Create
+            </md-button>
+            <md-button ng-click="$ctrl.updateWiki($ctrl.message, $ctrl.wikiPageInfo)" ng-if="$ctrl.locals.wiki">
+                Update
+            </md-button>
+        </md-dialog-actions>
+    </form>
+</md-dialog>

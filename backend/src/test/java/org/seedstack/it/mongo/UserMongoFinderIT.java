@@ -57,24 +57,24 @@ public class UserMongoFinderIT {
 
     @Test
     public void test_findUserCards_for_owner() {
-        Result<ComponentCard> archived = userFinder.findUserComponents(new UserId("adrienlauer"), new Range(0,10));
+        Result<ComponentCard> archived = userFinder.findUserComponents(new UserId("user2"), new Range(0,10));
         assertThat(archived.getResult()).hasSize(10);
         assertThat(archived.getResult().get(0).getId()).isEqualTo("Component0");
     }
 
     @Test
     public void test_findUserCards_for_maintainer() {
-        Result<ComponentCard> archived = userFinder.findUserComponents(new UserId("pith"), new Range(0,10));
+        Result<ComponentCard> archived = userFinder.findUserComponents(new UserId("user3"), new Range(0,10));
         assertThat(archived.getResult()).hasSize(10);
         assertThat(archived.getResult().get(0).getId()).isEqualTo("Component0");
     }
 
     @Test
     public void test_findUserCards_retrieve_archived_component() {
-        Component mock = MockBuilder.mock("Archived", 0, State.ARCHIVED, "pith");
+        Component mock = MockBuilder.mock("Archived", 0, State.ARCHIVED, "user3");
         componentRepository.persist(mock);
 
-        Result<ComponentCard> archived = userFinder.findUserComponents(new UserId("pith"), new Range(0,10));
+        Result<ComponentCard> archived = userFinder.findUserComponents(new UserId("user3"), new Range(0,10));
         assertThat(archived.getResult()).hasSize(10);
         assertThat(archived.getResult().get(0).getId()).isEqualTo("Archived0");
 

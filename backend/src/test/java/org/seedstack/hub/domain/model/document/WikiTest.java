@@ -40,7 +40,7 @@ public class WikiTest {
     @Test
     public void wiki_revert_revision() throws Exception {
         WikiDocument wikiDocument = MockBuilder.mockWikiDocument(MockBuilder.mock(1), "page1", STARTING_TEXT, INTERMEDIATE_TEXT, FINAL_TEXT);
-        wikiDocument.revertToRevision(1, new UserId("adrien"), "reverted to 1");
+        wikiDocument.revertToRevision(1, new UserId("user2"), "reverted to 1");
         assertThat(wikiDocument.getText()).isEqualTo(INTERMEDIATE_TEXT);
     }
 

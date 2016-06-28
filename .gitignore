@@ -17,17 +17,9 @@ backend/pom.xml.releaseBackup
 backend/pom.xml.versionsBackup
 backend/pom.xml.next
 backend/release.properties
-backend/src/main/resources/META-INF/resources/
-backend/**/proxy.props
-backend/**/seedstack-hub.override.props
 
 # Frontend
-frontend/bower_components/
 frontend/mock/node_modules/
-frontend/hub/modules/**/*.js
-frontend/hub/modules/**/*.js.map
 frontend/node_modules/
 frontend/dist/
-
-#build
-out/
+frontend/work/

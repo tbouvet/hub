@@ -51,12 +51,12 @@ public class ComponentDetailsAssemblerIT {
         assertThat(readme.getLink("self")).isEqualTo(new DocumentRepresentation(componentMock.getDescription().getReadme(), documentService, relRegistry).getLink("self"));
         assertThat(readme.getTitle()).isEqualTo("Readme");
         assertThat(detail.getSummary()).isEqualTo("A little summary.");
-        assertThat(detail.getOwner()).isEqualTo("adrienlauer");
-        assertThat(detail.getMaintainers()).containsOnly("pith", "kavi87");
+        assertThat(detail.getOwner()).isEqualTo("user2");
+        assertThat(detail.getMaintainers()).containsOnly("user3", "user1");
         assertThat(detail.getStars()).isEqualTo(3);
         assertThat(detail.getState()).isEqualTo(State.PUBLISHED);
         assertThat(detail.getVersion()).isEqualTo("2.3.4-M2");
-        assertThat(((Link) detail.getLink("self")).getHref()).isEqualTo("/components/Component2");
-        assertThat(((Link) detail.getLink(Rels.STAR)).getHref()).isEqualTo("/user/stars/Component2");
+        assertThat(((Link) detail.getLink("self")).getHref()).isEqualTo("/api/components/Component2");
+        assertThat(((Link) detail.getLink(Rels.STAR)).getHref()).isEqualTo("/api/user/stars/Component2");
     }
 }

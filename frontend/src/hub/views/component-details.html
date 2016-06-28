@@ -1,0 +1,81 @@
+<div id="component-detail" layout-padding layout="column">
+    <div id="component-detail-navigation" flex layout="row" layout-sm="column" layout-xs="column">
+        <div flex="none">
+            <md-button class="md-accent" hub-history-back>
+                <md-icon md-font-set="material-icons">keyboard_backspace</md-icon>
+                Back
+            </md-button>
+        </div>
+    </div>
+    <div id="component-detail-header" class="md-whiteframe-1dp" layout="row" layout-xs="column" layout-wrap>
+        <div layout="row" layout-align="center center" layout-align-xs="center">
+            <img class="component-icon" ng-src="{{$ctrl.component.$embedded('icon')._links.self.href}}" err-src="{{ '{hub}/img/default-component.png' | path }}" alt="Component logo">
+        </div>
+        <div flex layout-xs="column" layout-align-xs="center center" id="component-detail-title">
+            <div layout="column" layout-align="center" layout-align-xs="center center" class="md-list-item-text"
+                 style="margin-left: 20px;">
+                <h1>
+                    {{ $ctrl.component.name }}
+                </h1>
+                <h2 style="margin-top: 0;" class="md-subhead muted">
+                    <md-icon md-font-set="material-icons">person_pin</md-icon>
+                    <md-button ng-click="$ctrl.viewUser($ctrl.component.owner)">{{ $ctrl.component.owner }}</md-button>
+                </h2>
+            </div>
+        </div>
+        <div id="component-detail-actions" layout-wrap layout-xs="row" layout-align-xs="center center" style="margin-top: 20px">
+            <md-icon ng-if="$ctrl.component.state ==='PUBLISHED'" md-font-set="material-icons">visibility</md-icon>
+            <md-icon ng-if="$ctrl.component.state ==='ARCHIVED'" md-font-set="material-icons">visibility_off</md-icon>
+            <md-icon ng-if="$ctrl.component.state ==='PENDING'" md-font-set="material-icons">hourglass_empty</md-icon>
+            {{ $ctrl.component.state }}
+            <md-button ng-if="$ctrl.component.isStarred" ng-click="$ctrl.rateComponent($ctrl.component)" aria-label="Star" title="unstar this component">
+                <md-icon md-font-set="material-icons">star_rate</md-icon> {{ $ctrl.component.stars }}
+            </md-button>
+            <md-button ng-if="!$ctrl.component.isStarred" ng-click="$ctrl.rateComponent($ctrl.component)" aria-label="Star" title="star this component">
+                <md-icon md-font-set="material-icons">star_border</md-icon> {{ $ctrl.component.stars }}
+            </md-button>
+            <md-menu>
+                <md-button aria-label="Manage component" ng-click="$mdOpenMenu($event)">
+                    <md-icon md-font-set="material-icons">more_vert</md-icon> Manage
+                </md-button>
+                <md-menu-content width="4">
+                    <md-menu-item ng-if="$ctrl.component.state === 'PUBLISHED'">
+                        <md-button ng-click="$ctrl.archiveComponent($ctrl.component)">
+                            <md-icon md-font-set="material-icons">archive</md-icon> Archive
+                        </md-button>
+                    </md-menu-item>
+                    <md-menu-item ng-if="$ctrl.component.state === 'ARCHIVED'">
+                        <md-button ng-click="$ctrl.restoreComponent($ctrl.component)">
+                            <md-icon md-font-set="material-icons">settings_backup_restore</md-icon> Restore
+                        </md-button>
+                    </md-menu-item>
+                    <md-menu-item>
+                        <md-button ng-click="$ctrl.deleteComponent($ctrl.component)">
+                            <md-icon md-font-set="material-icons">delete_forever</md-icon> Delete
+                        </md-button>
+                    </md-menu-item>
+                </md-menu-content>
+            </md-menu>
+            <md-button class="md-raised md-primary">Install</md-button>
+            <md-button ng-click="$ctrl.syncComponent($ctrl.component)" class="md-fab md-mini" aria-label="Resync component">
+                <md-tooltip md-direction="bottom">
+                    Resync
+                </md-tooltip>
+                <md-icon md-font-set="material-icons">refresh</md-icon>
+            </md-button>
+        </div>
+    </div>
+    <md-content class="md-whiteframe-1dp" flex>
+        <md-tabs md-selected="$ctrl.selectedTabIndex" md-dynamic-height md-border-bottom>
+            <md-tab label="Info">
+                <div ng-include="'{hub}/views/details/identity.tpl.html' | path"></div>
+            </md-tab>
+            <md-tab label="Docs">
+                <div ng-include="'{hub}/views/details/docs.tpl.html' | path"></div>
+            </md-tab>
+            <md-tab label="Wiki">
+                <div ng-include="'{hub}/views/details/wiki.tpl.html' | path"></div>
+            </md-tab>
+        </md-tabs>
+    </md-content>
+</div>

@@ -1,0 +1,32 @@
+<div id="component-detail-docs" layout-padding layout="row" layout-xs="column" style="padding: 0">
+    <div id="component-detail-doc" flex="80" flex-xs="100" flex-order-xs="2">
+        <md-content class="inherit-background" flex style="padding: 0; border-right: 1px solid #eeeeee">
+            <div class="markdown-body" ng-include="$ctrl.activeDoc._links.self.href"></div>
+        </md-content>
+        <header ng-if="!$ctrl.component.$embedded('docs').length" layout="column" layout-align="center center">
+            <h3 class="md-title muted">No documents available</h3>
+        </header>
+    </div>
+    <div flex="20" flex-xs="100" layout-align="end center" layout-align-xs="center" flex-order-xs="1">
+        <aside id="component-detail-docs-list" layout="column" flex-xs="100">
+            <section>
+                <md-content class="md-whiteframe-1dp" style="overflow: hidden; background-color: inherit">
+                    <md-subheader class="md-no-sticky" style="background-color: inherit">
+                        Documents
+                    </md-subheader>
+                    <md-list>
+                        <md-list-item ng-repeat="doc in $ctrl.component.$embedded('docs')">
+                            <md-button data-ng-click="$ctrl.setActiveDoc(doc)"
+                                       ng-class="$ctrl.activeDoc._links.self.href === doc._links.self.href ? 'md-primary' : 'md-accent'"
+                                       layout="row" layout-align="start center" flex>
+                                <span>
+                                    <i class="fa fa-file-text-o"></i> {{ doc._links.self.href | displayDocName }}
+                                </span>
+                            </md-button>
+                        </md-list-item>
+                    </md-list>
+                </md-content>
+            </section>
+        </aside>
+    </div>
+</div>

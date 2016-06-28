@@ -5,12 +5,8 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
-/* global module: false, grunt: false, process: false */
+/* global module: false, grunt: false */
 
-/*
- * Grunt tasks are run with gulp-grunt in the gulpfile.js
- *
- */
 module.exports = function (grunt) {
     'use strict';
 
@@ -18,17 +14,14 @@ module.exports = function (grunt) {
         w20: {
             optimize: {
                 options: {
+                    basePath: 'work',
                     buildConfig: {
-                        baseUrl: 'dist/',
-                        out: 'dist/hub.min.js'
+                        out: 'work/hub.min.js'
                     }
                 }
-
             }
         }
     });
 
     grunt.loadNpmTasks('grunt-w20');
-
-    grunt.registerTask('default', ['w20:optimize'], null);
 };

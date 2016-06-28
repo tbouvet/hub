@@ -26,11 +26,11 @@ import java.time.LocalDateTime;
 public class MockBuilder {
 
     public static Component mock(int i) {
-        return mock(i, State.PUBLISHED, "adrienlauer");
+        return mock(i, State.PUBLISHED, "user2");
     }
 
     public static Component mock(int i, State state) {
-        return mock(i, state, "adrienlauer");
+        return mock(i, state, "user2");
     }
 
     public static Component mock(int i, State state, String owner) {
@@ -50,8 +50,8 @@ public class MockBuilder {
         component.addRelease(mockVersion(i, 1));
         component.addRelease(mockVersion(i, 2));
 
-        component.addMaintainer(new UserId("pith"));
-        component.addMaintainer(new UserId("kavi87"));
+        component.addMaintainer(new UserId("user3"));
+        component.addMaintainer(new UserId("user1"));
 
         setStars(component, i);
         return component;
@@ -61,7 +61,7 @@ public class MockBuilder {
         WikiDocument wikiDocument = new WikiDocument(new DocumentId(component.getId(), DocumentScope.WIKI, path));
         int revCount = 0;
         for (String body : bodies) {
-            wikiDocument.addRevision(body, new UserId("adrien"), "rev" + revCount++);
+            wikiDocument.addRevision(body, new UserId("user2"), "rev" + revCount++);
         }
         return wikiDocument;
     }

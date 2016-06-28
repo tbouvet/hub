@@ -43,7 +43,7 @@ public class SecurityServiceImplTest {
 
     @Test
     public void testIsOwner() {
-        givenOwner("pith");
+        givenOwner("user3");
         assertThat(underTest.isOwnerOf(component)).isTrue();
     }
 
@@ -56,9 +56,9 @@ public class SecurityServiceImplTest {
 
     @Test
     public void testIsNotOwner() {
-        givenOwner("pith");
+        givenOwner("user3");
         new Expectations() {{
-            userRepository.load(new UserId("pith")); result = null;
+            userRepository.load(new UserId("user3")); result = null;
         }};
         assertThat(underTest.isOwnerOf(component)).isFalse();
     }
@@ -67,11 +67,11 @@ public class SecurityServiceImplTest {
     public void testIsOrganisationMember(@Mocked Organisation organisation, @Mocked User user) {
         givenOwner("@seedstack");
 
-        UserId pith = new UserId("pith");
+        UserId user3 = new UserId("user3");
         new Expectations() {{
-            user.getId(); result = pith;
+            user.getId(); result = user3;
 
-            organisation.isMember(pith); result = true;
+            organisation.isMember(user3); result = true;
         }};
 
         assertThat(underTest.isOwnerOf(component)).isTrue();
@@ -81,11 +81,11 @@ public class SecurityServiceImplTest {
     public void testIsNotOrganisationMember(@Mocked Organisation organisation, @Mocked User user) {
         givenOwner("@seedstack");
 
-        UserId pith = new UserId("pith");
+        UserId user3 = new UserId("user3");
         new Expectations() {{
-            user.getId(); result = pith;
+            user.getId(); result = user3;
 
-            organisation.isMember(pith); result = false;
+            organisation.isMember(user3); result = false;
         }};
 
         assertThat(underTest.isOwnerOf(component)).isFalse();

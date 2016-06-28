@@ -55,7 +55,7 @@ public class AdminResourceIT extends AbstractSeedWebIT {
         expect()
                 .statusCode(200)
                 .given()
-                .auth().basic("adrienlauer", "password")
+                .auth().basic("user2", "password")
                 .header("Content-Type", "application/json")
                 .body(sources.toString())
                 .post(baseURL.toString() + "admin/import");

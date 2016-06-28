@@ -37,8 +37,6 @@ public class DocumentIT {
     private ComponentFactory componentFactory;
     @Inject
     private DocumentFactory documentFactory;
-    @Inject
-    private Repository<Document, DocumentId> documentRepository;
     private File directory;
     private Manifest manifest;
 
@@ -47,11 +45,11 @@ public class DocumentIT {
         directory = new File("src/test/resources/components/component1");
         manifest = new Manifest();
         manifest.setId("component1");
-        manifest.setOwner("pierre.thirouin@ext.mpsa.com");
+        manifest.setOwner("user3@email.com");
     }
 
     @Test
-    @WithUser(id = "adrienlauer", password = "password")
+    @WithUser(id = "user2", password = "password")
     public void stream_documents_from_component() throws Exception {
         manifest.setReadme("README.md");
         manifest.setIcon("images/icon.png");
@@ -74,7 +72,7 @@ public class DocumentIT {
     }
 
     @Test
-    @WithUser(id = "adrienlauer", password = "password")
+    @WithUser(id = "user2", password = "password")
     public void stream_documents_from_component_without_docs() throws Exception {
         Component component = componentFactory.createComponent(manifest);
         Map<DocumentId, Document> documents = documentFactory.createDocuments(component, directory).collect(toMap(Document::getId, Function.identity()));

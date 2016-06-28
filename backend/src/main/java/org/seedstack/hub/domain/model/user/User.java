@@ -35,7 +35,7 @@ public class User extends BaseAggregateRoot<UserId> {
         addEmail(email);
     }
     public User(UserId userId) {
-        this(userId, null);
+        this.userId = userId;
     }
 
     private User() {

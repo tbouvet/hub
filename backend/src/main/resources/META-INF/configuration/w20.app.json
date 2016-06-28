@@ -1,5 +1,5 @@
 {
-  "/src/hub.w20.json": {
+  "hub": {
     "modules": {
       "toolbar": {
         "logoUrl": "http://seedstack.org/img/logos/seedstack-logo-round.svg",
@@ -7,7 +7,6 @@
       }
     }
   },
-
   "w20-core": {
     "modules": {
       "application": {
@@ -19,8 +18,7 @@
       },
       "culture": {
         "available": [
-          "en",
-          "fr"
+          "en"
         ],
         "default": "en"
       },
@@ -33,11 +31,10 @@
       "utils": {},
       "hypermedia": {
         "api": {
-          "home": "/"
+          "home": "/api"
         }
       }
     }
   },
-
   "w20-material": {}
 }

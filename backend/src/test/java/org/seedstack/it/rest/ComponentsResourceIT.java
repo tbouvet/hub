@@ -61,8 +61,7 @@ public class ComponentsResourceIT extends AbstractSeedWebIT {
 
     @Deployment
     public static WebArchive createDeployment() {
-        return ShrinkWrap.create(WebArchive.class)
-                .addAsResource("META-INF/configuration/seedstack-hub-test.override.props", "META-INF/configuration/aseedstack-hub.props");
+        return ShrinkWrap.create(WebArchive.class);
     }
 
     @RunAsClient
@@ -107,9 +106,9 @@ public class ComponentsResourceIT extends AbstractSeedWebIT {
         return expect()
                 //.statusCode(200)
                 .given()
-                .auth().basic("adrienlauer", "password")
+                .auth().basic("admin", "password")
                 .header("Content-Type", "application/hal+json")
-                .get(baseURL.toString() + path);
+                .get(baseURL.toString() + "api/" + path);
     }
 
     @After
