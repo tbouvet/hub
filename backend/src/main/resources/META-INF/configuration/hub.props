@@ -29,7 +29,7 @@ sessions.enabled = true
 /** = authc
 
 [org.seedstack.mongodb.client.main]
-hosts = ${sys:mongoHosts}
+uri = ${sys:mongoUri}
 databases = hub
 
 [org.seedstack.hub.domain.model.*]

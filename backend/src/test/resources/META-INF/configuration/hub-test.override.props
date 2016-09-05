@@ -25,6 +25,6 @@ user3 = password
 john = password
 
 [org.seedstack.mongodb.client.main]
-hosts = localhost
+uri = mongodb://localhost/hub
 databases = hub-test
 alias.hub-test = hub
