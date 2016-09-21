@@ -27,7 +27,7 @@
         <bintray.repo>jars</bintray.repo>
         <bintray.package>hub</bintray.package>
 
-        <seedstack.version>16.4</seedstack.version>
+        <seedstack.version>16.7.1</seedstack.version>
     </properties>
 
     <dependencyManagement>
@@ -38,16 +38,6 @@
                 <version>${seedstack.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.seedstack.seed</groupId>
-                <artifactId>seed-core</artifactId>
-                <exclusions>
-                    <exclusion>
-                        <groupId>net.minidev</groupId>
-                        <artifactId>asm</artifactId>
-                    </exclusion>
-                </exclusions>
             </dependency>
         </dependencies>
     </dependencyManagement>
