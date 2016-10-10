@@ -1,4 +1,4 @@
-sudo: false
+sudo: required
 
 language: java
 
@@ -11,7 +11,9 @@ addons:
       - mongodb-org-server
       - mongodb-org-shell
 
-services: mongodb
+services: 
+  - mongodb
+  - docker
 
 jdk: oraclejdk8
 
@@ -35,5 +37,6 @@ script: chmod +x ./build.sh && ./build.sh
 
 after_success: 
 #  - (cd backend && mvn -q coveralls:report -DrepoToken=$COVERALLS_TOKEN)
-  - if [[ $TRAVIS_TAG = v* ]]; then (echo "Build DOCKER" && cd backend && mvn -Pdocker docker:build docker:push) ; fi
+#  - if [[ $TRAVIS_TAG = v* ]]; then (echo "Build DOCKER" && cd backend && mvn -Pdocker docker:build docker:push) ; fi
+  - echo "Build DOCKER" && cd backend && mvn -Pdocker docker:build docker:push
   
