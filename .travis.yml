@@ -23,6 +23,7 @@ cache:
 before_install: if [[ `npm -v` != 3* ]]; then npm i -g npm@3; fi
 
 install:
+  - echo "TRAVIS_TAG = $TRAVIS_TAG"
   - echo "<settings><servers>" > ~/.m2/settings.xml
   - echo "<server><id>bintray</id><username>\${env.BINTRAY_USER}</username><password>\${env.BINTRAY_KEY}</password></server>" >> ~/.m2/settings.xml
   - if [[ $TRAVIS_TAG = v* ]]; then echo "<server><id>docker.io</id><username>\${env.DOCKER_USER}</username><password>\${env.DOCKER_PASSWORD}</password></server>" >> ~/.m2/settings.xml ; fi
