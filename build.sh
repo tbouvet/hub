@@ -7,6 +7,6 @@ echo "Copying frontend resources..."
 cp -Rv frontend/dist/* backend/src/main/resources/META-INF/resources || exit 1
 
 echo "Building backend (profiles: bintray,$ADDITIONAL_PROFILES , goals: $GOAL)..."
-(cd backend && mvn -DmongoHosts=localhost -U -q -Pbintray,$ADDITIONAL_PROFILES ${GOAL:-clean install} jacoco:report) || exit 1
+(cd backend && mvn -DmongoHosts=localhost -U -Pbintray,$ADDITIONAL_PROFILES ${GOAL:-clean install} jacoco:report) || exit 1
 
 echo "Done."
