@@ -35,5 +35,5 @@ script: chmod +x ./build.sh && ./build.sh
 
 after_success: 
 #  - (cd backend && mvn -q coveralls:report -DrepoToken=$COVERALLS_TOKEN)
-  - if [[ $TRAVIS_TAG = v* ]]; then (echo "Build DOCKER" && cd backend && mvn docker:build docker:push) ; fi
+  - if [[ $TRAVIS_TAG = v* ]]; then (echo "Build DOCKER" && cd backend && mvn -Pdocker docker:build docker:push) ; fi
   
